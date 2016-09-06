@@ -31,8 +31,7 @@ public class MultipartHelper {
     }
 
     public MultipartHelper putTextBody(String name, String value) {
-        request.write("Content-Disposition: form-data; name=\"")
-                .write(name)
+        request.write(String.format("Content-Disposition: form-data; name=%s\"", name))
                 .write(System.lineSeparator())
                 .write(System.lineSeparator())
                 .write(value)
