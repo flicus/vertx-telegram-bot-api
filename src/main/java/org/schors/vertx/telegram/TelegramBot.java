@@ -154,7 +154,7 @@ public class TelegramBot {
             }
             multipartHelper.stop();
             request.end();
-        }, event1 -> {
+        }, event -> {
 
         });
     }
