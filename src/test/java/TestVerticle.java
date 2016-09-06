@@ -23,20 +23,29 @@
  */
 
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.net.ProxyOptions;
+import io.vertx.core.net.ProxyType;
 import org.schors.vertx.telegram.LongPollingReceiver;
 import org.schors.vertx.telegram.TelegramBot;
 import org.schors.vertx.telegram.TelegramOptions;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 
+import java.io.FileInputStream;
+import java.util.Properties;
+
 public class TestVerticle extends AbstractVerticle {
 
-    TelegramBot bot;
+    private TelegramBot bot;
 
     @Override
     public void start() throws Exception {
+        Properties p = new Properties();
+        p.load(new FileInputStream("bot.ini"));
+
         TelegramOptions telegramOptions = new TelegramOptions()
-                .setBotName("evlampia_bot")
-                .setBotToken("219739200:AAHXCuDWJPoRhUAjFBXFmljVJhR2uVXdmwc");
+                .setBotName(p.getProperty("name"))
+                .setBotToken(p.getProperty("token"))
+                .setProxyOptions(new ProxyOptions().setType(ProxyType.HTTP).setHost("genproxy").setPort(8080));
 
         bot = TelegramBot.create(vertx, telegramOptions)
                 .receiver(LongPollingReceiver.create().onUpdate(event -> {

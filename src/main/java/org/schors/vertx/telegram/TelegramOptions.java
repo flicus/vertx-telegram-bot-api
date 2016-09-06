@@ -25,12 +25,15 @@
 package org.schors.vertx.telegram;
 
 
+import io.vertx.core.net.ProxyOptions;
+
 public class TelegramOptions {
 
     private String botName;
     private String botToken;
     private int pollingTimeout = 70000;
     private int maxConnections = 200;
+    private ProxyOptions proxyOptions;
 
     public String getBotName() {
         return botName;
@@ -65,6 +68,15 @@ public class TelegramOptions {
 
     public TelegramOptions setMaxConnections(int maxConnections) {
         this.maxConnections = maxConnections;
+        return this;
+    }
+
+    public ProxyOptions getProxyOptions() {
+        return proxyOptions;
+    }
+
+    public TelegramOptions setProxyOptions(ProxyOptions proxyOptions) {
+        this.proxyOptions = proxyOptions;
         return this;
     }
 }

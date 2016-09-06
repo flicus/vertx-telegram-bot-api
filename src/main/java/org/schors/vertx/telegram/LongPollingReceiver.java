@@ -73,7 +73,6 @@ public class LongPollingReceiver implements UpdateReceiver {
     }
 
     private void runTimer(int timeout) {
-        System.out.println("Runtimer");
         taskId = bot.getVertx().setTimer(timeout, id -> pollHandler.handle(id));
     }
 
@@ -82,13 +81,10 @@ public class LongPollingReceiver implements UpdateReceiver {
         @Override
         public void handle(Object event) {
             String toSend = new GetUpdates().setOffset(lastReceivedUpdate + 1).toJson().encode();
-            System.out.println(toSend);
             bot.getClient()
                     .post(Constants.BASEURL + bot.getOptions().getBotToken() + "/" + GetUpdates.PATH)
                     .handler(response -> {
-                        System.out.println("new response: " + response.statusCode());
                         response.bodyHandler(body -> {
-                            System.out.println(body.toString());
                             JsonObject json = body.toJsonObject();
                             if (!json.getBoolean(Constants.RESPONSEFIELDOK)) {
                                 //todo some server error
@@ -103,13 +99,12 @@ public class LongPollingReceiver implements UpdateReceiver {
                                     }
                                 });
                             }
-                            System.out.println("after response");
                             runTimer(500);
                         });
-                    }).exceptionHandler(e -> {
-                System.out.println(e.getMessage());
-                runTimer(500);
-            })
+                    })
+                    .exceptionHandler(e -> {
+                        runTimer(500);
+                    })
                     .setTimeout(75 * 1000)
                     .putHeader("Content-Type", "application/json")
                     .end(toSend, "UTF-8");

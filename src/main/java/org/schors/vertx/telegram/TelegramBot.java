@@ -54,6 +54,9 @@ public class TelegramBot {
                 .setDefaultPort(443)
                 .setLogActivity(true);
 
+        if (options.getProxyOptions() != null)
+            httpOptions.setProxyOptions(options.getProxyOptions());
+
         client = vertx.createHttpClient(httpOptions);
         pollClient = vertx.createHttpClient(httpOptions);
     }
@@ -83,22 +86,16 @@ public class TelegramBot {
     }
 
     public void sendMessage(SendMessage message) {
-        String toSend = message.toJson().encode();
-        System.out.println(toSend);
         client
                 .post(Constants.BASEURL + getOptions().getBotToken() + "/" + SendMessage.PATH)
                 .handler(response -> {
-                    System.out.println(response.statusCode());
                     response.bodyHandler(event -> {
-                        System.out.println(event);
                     });
                 }).exceptionHandler(e -> {
-            System.out.println(e);
-
         })
                 .setTimeout(75000)
                 .putHeader("Content-Type", "application/json")
-                .end(toSend, "UTF-8");
+                .end(message.toJson().encode(), "UTF-8");
     }
 
     public Vertx getVertx() {
