@@ -40,7 +40,7 @@ public class LongPollingReceiver implements UpdateReceiver {
     private PollHandler pollHandler = new PollHandler();
     private int lastReceivedUpdate = 0;
 
-    private LongPollingReceiver() {
+    public LongPollingReceiver() {
 
     }
 

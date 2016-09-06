@@ -27,18 +27,23 @@ package org.schors.vertx.telegram;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientOptions;
+import io.vertx.core.http.HttpClientRequest;
 import org.telegram.telegrambots.Constants;
+import org.telegram.telegrambots.api.methods.BotApiMethod;
+import org.telegram.telegrambots.api.methods.send.SendChatAction;
+import org.telegram.telegrambots.api.methods.send.SendDocument;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
+
+import java.io.File;
 
 public class TelegramBot {
 
     private Vertx vertx;
     private HttpClient client;
-    private HttpClient pollClient;
     private TelegramOptions botOptions;
     private UpdateReceiver receiver;
 
-    private TelegramBot(Vertx vertx, TelegramOptions options) {
+    public TelegramBot(Vertx vertx, TelegramOptions options) {
         this.vertx = vertx;
         this.botOptions = options;
 
@@ -58,7 +63,6 @@ public class TelegramBot {
             httpOptions.setProxyOptions(options.getProxyOptions());
 
         client = vertx.createHttpClient(httpOptions);
-        pollClient = vertx.createHttpClient(httpOptions);
     }
 
     public static TelegramBot create(Vertx vertx) {
@@ -85,19 +89,6 @@ public class TelegramBot {
         return this;
     }
 
-    public void sendMessage(SendMessage message) {
-        client
-                .post(Constants.BASEURL + getOptions().getBotToken() + "/" + SendMessage.PATH)
-                .handler(response -> {
-                    response.bodyHandler(event -> {
-                    });
-                }).exceptionHandler(e -> {
-        })
-                .setTimeout(75000)
-                .putHeader("Content-Type", "application/json")
-                .end(message.toJson().encode(), "UTF-8");
-    }
-
     public Vertx getVertx() {
         return vertx;
     }
@@ -107,6 +98,65 @@ public class TelegramBot {
     }
 
     public HttpClient getClient() {
-        return pollClient;
+        return client;
     }
+
+
+    private void send(BotApiMethod message) {
+        client
+                .post(Constants.BASEURL + getOptions().getBotToken() + "/" + message.getPath())
+                .handler(response -> {
+                    response.bodyHandler(event -> {
+                    });
+                })
+                .exceptionHandler(e -> {
+                })
+                .setTimeout(75000)
+                .putHeader("Content-Type", "application/json")
+                .end(message.toJson().encode(), "UTF-8");
+    }
+
+    public void sendMessage(SendMessage message) {
+        send(message);
+    }
+
+    public void sendChatAction(SendChatAction chatAction) {
+        send(chatAction);
+    }
+
+    public void sendDocument(SendDocument document) {
+        vertx.executeBlocking(future -> {
+            HttpClientRequest request = client
+                    .post(Constants.BASEURL + getOptions().getBotToken() + "/" + SendDocument.PATH)
+                    .handler(response -> {
+                        response.bodyHandler(event -> {
+                        });
+                    })
+                    .exceptionHandler(e -> {
+                    })
+                    .setTimeout(75000)
+                    .setChunked(true);
+            MultipartHelper multipartHelper = new MultipartHelper(request)
+                    .start()
+                    .putTextBody(SendDocument.CHATID_FIELD, document.getChatId())
+                    .putBinaryBody(SendDocument.DOCUMENT_FIELD, new File(document.getDocument()), "application/octet-stream", document.getDocumentName());
+            if (document.getReplyMarkup() != null) {
+                multipartHelper.putTextBody(SendDocument.REPLYMARKUP_FIELD, document.getReplyMarkup().toJson().encode());
+            }
+            if (document.getReplyToMessageId() != null) {
+                multipartHelper.putTextBody(SendDocument.REPLYTOMESSAGEID_FIELD, document.getReplyToMessageId().toString());
+            }
+            if (document.getCaption() != null) {
+                multipartHelper.putTextBody(SendDocument.CAPTION_FIELD, document.getCaption());
+            }
+            if (document.getDisableNotification() != null) {
+                multipartHelper.putTextBody(SendDocument.DISABLENOTIFICATION_FIELD, document.getDisableNotification().toString());
+            }
+            multipartHelper.stop();
+            request.end();
+        }, event1 -> {
+
+        });
+    }
+
 }

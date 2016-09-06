@@ -45,15 +45,16 @@ public class TestVerticle extends AbstractVerticle {
         TelegramOptions telegramOptions = new TelegramOptions()
                 .setBotName(p.getProperty("name"))
                 .setBotToken(p.getProperty("token"))
-                .setProxyOptions(new ProxyOptions().setType(ProxyType.HTTP).setHost("genproxy").setPort(8080));
+                .setProxyOptions(new ProxyOptions()
+                        .setType(ProxyType.HTTP)
+                        .setHost("genproxy")
+                        .setPort(8080));
 
         bot = TelegramBot.create(vertx, telegramOptions)
-                .receiver(LongPollingReceiver.create().onUpdate(event -> {
-                    System.out.println(event.getMessage().getText());
-                    SendMessage sendMessage = new SendMessage();
-                    sendMessage.setChatId(event.getMessage().getChatId());
-                    sendMessage.setText("hi");
-                    bot.sendMessage(sendMessage);
+                .receiver(new LongPollingReceiver().onUpdate(event -> {
+                    bot.sendMessage(new SendMessage()
+                            .setChatId(event.getMessage().getChatId())
+                            .setText("hi"));
                 }))
                 .start();
     }
