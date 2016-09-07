@@ -34,8 +34,6 @@ import org.telegram.telegrambots.api.methods.send.SendChatAction;
 import org.telegram.telegrambots.api.methods.send.SendDocument;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 
-import java.io.File;
-
 public class TelegramBot {
 
     private Vertx vertx;
@@ -136,24 +134,28 @@ public class TelegramBot {
                     })
                     .setTimeout(75000)
                     .setChunked(true);
-            MultipartHelper multipartHelper = new MultipartHelper(request)
+            MultipartHelper multipartHelper = new MultipartHelper(vertx, request);
+            multipartHelper
                     .start()
                     .putTextBody(SendDocument.CHATID_FIELD, document.getChatId())
-                    .putBinaryBody(SendDocument.DOCUMENT_FIELD, new File(document.getDocument()), "application/octet-stream", document.getDocumentName());
-            if (document.getReplyMarkup() != null) {
-                multipartHelper.putTextBody(SendDocument.REPLYMARKUP_FIELD, document.getReplyMarkup().toJson().encode());
-            }
-            if (document.getReplyToMessageId() != null) {
-                multipartHelper.putTextBody(SendDocument.REPLYTOMESSAGEID_FIELD, document.getReplyToMessageId().toString());
-            }
-            if (document.getCaption() != null) {
-                multipartHelper.putTextBody(SendDocument.CAPTION_FIELD, document.getCaption());
-            }
-            if (document.getDisableNotification() != null) {
-                multipartHelper.putTextBody(SendDocument.DISABLENOTIFICATION_FIELD, document.getDisableNotification().toString());
-            }
-            multipartHelper.stop();
-            request.end();
+                    .putBinaryBody(SendDocument.DOCUMENT_FIELD, document.getDocument(), "application/octet-stream", document.getDocumentName(), event -> {
+                        if (event.succeeded()) {
+                            if (document.getReplyMarkup() != null) {
+                                multipartHelper.putTextBody(SendDocument.REPLYMARKUP_FIELD, document.getReplyMarkup().toJson().encode());
+                            }
+                            if (document.getReplyToMessageId() != null) {
+                                multipartHelper.putTextBody(SendDocument.REPLYTOMESSAGEID_FIELD, document.getReplyToMessageId().toString());
+                            }
+                            if (document.getCaption() != null) {
+                                multipartHelper.putTextBody(SendDocument.CAPTION_FIELD, document.getCaption());
+                            }
+                            if (document.getDisableNotification() != null) {
+                                multipartHelper.putTextBody(SendDocument.DISABLENOTIFICATION_FIELD, document.getDisableNotification().toString());
+                            }
+                            multipartHelper.stop();
+                        }
+                        request.end();
+                    });
         }, event -> {
 
         });

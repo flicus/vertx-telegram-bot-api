@@ -1,17 +1,20 @@
 package org.schors.vertx.telegram;
 
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Handler;
+import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClientRequest;
 import io.vertx.core.streams.Pump;
-
-import java.io.File;
 
 public class MultipartHelper {
 
     private HttpClientRequest request;
     private String boundary = Long.toHexString(System.currentTimeMillis());
+    private Vertx vertx;
 
-    public MultipartHelper(HttpClientRequest request) {
+    public MultipartHelper(Vertx vertx, HttpClientRequest request) {
         this.request = request;
+        this.vertx = vertx;
         request.putHeader("Content-Type", String.format("multipart/form-data; boundary=%s", boundary));
     }
 
@@ -39,18 +42,40 @@ public class MultipartHelper {
         return this;
     }
 
-    public MultipartHelper putBinaryBody(String name, File data, String contentType, String fileName) {
+    public MultipartHelper putBinaryBody(String name, String path, String contentType, String fileName, Handler<AsyncResult> handler) {
         request.write(String.format("Content-Disposition: form-data; name=\"%s\"; filename=\"%s\"", name, fileName))
                 .write(System.lineSeparator())
                 .write(String.format("Content-Type: %s", contentType))
                 .write(System.lineSeparator())
                 .write(System.lineSeparator());
-        Pump.pump(new Base64Stream(data).endHandler(event -> {
-
-        }), request).start();
-
+        Pump.pump(new Base64Stream(vertx, path)
+                .endHandler(event -> handler.handle(createResult(true, null)))
+                .exceptionHandler(e -> handler.handle(createResult(false, e))), request).start();
         return this;
     }
 
+    private AsyncResult createResult(boolean succeed, Throwable e) {
+        return new AsyncResult() {
+            @Override
+            public Object result() {
+                return null;
+            }
+
+            @Override
+            public Throwable cause() {
+                return null;
+            }
+
+            @Override
+            public boolean succeeded() {
+                return succeed;
+            }
+
+            @Override
+            public boolean failed() {
+                return !succeed;
+            }
+        };
+    }
 
 }
