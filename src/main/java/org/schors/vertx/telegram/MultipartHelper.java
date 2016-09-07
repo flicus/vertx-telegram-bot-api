@@ -50,7 +50,12 @@ public class MultipartHelper {
                 .write(System.lineSeparator());
         Pump.pump(new Base64Stream(vertx, path)
                 .endHandler(event -> handler.handle(createResult(true, null)))
-                .exceptionHandler(e -> handler.handle(createResult(false, e))), request).start();
+                .exceptionHandler(new Handler<Throwable>() {
+                    @Override
+                    public void handle(Throwable e) {
+                        handler.handle(createResult(false, e));
+                    }
+                }), request).start();
         return this;
     }
 
@@ -63,7 +68,7 @@ public class MultipartHelper {
 
             @Override
             public Throwable cause() {
-                return null;
+                return e;
             }
 
             @Override
