@@ -3,6 +3,7 @@ package org.schors.vertx.telegram;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
+import io.vertx.core.file.OpenOptions;
 import io.vertx.core.http.HttpClientRequest;
 import io.vertx.core.streams.Pump;
 
@@ -48,14 +49,18 @@ public class MultipartHelper {
                 .write(String.format("Content-Type: %s", contentType))
                 .write(System.lineSeparator())
                 .write(System.lineSeparator());
-        Pump.pump(new Base64Stream(vertx, path)
-                .endHandler(event -> handler.handle(createResult(true, null)))
-                .exceptionHandler(new Handler<Throwable>() {
-                    @Override
-                    public void handle(Throwable e) {
-                        handler.handle(createResult(false, e));
-                    }
-                }), request).start();
+        vertx.fileSystem().open(path, new OpenOptions().setRead(true), ar -> {
+            if (ar.succeeded()) {
+                Pump.pump(new Base64Stream(ar.result())
+                        .endHandler(event -> handler.handle(createResult(true, null)))
+                        .exceptionHandler(new Handler<Throwable>() {
+                            @Override
+                            public void handle(Throwable e) {
+                                handler.handle(createResult(false, e));
+                            }
+                        }), request).start();
+            }
+        });
         return this;
     }
 
