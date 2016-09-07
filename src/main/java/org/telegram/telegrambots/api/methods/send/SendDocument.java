@@ -69,6 +69,11 @@ public class SendDocument {
         return chatId;
     }
 
+    public SendDocument setChatId(Long chatId) {
+        this.chatId = String.valueOf(chatId);
+        return this;
+    }
+
     public SendDocument setChatId(String chatId) {
         this.chatId = chatId;
         return this;

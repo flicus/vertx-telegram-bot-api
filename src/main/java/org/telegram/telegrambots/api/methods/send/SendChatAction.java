@@ -61,6 +61,11 @@ public class SendChatAction extends BotApiMethod<Boolean> {
         return chatId;
     }
 
+    public SendChatAction setChatId(Long chatId) {
+        this.chatId = String.valueOf(chatId);
+        return this;
+    }
+
     public SendChatAction setChatId(String chatId) {
         this.chatId = chatId;
         return this;
@@ -75,6 +80,10 @@ public class SendChatAction extends BotApiMethod<Boolean> {
         return action.toString();
     }
 
+    public void setAction(ActionType action) {
+        this.action = action;
+    }
+
     /**
      * @param action Text of the action to create
      * @return Reference to this same instance
@@ -85,10 +94,6 @@ public class SendChatAction extends BotApiMethod<Boolean> {
     public SendChatAction setAction(String action) throws IllegalArgumentException {
         this.action = ActionType.GetActionType(action);
         return this;
-    }
-
-    public void setAction(ActionType action) {
-        this.action = action;
     }
 
     @Override
