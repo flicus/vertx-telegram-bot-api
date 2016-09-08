@@ -25,9 +25,9 @@
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.net.ProxyOptions;
 import io.vertx.core.net.ProxyType;
-import org.schors.vertx.telegram.LongPollingReceiver;
-import org.schors.vertx.telegram.TelegramBot;
-import org.schors.vertx.telegram.TelegramOptions;
+import org.schors.vertx.telegram.bot.LongPollingReceiver;
+import org.schors.vertx.telegram.bot.TelegramBot;
+import org.schors.vertx.telegram.bot.TelegramOptions;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 
 import java.io.FileInputStream;
