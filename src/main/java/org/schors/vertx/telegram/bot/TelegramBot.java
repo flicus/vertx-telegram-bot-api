@@ -28,6 +28,7 @@ import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.HttpClientRequest;
+import org.schors.vertx.telegram.bot.commands.CommandManager;
 import org.schors.vertx.telegram.bot.util.MultipartHelper;
 import org.telegram.telegrambots.Constants;
 import org.telegram.telegrambots.api.methods.BotApiMethod;
@@ -74,6 +75,12 @@ public class TelegramBot {
 
     public static TelegramBot create(Vertx vertx, TelegramOptions options) {
         return new TelegramBot(vertx, options);
+    }
+
+    public static TelegramBot create(Vertx vertx, TelegramOptions options, CommandManager cm) {
+        TelegramBot tb = new TelegramBot(vertx, options);
+        cm.setBot(tb);
+        return tb;
     }
 
     public TelegramBot receiver(UpdateReceiver updateReceiver) {

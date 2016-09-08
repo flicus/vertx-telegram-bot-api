@@ -25,7 +25,6 @@
 
 package org.schors.vertx.telegram.bot.commands;
 
-import org.schors.vertx.telegram.bot.TelegramBot;
 import org.telegram.telegrambots.api.objects.Update;
 
 import java.util.HashMap;
@@ -34,11 +33,9 @@ import java.util.Map;
 public class CommandContext {
 
     private Map<String, Object> items = new HashMap<>();
-    private TelegramBot bot;
     private Update update;
 
-    public CommandContext(TelegramBot bot, Update update) {
-        this.bot = bot;
+    public CommandContext(Update update) {
         this.update = update;
     }
 
@@ -49,10 +46,6 @@ public class CommandContext {
 
     public Object get(String key) {
         return items.get(key);
-    }
-
-    public TelegramBot getBot() {
-        return bot;
     }
 
     public Update getUpdate() {

@@ -26,6 +26,7 @@
 package org.schors.vertx.telegram.bot.commands;
 
 import org.schors.vertx.telegram.bot.TelegramBot;
+import org.telegram.telegrambots.api.objects.Update;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -39,6 +40,9 @@ public class CommandManager {
 
     public CommandManager(TelegramBot bot) {
         this.bot = bot;
+    }
+
+    public CommandManager() {
     }
 
     public CommandManager addCommand(Command command) {
@@ -58,6 +62,15 @@ public class CommandManager {
 
     public CommandManager setDefaultCommand(Command command) {
         this.defaultCommand = command;
+        return this;
+    }
+
+    public CommandContext createContext(Update update) {
+        return new CommandContext(update);
+    }
+
+    public CommandManager setBot(TelegramBot bot) {
+        this.bot = bot;
         return this;
     }
 }
