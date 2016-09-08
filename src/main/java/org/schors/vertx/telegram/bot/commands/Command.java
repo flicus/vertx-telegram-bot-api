@@ -25,11 +25,14 @@
 
 package org.schors.vertx.telegram.bot.commands;
 
+import org.schors.vertx.telegram.bot.TelegramBot;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public abstract class Command {
 
+    private TelegramBot bot;
     private Pattern pattern;
 
     public Command(String regexp) {
@@ -39,6 +42,14 @@ public abstract class Command {
     public boolean isApplicable(String text) {
         Matcher m = pattern.matcher(text);
         return m.matches();
+    }
+
+    protected TelegramBot getBot() {
+        return this.bot;
+    }
+
+    public void setBot(TelegramBot bot) {
+        this.bot = bot;
     }
 
     public abstract void execute(String text, CommandContext context);

@@ -23,11 +23,17 @@
  */
 
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Handler;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.net.ProxyOptions;
 import io.vertx.core.net.ProxyType;
-import org.schors.vertx.telegram.LongPollingReceiver;
-import org.schors.vertx.telegram.TelegramBot;
-import org.schors.vertx.telegram.TelegramOptions;
+import io.vertx.core.streams.Pump;
+import io.vertx.core.streams.ReadStream;
+import io.vertx.core.streams.WriteStream;
+import org.schors.vertx.telegram.bot.LongPollingReceiver;
+import org.schors.vertx.telegram.bot.TelegramBot;
+import org.schors.vertx.telegram.bot.TelegramOptions;
+import org.schors.vertx.telegram.bot.util.Base64Stream;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
 
 import java.io.FileInputStream;
@@ -39,6 +45,78 @@ public class TestVerticle extends AbstractVerticle {
 
     @Override
     public void start() throws Exception {
+
+        Base64Stream stream = new Base64Stream(new ReadStream<Buffer>() {
+            Handler<Void> endHndl;
+
+            @Override
+            public ReadStream<Buffer> exceptionHandler(Handler<Throwable> handler) {
+                return this;
+            }
+
+            @Override
+            public ReadStream<Buffer> handler(Handler<Buffer> handler) {
+                Buffer buffer = Buffer.buffer("Hello!");
+                handler.handle(buffer);
+                return this;
+            }
+
+            @Override
+            public ReadStream<Buffer> pause() {
+                return this;
+            }
+
+            @Override
+            public ReadStream<Buffer> resume() {
+                return this;
+            }
+
+            @Override
+            public ReadStream<Buffer> endHandler(Handler<Void> endHandler) {
+                this.endHndl = endHandler;
+                return this;
+            }
+        });
+
+        WriteStream<Buffer> writeStream = new WriteStream<Buffer>() {
+
+            Buffer buffer = Buffer.buffer();
+
+            @Override
+            public WriteStream<Buffer> exceptionHandler(Handler<Throwable> handler) {
+                return this;
+            }
+
+            @Override
+            public WriteStream<Buffer> write(Buffer data) {
+                buffer.appendBuffer(data);
+                return this;
+            }
+
+            @Override
+            public void end() {
+                System.out.println(new String(buffer.getBytes()));
+            }
+
+            @Override
+            public WriteStream<Buffer> setWriteQueueMaxSize(int maxSize) {
+                return this;
+            }
+
+            @Override
+            public boolean writeQueueFull() {
+                return false;
+            }
+
+            @Override
+            public WriteStream<Buffer> drainHandler(Handler<Void> handler) {
+                return this;
+            }
+        };
+
+        Pump.pump(stream, writeStream).start();
+
+
         Properties p = new Properties();
         p.load(new FileInputStream("bot.ini"));
 

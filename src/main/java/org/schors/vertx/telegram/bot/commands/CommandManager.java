@@ -25,20 +25,27 @@
 
 package org.schors.vertx.telegram.bot.commands;
 
+import org.schors.vertx.telegram.bot.TelegramBot;
+
 import java.util.HashSet;
 import java.util.Set;
 
 public class CommandManager {
 
+    private TelegramBot bot;
+
     private Set<Command> commands = new HashSet<>();
     private Command defaultCommand = new DefaultCommand("Unknown command");
 
-    public CommandManager() {
+    public CommandManager(TelegramBot bot) {
+        this.bot = bot;
     }
 
     public CommandManager addCommand(Command command) {
-        if (!commands.contains(command))
+        if (!commands.contains(command)) {
+            command.setBot(this.bot);
             commands.add(command);
+        }
         return this;
     }
 
