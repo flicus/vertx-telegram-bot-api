@@ -38,6 +38,6 @@ public class DefaultCommand extends Command {
 
     @Override
     public void execute(String text, CommandContext context) {
-        context.getBot().sendMessage(new SendMessage().setChatId(context.getUpdate().getMessage().getChatId()).setText(reply));
+        getBot().sendMessage(new SendMessage().setChatId(context.getUpdate().getMessage().getChatId()).setText(reply));
     }
 }
