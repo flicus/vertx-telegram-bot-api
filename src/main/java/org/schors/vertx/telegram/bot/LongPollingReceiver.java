@@ -22,7 +22,7 @@
  *  SOFTWARE.
  */
 
-package org.schors.vertx.telegram;
+package org.schors.vertx.telegram.bot;
 
 import io.vertx.core.Handler;
 import io.vertx.core.json.JsonArray;

@@ -22,19 +22,7 @@
  *  SOFTWARE.
  */
 
-package org.schors.vertx.telegram;
+package org.schors.vertx.telegram.bot;
 
-import io.vertx.core.Handler;
-import org.telegram.telegrambots.api.objects.Update;
-
-public interface UpdateReceiver {
-
-    UpdateReceiver onUpdate(Handler<Update> handler);
-
-    UpdateReceiver bot(TelegramBot bot);
-
-    UpdateReceiver start();
-
-    UpdateReceiver stop();
-
+public abstract class WebhookReceiver implements UpdateReceiver {
 }

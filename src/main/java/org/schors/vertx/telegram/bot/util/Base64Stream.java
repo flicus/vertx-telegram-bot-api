@@ -1,4 +1,4 @@
-package org.schors.vertx.telegram;
+package org.schors.vertx.telegram.bot.util;
 
 
 import io.vertx.core.buffer.Buffer;

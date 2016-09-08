@@ -22,17 +22,21 @@
  *  SOFTWARE.
  */
 
-package org.schors.vertx.telegram;
+package org.schors.vertx.telegram.bot;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.HttpClientRequest;
+import org.schors.vertx.telegram.bot.util.MultipartHelper;
 import org.telegram.telegrambots.Constants;
 import org.telegram.telegrambots.api.methods.BotApiMethod;
 import org.telegram.telegrambots.api.methods.send.SendChatAction;
 import org.telegram.telegrambots.api.methods.send.SendDocument;
 import org.telegram.telegrambots.api.methods.send.SendMessage;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class TelegramBot {
 
@@ -40,6 +44,7 @@ public class TelegramBot {
     private HttpClient client;
     private TelegramOptions botOptions;
     private UpdateReceiver receiver;
+    private Map<String, Object> facilities = new HashMap<>();
 
     public TelegramBot(Vertx vertx, TelegramOptions options) {
         this.vertx = vertx;
@@ -99,6 +104,14 @@ public class TelegramBot {
         return client;
     }
 
+    public TelegramBot addFacility(String key, Object facility) {
+        facilities.put(key, facility);
+        return this;
+    }
+
+    public Object getFacility(String key) {
+        return facilities.get(key);
+    }
 
     private void send(BotApiMethod message) {
         client

@@ -1,8 +1,8 @@
 /*
+ *
  *  The MIT License (MIT)
  *
- *  Copyright (c) 2016  schors
- *
+ *  Copyright (c) 2016 schors
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
@@ -20,9 +20,42 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
+ *
  */
 
-package org.schors.vertx.telegram;
+package org.schors.vertx.telegram.bot.commands;
 
-public abstract class WebhookReceiver implements UpdateReceiver {
+import org.schors.vertx.telegram.bot.TelegramBot;
+import org.telegram.telegrambots.api.objects.Update;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class CommandContext {
+
+    private Map<String, Object> items = new HashMap<>();
+    private TelegramBot bot;
+    private Update update;
+
+    public CommandContext(TelegramBot bot, Update update) {
+        this.bot = bot;
+        this.update = update;
+    }
+
+    public CommandContext put(String key, Object value) {
+        items.put(key, value);
+        return this;
+    }
+
+    public Object get(String key) {
+        return items.get(key);
+    }
+
+    public TelegramBot getBot() {
+        return bot;
+    }
+
+    public Update getUpdate() {
+        return update;
+    }
 }
