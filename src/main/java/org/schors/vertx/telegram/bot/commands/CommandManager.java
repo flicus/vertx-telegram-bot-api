@@ -42,9 +42,6 @@ public class CommandManager {
         this.bot = bot;
     }
 
-    public CommandManager() {
-    }
-
     public CommandManager addCommand(Command command) {
         if (!commands.contains(command)) {
             command.setBot(this.bot);
