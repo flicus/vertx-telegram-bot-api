@@ -62,6 +62,7 @@ public class CommandManager {
 
     public CommandManager setDefaultCommand(Command command) {
         this.defaultCommand = command;
+        this.defaultCommand.setBot(this.bot);
         return this;
     }
 
