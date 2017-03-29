@@ -1,5 +1,4 @@
 /*
- *
  *  The MIT License (MIT)
  *
  *  Copyright (c) 2016 schors
@@ -20,35 +19,38 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
- *
  */
 
-package org.schors.vertx.telegram.bot.commands;
+package org.schors.vertx.telegram.bot.api.types;
 
-import org.schors.vertx.telegram.bot.api.types.Update;
+public class ChatMember {
 
-import java.util.HashMap;
-import java.util.Map;
+    private User user;
+    private String status;
 
-public class CommandContext {
-
-    private Map<String, Object> items = new HashMap<>();
-    private Update update;
-
-    public CommandContext(Update update) {
-        this.update = update;
+    public ChatMember() {
     }
 
-    public CommandContext put(String key, Object value) {
-        items.put(key, value);
+    public ChatMember(User user, String status) {
+        this.user = user;
+        this.status = status;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public ChatMember setUser(User user) {
+        this.user = user;
         return this;
     }
 
-    public Object get(String key) {
-        return items.get(key);
+    public String getStatus() {
+        return status;
     }
 
-    public Update getUpdate() {
-        return update;
+    public ChatMember setStatus(String status) {
+        this.status = status;
+        return this;
     }
 }

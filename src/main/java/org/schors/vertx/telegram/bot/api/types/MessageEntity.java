@@ -1,8 +1,7 @@
 /*
  *  The MIT License (MIT)
  *
- *  Copyright (c) 2016  schors
- *
+ *  Copyright (c) 2016 schors
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
@@ -22,61 +21,68 @@
  *  SOFTWARE.
  */
 
-package org.schors.vertx.telegram.bot;
+package org.schors.vertx.telegram.bot.api.types;
 
+public class MessageEntity {
+    private String type;
+    private Integer offset;
+    private Integer length;
+    private String url;
+    private User user;
 
-import io.vertx.core.net.ProxyOptions;
-
-public class TelegramOptions {
-
-    private String botName;
-    private String botToken;
-    private int pollingTimeout = 70;
-    private int maxConnections = 200;
-    private ProxyOptions proxyOptions;
-
-    public String getBotName() {
-        return botName;
+    public MessageEntity() {
     }
 
-    public TelegramOptions setBotName(String botName) {
-        this.botName = botName;
+    public MessageEntity(String type, Integer offset, Integer length, String url, User user) {
+        this.type = type;
+        this.offset = offset;
+        this.length = length;
+        this.url = url;
+        this.user = user;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public MessageEntity setType(String type) {
+        this.type = type;
         return this;
     }
 
-    public String getBotToken() {
-        return botToken;
+    public Integer getOffset() {
+        return offset;
     }
 
-    public TelegramOptions setBotToken(String botToken) {
-        this.botToken = botToken;
+    public MessageEntity setOffset(Integer offset) {
+        this.offset = offset;
         return this;
     }
 
-    public int getPollingTimeout() {
-        return pollingTimeout;
+    public Integer getLength() {
+        return length;
     }
 
-    public TelegramOptions setPollingTimeout(int pollingTimeout) {
-        this.pollingTimeout = pollingTimeout;
+    public MessageEntity setLength(Integer length) {
+        this.length = length;
         return this;
     }
 
-    public int getMaxConnections() {
-        return maxConnections;
+    public String getUrl() {
+        return url;
     }
 
-    public TelegramOptions setMaxConnections(int maxConnections) {
-        this.maxConnections = maxConnections;
+    public MessageEntity setUrl(String url) {
+        this.url = url;
         return this;
     }
 
-    public ProxyOptions getProxyOptions() {
-        return proxyOptions;
+    public User getUser() {
+        return user;
     }
 
-    public TelegramOptions setProxyOptions(ProxyOptions proxyOptions) {
-        this.proxyOptions = proxyOptions;
+    public MessageEntity setUser(User user) {
+        this.user = user;
         return this;
     }
 }

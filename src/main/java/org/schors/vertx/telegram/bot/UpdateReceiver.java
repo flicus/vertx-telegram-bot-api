@@ -25,7 +25,7 @@
 package org.schors.vertx.telegram.bot;
 
 import io.vertx.core.Handler;
-import org.telegram.telegrambots.api.objects.Update;
+import org.schors.vertx.telegram.bot.api.types.Update;
 
 public interface UpdateReceiver {
 

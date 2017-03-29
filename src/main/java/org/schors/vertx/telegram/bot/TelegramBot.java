@@ -24,32 +24,41 @@
 
 package org.schors.vertx.telegram.bot;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.HttpClientRequest;
+import org.apache.log4j.Logger;
+import org.schors.vertx.telegram.bot.api.Constants;
+import org.schors.vertx.telegram.bot.api.methods.SendChatAction;
+import org.schors.vertx.telegram.bot.api.methods.SendDocument;
+import org.schors.vertx.telegram.bot.api.methods.SendMessage;
+import org.schors.vertx.telegram.bot.api.methods.TelegramMethod;
 import org.schors.vertx.telegram.bot.commands.CommandManager;
 import org.schors.vertx.telegram.bot.util.MultipartHelper;
-import org.telegram.telegrambots.Constants;
-import org.telegram.telegrambots.api.methods.BotApiMethod;
-import org.telegram.telegrambots.api.methods.send.SendChatAction;
-import org.telegram.telegrambots.api.methods.send.SendDocument;
-import org.telegram.telegrambots.api.methods.send.SendMessage;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class TelegramBot {
 
+    private static final Logger log = Logger.getLogger(TelegramBot.class);
+
     private Vertx vertx;
     private HttpClient client;
     private TelegramOptions botOptions;
     private UpdateReceiver receiver;
     private Map<String, Object> facilities = new HashMap<>();
+    private ObjectMapper mapper = new ObjectMapper();
 
     public TelegramBot(Vertx vertx, TelegramOptions options) {
         this.vertx = vertx;
         this.botOptions = options;
+
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 
         HttpClientOptions httpOptions = new HttpClientOptions()
 //                .setKeepAlive(true)
@@ -107,10 +116,6 @@ public class TelegramBot {
         return botOptions;
     }
 
-    public HttpClient getClient() {
-        return client;
-    }
-
     public TelegramBot addFacility(String key, Object facility) {
         facilities.put(key, facility);
         return this;
@@ -120,18 +125,25 @@ public class TelegramBot {
         return facilities.get(key);
     }
 
-    private void send(BotApiMethod message) {
-        client
-                .post(Constants.BASEURL + getOptions().getBotToken() + "/" + message.getPath())
-                .handler(response -> {
-                    response.bodyHandler(event -> {
-                    });
-                })
-                .exceptionHandler(e -> {
-                })
-                .setTimeout(75000)
-                .putHeader("Content-Type", "application/json")
-                .end(message.toJson().encode(), "UTF-8");
+    private void send(TelegramMethod message) {
+        String toSend = null;
+        try {
+            toSend = mapper.writeValueAsString(message);
+        } catch (JsonProcessingException e) {
+            log.error("### Unable to serialize to JSON", e);
+        }
+        if (toSend != null)
+            client
+                    .post(Constants.BASEURL + getOptions().getBotToken() + "/" + message.getMethod())
+                    .handler(response -> {
+                        response.bodyHandler(event -> {
+                        });
+                    })
+                    .exceptionHandler(e -> {
+                    })
+                    .setTimeout(75000)
+                    .putHeader("Content-Type", "application/json")
+                    .end(toSend, "UTF-8");
     }
 
     public void sendMessage(SendMessage message) {
@@ -145,7 +157,7 @@ public class TelegramBot {
     public void sendDocument(SendDocument document) {
         vertx.executeBlocking(future -> {
             HttpClientRequest request = client
-                    .post(Constants.BASEURL + getOptions().getBotToken() + "/" + SendDocument.PATH)
+                    .post(Constants.BASEURL + getOptions().getBotToken() + "/" + document.getMethod())
                     .handler(response -> {
                         response.bodyHandler(event -> {
                         });
@@ -157,20 +169,27 @@ public class TelegramBot {
             MultipartHelper multipartHelper = new MultipartHelper(vertx, request);
             multipartHelper
                     .start()
-                    .putTextBody(SendDocument.CHATID_FIELD, document.getChatId())
-                    .putBinaryBody(SendDocument.DOCUMENT_FIELD, document.getDocument(), "application/octet-stream", document.getDocumentName(), event -> {
+                    .putTextBody("chat_id", document.getChatId())
+                    .putBinaryBody("document", document.getDocument(), "application/octet-stream", "document.name", event -> {  //todo
                         if (event.succeeded()) {
                             if (document.getReplyMarkup() != null) {
-                                multipartHelper.putTextBody(SendDocument.REPLYMARKUP_FIELD, document.getReplyMarkup().toJson().encode());
+                                String replyMarkup = null;
+                                try {
+                                    replyMarkup = mapper.writeValueAsString(document.getReplyMarkup());
+                                } catch (JsonProcessingException e) {
+                                    log.error(e, e);
+                                }
+                                if (replyMarkup != null)
+                                    multipartHelper.putTextBody("reply_markup", replyMarkup);
                             }
                             if (document.getReplyToMessageId() != null) {
-                                multipartHelper.putTextBody(SendDocument.REPLYTOMESSAGEID_FIELD, document.getReplyToMessageId().toString());
+                                multipartHelper.putTextBody("reply_to_message_id", document.getReplyToMessageId().toString());
                             }
                             if (document.getCaption() != null) {
-                                multipartHelper.putTextBody(SendDocument.CAPTION_FIELD, document.getCaption());
+                                multipartHelper.putTextBody("caption", document.getCaption());
                             }
-                            if (document.getDisableNotification() != null) {
-                                multipartHelper.putTextBody(SendDocument.DISABLENOTIFICATION_FIELD, document.getDisableNotification().toString());
+                            if (document.isDisableNotification() != null) {
+                                multipartHelper.putTextBody("disable_notification", document.isDisableNotification().toString());
                             }
                             multipartHelper.stop();
                         }

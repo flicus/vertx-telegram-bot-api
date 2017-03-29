@@ -1,5 +1,4 @@
 /*
- *
  *  The MIT License (MIT)
  *
  *  Copyright (c) 2016 schors
@@ -20,35 +19,41 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
- *
  */
 
-package org.schors.vertx.telegram.bot.commands;
+package org.schors.vertx.telegram.bot.api.types;
 
-import org.schors.vertx.telegram.bot.api.types.Update;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.HashMap;
-import java.util.Map;
+public class ForceReply extends Markup {
 
-public class CommandContext {
+    @JsonProperty("force_reply")
+    private Boolean forceReply;
+    private Boolean selective;
 
-    private Map<String, Object> items = new HashMap<>();
-    private Update update;
-
-    public CommandContext(Update update) {
-        this.update = update;
+    public ForceReply() {
     }
 
-    public CommandContext put(String key, Object value) {
-        items.put(key, value);
+    public ForceReply(Boolean forceReply, Boolean selective) {
+        this.forceReply = forceReply;
+        this.selective = selective;
+    }
+
+    public Boolean isForceReply() {
+        return forceReply;
+    }
+
+    public ForceReply setForceReply(Boolean forceReply) {
+        this.forceReply = forceReply;
         return this;
     }
 
-    public Object get(String key) {
-        return items.get(key);
+    public Boolean isSelective() {
+        return selective;
     }
 
-    public Update getUpdate() {
-        return update;
+    public ForceReply setSelective(Boolean selective) {
+        this.selective = selective;
+        return this;
     }
 }

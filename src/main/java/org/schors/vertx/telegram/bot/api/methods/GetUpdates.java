@@ -1,8 +1,7 @@
 /*
  *  The MIT License (MIT)
  *
- *  Copyright (c) 2016  schors
- *
+ *  Copyright (c) 2016 schors
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
@@ -22,61 +21,66 @@
  *  SOFTWARE.
  */
 
-package org.schors.vertx.telegram.bot;
+package org.schors.vertx.telegram.bot.api.methods;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import io.vertx.core.net.ProxyOptions;
+public class GetUpdates extends TelegramMethod {
 
-public class TelegramOptions {
+    private Integer offset;
+    private Integer limit;
+    private Integer timeout;
+    @JsonProperty("allowed_updates")
+    private String[] allowedUpdates;
 
-    private String botName;
-    private String botToken;
-    private int pollingTimeout = 70;
-    private int maxConnections = 200;
-    private ProxyOptions proxyOptions;
-
-    public String getBotName() {
-        return botName;
+    public GetUpdates() {
     }
 
-    public TelegramOptions setBotName(String botName) {
-        this.botName = botName;
+    public GetUpdates(Integer offset, Integer limit, Integer timeout, String[] allowedUpdates) {
+        this.offset = offset;
+        this.limit = limit;
+        this.timeout = timeout;
+        this.allowedUpdates = allowedUpdates;
+    }
+
+    public Integer getOffset() {
+        return offset;
+    }
+
+    public GetUpdates setOffset(Integer offset) {
+        this.offset = offset;
         return this;
     }
 
-    public String getBotToken() {
-        return botToken;
+    public Integer getLimit() {
+        return limit;
     }
 
-    public TelegramOptions setBotToken(String botToken) {
-        this.botToken = botToken;
+    public GetUpdates setLimit(Integer limit) {
+        this.limit = limit;
         return this;
     }
 
-    public int getPollingTimeout() {
-        return pollingTimeout;
+    public Integer getTimeout() {
+        return timeout;
     }
 
-    public TelegramOptions setPollingTimeout(int pollingTimeout) {
-        this.pollingTimeout = pollingTimeout;
+    public GetUpdates setTimeout(Integer timeout) {
+        this.timeout = timeout;
         return this;
     }
 
-    public int getMaxConnections() {
-        return maxConnections;
+    public String[] getAllowedUpdates() {
+        return allowedUpdates;
     }
 
-    public TelegramOptions setMaxConnections(int maxConnections) {
-        this.maxConnections = maxConnections;
+    public GetUpdates setAllowedUpdates(String[] allowedUpdates) {
+        this.allowedUpdates = allowedUpdates;
         return this;
     }
 
-    public ProxyOptions getProxyOptions() {
-        return proxyOptions;
-    }
-
-    public TelegramOptions setProxyOptions(ProxyOptions proxyOptions) {
-        this.proxyOptions = proxyOptions;
-        return this;
+    @Override
+    public String getMethod() {
+        return "getUpdates";
     }
 }

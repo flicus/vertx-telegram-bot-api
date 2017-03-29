@@ -1,8 +1,7 @@
 /*
  *  The MIT License (MIT)
  *
- *  Copyright (c) 2016  schors
- *
+ *  Copyright (c) 2016 schors
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
@@ -22,61 +21,63 @@
  *  SOFTWARE.
  */
 
-package org.schors.vertx.telegram.bot;
+package org.schors.vertx.telegram.bot.api.types;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import io.vertx.core.net.ProxyOptions;
+public class Voice {
 
-public class TelegramOptions {
+    @JsonProperty("file_id")
+    private String fileId;
+    private Integer duration;
+    @JsonProperty("mime_type")
+    private String mimeType;
+    @JsonProperty("file_size")
+    private Integer fileSize;
 
-    private String botName;
-    private String botToken;
-    private int pollingTimeout = 70;
-    private int maxConnections = 200;
-    private ProxyOptions proxyOptions;
-
-    public String getBotName() {
-        return botName;
+    public Voice() {
     }
 
-    public TelegramOptions setBotName(String botName) {
-        this.botName = botName;
+    public Voice(String fileId, Integer duration, String mimeType, Integer fileSize) {
+        this.fileId = fileId;
+        this.duration = duration;
+        this.mimeType = mimeType;
+        this.fileSize = fileSize;
+    }
+
+    public String getFileId() {
+        return fileId;
+    }
+
+    public Voice setFileId(String fileId) {
+        this.fileId = fileId;
         return this;
     }
 
-    public String getBotToken() {
-        return botToken;
+    public Integer getDuration() {
+        return duration;
     }
 
-    public TelegramOptions setBotToken(String botToken) {
-        this.botToken = botToken;
+    public Voice setDuration(Integer duration) {
+        this.duration = duration;
         return this;
     }
 
-    public int getPollingTimeout() {
-        return pollingTimeout;
+    public String getMimeType() {
+        return mimeType;
     }
 
-    public TelegramOptions setPollingTimeout(int pollingTimeout) {
-        this.pollingTimeout = pollingTimeout;
+    public Voice setMimeType(String mimeType) {
+        this.mimeType = mimeType;
         return this;
     }
 
-    public int getMaxConnections() {
-        return maxConnections;
+    public Integer getFileSize() {
+        return fileSize;
     }
 
-    public TelegramOptions setMaxConnections(int maxConnections) {
-        this.maxConnections = maxConnections;
-        return this;
-    }
-
-    public ProxyOptions getProxyOptions() {
-        return proxyOptions;
-    }
-
-    public TelegramOptions setProxyOptions(ProxyOptions proxyOptions) {
-        this.proxyOptions = proxyOptions;
+    public Voice setFileSize(Integer fileSize) {
+        this.fileSize = fileSize;
         return this;
     }
 }

@@ -1,5 +1,4 @@
 /*
- *
  *  The MIT License (MIT)
  *
  *  Copyright (c) 2016 schors
@@ -20,35 +19,16 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
- *
  */
 
-package org.schors.vertx.telegram.bot.commands;
+package org.schors.vertx.telegram.bot.api;
 
-import org.schors.vertx.telegram.bot.api.types.Update;
-
-import java.util.HashMap;
-import java.util.Map;
-
-public class CommandContext {
-
-    private Map<String, Object> items = new HashMap<>();
-    private Update update;
-
-    public CommandContext(Update update) {
-        this.update = update;
-    }
-
-    public CommandContext put(String key, Object value) {
-        items.put(key, value);
-        return this;
-    }
-
-    public Object get(String key) {
-        return items.get(key);
-    }
-
-    public Update getUpdate() {
-        return update;
-    }
+public class Constants {
+    public static final String BASEHOST = "api.telegram.org";
+    public static final String BASEURL = "/bot";
+    public static final int GETUPDATESTIMEOUT = 50;
+    public static final String RESPONSEFIELDOK = "ok";
+    public static final String RESPONSEFIELDRESULT = "result";
+    public static final String ERRORDESCRIPTIONFIELD = "description";
+    public static final String ERRORCODEFIELD = "error_code";
 }

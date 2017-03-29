@@ -1,8 +1,7 @@
 /*
  *  The MIT License (MIT)
  *
- *  Copyright (c) 2016  schors
- *
+ *  Copyright (c) 2016 schors
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
@@ -22,61 +21,65 @@
  *  SOFTWARE.
  */
 
-package org.schors.vertx.telegram.bot;
+package org.schors.vertx.telegram.bot.api.types;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import io.vertx.core.net.ProxyOptions;
+public class Contact {
 
-public class TelegramOptions {
+    @JsonProperty("phone_number")
+    private String phoneNumber;
+    @JsonProperty("first_name")
+    private String firstName;
+    @JsonProperty("last_name")
+    private String lastName;
+    @JsonProperty("user_id")
+    private Integer userId;
 
-    private String botName;
-    private String botToken;
-    private int pollingTimeout = 70;
-    private int maxConnections = 200;
-    private ProxyOptions proxyOptions;
-
-    public String getBotName() {
-        return botName;
+    public Contact() {
     }
 
-    public TelegramOptions setBotName(String botName) {
-        this.botName = botName;
+    public Contact(String phoneNumber, String firstName, String lastName, Integer userId) {
+        this.phoneNumber = phoneNumber;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.userId = userId;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public Contact setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
         return this;
     }
 
-    public String getBotToken() {
-        return botToken;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public TelegramOptions setBotToken(String botToken) {
-        this.botToken = botToken;
+    public Contact setFirstName(String firstName) {
+        this.firstName = firstName;
         return this;
     }
 
-    public int getPollingTimeout() {
-        return pollingTimeout;
+    public String getLastName() {
+        return lastName;
     }
 
-    public TelegramOptions setPollingTimeout(int pollingTimeout) {
-        this.pollingTimeout = pollingTimeout;
+    public Contact setLastName(String lastName) {
+        this.lastName = lastName;
         return this;
     }
 
-    public int getMaxConnections() {
-        return maxConnections;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public TelegramOptions setMaxConnections(int maxConnections) {
-        this.maxConnections = maxConnections;
+    public Contact setUserId(Integer userId) {
+        this.userId = userId;
         return this;
     }
 
-    public ProxyOptions getProxyOptions() {
-        return proxyOptions;
-    }
-
-    public TelegramOptions setProxyOptions(ProxyOptions proxyOptions) {
-        this.proxyOptions = proxyOptions;
-        return this;
-    }
 }

@@ -1,5 +1,4 @@
 /*
- *
  *  The MIT License (MIT)
  *
  *  Copyright (c) 2016 schors
@@ -20,35 +19,64 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
- *
  */
 
-package org.schors.vertx.telegram.bot.commands;
+package org.schors.vertx.telegram.bot.api.types;
 
-import org.schors.vertx.telegram.bot.api.types.Update;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.HashMap;
-import java.util.Map;
+public class PhotoSize {
 
-public class CommandContext {
+    @JsonProperty("file_id")
+    private String fileId;
+    private Integer width;
+    private Integer height;
+    @JsonProperty("file_size")
+    private Integer fileSize;
 
-    private Map<String, Object> items = new HashMap<>();
-    private Update update;
-
-    public CommandContext(Update update) {
-        this.update = update;
+    public PhotoSize() {
     }
 
-    public CommandContext put(String key, Object value) {
-        items.put(key, value);
+    public PhotoSize(String fileId, Integer width, Integer height, Integer fileSize) {
+        this.fileId = fileId;
+        this.width = width;
+        this.height = height;
+        this.fileSize = fileSize;
+    }
+
+    public String getFileId() {
+        return fileId;
+    }
+
+    public PhotoSize setFileId(String fileId) {
+        this.fileId = fileId;
         return this;
     }
 
-    public Object get(String key) {
-        return items.get(key);
+    public Integer getWidth() {
+        return width;
     }
 
-    public Update getUpdate() {
-        return update;
+    public PhotoSize setWidth(Integer width) {
+        this.width = width;
+        return this;
+    }
+
+    public Integer getHeight() {
+        return height;
+    }
+
+    public PhotoSize setHeight(Integer height) {
+        this.height = height;
+        return this;
+    }
+
+    public Integer getFileSize() {
+        return fileSize;
+    }
+
+    public PhotoSize setFileSize(Integer fileSize) {
+        this.fileSize = fileSize;
+        return this;
     }
 }

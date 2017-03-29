@@ -26,7 +26,7 @@
 package org.schors.vertx.telegram.bot.commands;
 
 import org.schors.vertx.telegram.bot.TelegramBot;
-import org.telegram.telegrambots.api.objects.Update;
+import org.schors.vertx.telegram.bot.api.types.Update;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -38,13 +38,16 @@ public class CommandManager {
     private Set<Command> commands = new HashSet<>();
     private Command defaultCommand = new DefaultCommand("Unknown command");
 
+    public CommandManager() {
+    }
+
     public CommandManager(TelegramBot bot) {
         this.bot = bot;
     }
 
     public CommandManager addCommand(Command command) {
         if (!commands.contains(command)) {
-            command.setBot(this.bot);
+            command.setCommandManager(this);
             commands.add(command);
         }
         return this;
@@ -59,12 +62,16 @@ public class CommandManager {
 
     public CommandManager setDefaultCommand(Command command) {
         this.defaultCommand = command;
-        this.defaultCommand.setBot(this.bot);
+        this.defaultCommand.setCommandManager(this);
         return this;
     }
 
     public CommandContext createContext(Update update) {
         return new CommandContext(update);
+    }
+
+    public TelegramBot getBot() {
+        return this.bot;
     }
 
     public CommandManager setBot(TelegramBot bot) {

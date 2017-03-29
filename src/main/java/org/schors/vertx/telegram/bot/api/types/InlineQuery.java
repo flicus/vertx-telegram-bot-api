@@ -1,8 +1,7 @@
 /*
  *  The MIT License (MIT)
  *
- *  Copyright (c) 2016  schors
- *
+ *  Copyright (c) 2016 schors
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
@@ -22,61 +21,69 @@
  *  SOFTWARE.
  */
 
-package org.schors.vertx.telegram.bot;
+package org.schors.vertx.telegram.bot.api.types;
 
+public class InlineQuery {
 
-import io.vertx.core.net.ProxyOptions;
+    private String id;
+    private User from;
+    private Location location;
+    private String query;
+    private String offset;
 
-public class TelegramOptions {
-
-    private String botName;
-    private String botToken;
-    private int pollingTimeout = 70;
-    private int maxConnections = 200;
-    private ProxyOptions proxyOptions;
-
-    public String getBotName() {
-        return botName;
+    public InlineQuery() {
     }
 
-    public TelegramOptions setBotName(String botName) {
-        this.botName = botName;
+    public InlineQuery(String id, User from, Location location, String query, String offset) {
+        this.id = id;
+        this.from = from;
+        this.location = location;
+        this.query = query;
+        this.offset = offset;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public InlineQuery setId(String id) {
+        this.id = id;
         return this;
     }
 
-    public String getBotToken() {
-        return botToken;
+    public User getFrom() {
+        return from;
     }
 
-    public TelegramOptions setBotToken(String botToken) {
-        this.botToken = botToken;
+    public InlineQuery setFrom(User from) {
+        this.from = from;
         return this;
     }
 
-    public int getPollingTimeout() {
-        return pollingTimeout;
+    public Location getLocation() {
+        return location;
     }
 
-    public TelegramOptions setPollingTimeout(int pollingTimeout) {
-        this.pollingTimeout = pollingTimeout;
+    public InlineQuery setLocation(Location location) {
+        this.location = location;
         return this;
     }
 
-    public int getMaxConnections() {
-        return maxConnections;
+    public String getQuery() {
+        return query;
     }
 
-    public TelegramOptions setMaxConnections(int maxConnections) {
-        this.maxConnections = maxConnections;
+    public InlineQuery setQuery(String query) {
+        this.query = query;
         return this;
     }
 
-    public ProxyOptions getProxyOptions() {
-        return proxyOptions;
+    public String getOffset() {
+        return offset;
     }
 
-    public TelegramOptions setProxyOptions(ProxyOptions proxyOptions) {
-        this.proxyOptions = proxyOptions;
+    public InlineQuery setOffset(String offset) {
+        this.offset = offset;
         return this;
     }
 }

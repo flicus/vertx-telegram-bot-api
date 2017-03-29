@@ -1,5 +1,4 @@
 /*
- *
  *  The MIT License (MIT)
  *
  *  Copyright (c) 2016 schors
@@ -20,35 +19,63 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
- *
  */
 
-package org.schors.vertx.telegram.bot.commands;
+package org.schors.vertx.telegram.bot.api.types;
 
-import org.schors.vertx.telegram.bot.api.types.Update;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.HashMap;
-import java.util.Map;
+public class User {
+    private Integer id;
+    @JsonProperty("first_name")
+    private String firstName;
+    @JsonProperty("last_name")
+    private String lastName;
+    private String username;
 
-public class CommandContext {
-
-    private Map<String, Object> items = new HashMap<>();
-    private Update update;
-
-    public CommandContext(Update update) {
-        this.update = update;
+    public User() {
     }
 
-    public CommandContext put(String key, Object value) {
-        items.put(key, value);
+    public User(Integer id, String firstName, String lastName, String username) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = username;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public User setId(Integer id) {
+        this.id = id;
         return this;
     }
 
-    public Object get(String key) {
-        return items.get(key);
+    public String getFirstName() {
+        return firstName;
     }
 
-    public Update getUpdate() {
-        return update;
+    public User setFirstName(String firstName) {
+        this.firstName = firstName;
+        return this;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public User setLastName(String lastName) {
+        this.lastName = lastName;
+        return this;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public User setUsername(String username) {
+        this.username = username;
+        return this;
     }
 }

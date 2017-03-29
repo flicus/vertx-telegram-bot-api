@@ -1,5 +1,4 @@
 /*
- *
  *  The MIT License (MIT)
  *
  *  Copyright (c) 2016 schors
@@ -20,35 +19,54 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
- *
  */
 
-package org.schors.vertx.telegram.bot.commands;
+package org.schors.vertx.telegram.bot.api.types;
 
-import org.schors.vertx.telegram.bot.api.types.Update;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.HashMap;
-import java.util.Map;
+public class File {
 
-public class CommandContext {
+    @JsonProperty("file_id")
+    private String fileId;
+    @JsonProperty("file_size")
+    private Integer fileSize;
+    @JsonProperty("file_path")
+    private String filePath;
 
-    private Map<String, Object> items = new HashMap<>();
-    private Update update;
-
-    public CommandContext(Update update) {
-        this.update = update;
+    public File() {
     }
 
-    public CommandContext put(String key, Object value) {
-        items.put(key, value);
+    public File(String fileId, Integer fileSize, String filePath) {
+        this.fileId = fileId;
+        this.fileSize = fileSize;
+        this.filePath = filePath;
+    }
+
+    public String getFileId() {
+        return fileId;
+    }
+
+    public File setFileId(String fileId) {
+        this.fileId = fileId;
         return this;
     }
 
-    public Object get(String key) {
-        return items.get(key);
+    public Integer getFileSize() {
+        return fileSize;
     }
 
-    public Update getUpdate() {
-        return update;
+    public File setFileSize(Integer fileSize) {
+        this.fileSize = fileSize;
+        return this;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public File setFilePath(String filePath) {
+        this.filePath = filePath;
+        return this;
     }
 }

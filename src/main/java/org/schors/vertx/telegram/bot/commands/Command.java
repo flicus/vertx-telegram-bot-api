@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
 
 public abstract class Command {
 
-    private TelegramBot bot;
+    private CommandManager commandManager;
     private Pattern pattern;
 
     public Command(String regexp) {
@@ -45,11 +45,12 @@ public abstract class Command {
     }
 
     protected TelegramBot getBot() {
-        return this.bot;
+        return this.commandManager.getBot();
     }
 
-    public void setBot(TelegramBot bot) {
-        this.bot = bot;
+    protected Command setCommandManager(CommandManager commandManager) {
+        this.commandManager = commandManager;
+        return this;
     }
 
     public abstract void execute(String text, CommandContext context);

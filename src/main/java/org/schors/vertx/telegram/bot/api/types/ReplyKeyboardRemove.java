@@ -1,5 +1,4 @@
 /*
- *
  *  The MIT License (MIT)
  *
  *  Copyright (c) 2016 schors
@@ -20,35 +19,41 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
- *
  */
 
-package org.schors.vertx.telegram.bot.commands;
+package org.schors.vertx.telegram.bot.api.types;
 
-import org.schors.vertx.telegram.bot.api.types.Update;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.HashMap;
-import java.util.Map;
+public class ReplyKeyboardRemove extends Markup {
 
-public class CommandContext {
+    @JsonProperty("remove_keyboard")
+    private Boolean removeKeyboard;
+    private Boolean selective;
 
-    private Map<String, Object> items = new HashMap<>();
-    private Update update;
-
-    public CommandContext(Update update) {
-        this.update = update;
+    public ReplyKeyboardRemove() {
     }
 
-    public CommandContext put(String key, Object value) {
-        items.put(key, value);
+    public ReplyKeyboardRemove(Boolean removeKeyboard, Boolean selective) {
+        this.removeKeyboard = removeKeyboard;
+        this.selective = selective;
+    }
+
+    public Boolean isRemoveKeyboard() {
+        return removeKeyboard;
+    }
+
+    public ReplyKeyboardRemove setRemoveKeyboard(Boolean removeKeyboard) {
+        this.removeKeyboard = removeKeyboard;
         return this;
     }
 
-    public Object get(String key) {
-        return items.get(key);
+    public Boolean isSelective() {
+        return selective;
     }
 
-    public Update getUpdate() {
-        return update;
+    public ReplyKeyboardRemove setSelective(Boolean selective) {
+        this.selective = selective;
+        return this;
     }
 }

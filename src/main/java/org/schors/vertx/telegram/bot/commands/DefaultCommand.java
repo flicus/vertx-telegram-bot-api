@@ -25,7 +25,7 @@
 
 package org.schors.vertx.telegram.bot.commands;
 
-import org.telegram.telegrambots.api.methods.send.SendMessage;
+import org.schors.vertx.telegram.bot.api.methods.SendMessage;
 
 public class DefaultCommand extends Command {
 

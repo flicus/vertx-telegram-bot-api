@@ -1,5 +1,4 @@
 /*
- *
  *  The MIT License (MIT)
  *
  *  Copyright (c) 2016 schors
@@ -20,35 +19,41 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
- *
  */
 
-package org.schors.vertx.telegram.bot.commands;
+package org.schors.vertx.telegram.bot.api.types;
 
-import org.schors.vertx.telegram.bot.api.types.Update;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.HashMap;
-import java.util.Map;
+public class UserProfilePhotos {
 
-public class CommandContext {
+    @JsonProperty("total_count")
+    private Integer totalCount;
+    private PhotoSize[] photos;
 
-    private Map<String, Object> items = new HashMap<>();
-    private Update update;
-
-    public CommandContext(Update update) {
-        this.update = update;
+    public UserProfilePhotos() {
     }
 
-    public CommandContext put(String key, Object value) {
-        items.put(key, value);
+    public UserProfilePhotos(Integer totalCount, PhotoSize[] photos) {
+        this.totalCount = totalCount;
+        this.photos = photos;
+    }
+
+    public Integer getTotalCount() {
+        return totalCount;
+    }
+
+    public UserProfilePhotos setTotalCount(Integer totalCount) {
+        this.totalCount = totalCount;
         return this;
     }
 
-    public Object get(String key) {
-        return items.get(key);
+    public PhotoSize[] getPhotos() {
+        return photos;
     }
 
-    public Update getUpdate() {
-        return update;
+    public UserProfilePhotos setPhotos(PhotoSize[] photos) {
+        this.photos = photos;
+        return this;
     }
 }

@@ -1,5 +1,4 @@
 /*
- *
  *  The MIT License (MIT)
  *
  *  Copyright (c) 2016 schors
@@ -20,35 +19,37 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
- *
  */
 
-package org.schors.vertx.telegram.bot.commands;
+package org.schors.vertx.telegram.bot.api.types;
 
-import org.schors.vertx.telegram.bot.api.types.Update;
+public class Location {
+    private Double longitude;
+    private Double latitude;
 
-import java.util.HashMap;
-import java.util.Map;
-
-public class CommandContext {
-
-    private Map<String, Object> items = new HashMap<>();
-    private Update update;
-
-    public CommandContext(Update update) {
-        this.update = update;
+    public Location() {
     }
 
-    public CommandContext put(String key, Object value) {
-        items.put(key, value);
+    public Location(Double longitude, Double latitude) {
+        this.longitude = longitude;
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public Location setLongitude(Double longitude) {
+        this.longitude = longitude;
         return this;
     }
 
-    public Object get(String key) {
-        return items.get(key);
+    public Double getLatitude() {
+        return latitude;
     }
 
-    public Update getUpdate() {
-        return update;
+    public Location setLatitude(Double latitude) {
+        this.latitude = latitude;
+        return this;
     }
 }

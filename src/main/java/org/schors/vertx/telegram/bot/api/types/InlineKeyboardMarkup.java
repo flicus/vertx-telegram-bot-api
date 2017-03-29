@@ -1,5 +1,4 @@
 /*
- *
  *  The MIT License (MIT)
  *
  *  Copyright (c) 2016 schors
@@ -20,35 +19,30 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
- *
  */
 
-package org.schors.vertx.telegram.bot.commands;
+package org.schors.vertx.telegram.bot.api.types;
 
-import org.schors.vertx.telegram.bot.api.types.Update;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.HashMap;
-import java.util.Map;
+public class InlineKeyboardMarkup extends Markup {
 
-public class CommandContext {
+    @JsonProperty("inline_keyboard")
+    private InlineKeyboardButton[][] inlineKeyboard;
 
-    private Map<String, Object> items = new HashMap<>();
-    private Update update;
-
-    public CommandContext(Update update) {
-        this.update = update;
+    public InlineKeyboardMarkup() {
     }
 
-    public CommandContext put(String key, Object value) {
-        items.put(key, value);
+    public InlineKeyboardMarkup(InlineKeyboardButton[][] inlineKeyboard) {
+        this.inlineKeyboard = inlineKeyboard;
+    }
+
+    public InlineKeyboardButton[][] getInlineKeyboard() {
+        return inlineKeyboard;
+    }
+
+    public InlineKeyboardMarkup setInlineKeyboard(InlineKeyboardButton[][] inlineKeyboard) {
+        this.inlineKeyboard = inlineKeyboard;
         return this;
-    }
-
-    public Object get(String key) {
-        return items.get(key);
-    }
-
-    public Update getUpdate() {
-        return update;
     }
 }

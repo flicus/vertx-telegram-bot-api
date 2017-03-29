@@ -1,5 +1,4 @@
 /*
- *
  *  The MIT License (MIT)
  *
  *  Copyright (c) 2016 schors
@@ -20,35 +19,53 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
- *
  */
 
-package org.schors.vertx.telegram.bot.commands;
+package org.schors.vertx.telegram.bot.api.types;
 
-import org.schors.vertx.telegram.bot.api.types.Update;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.HashMap;
-import java.util.Map;
+public class KeyboardButton {
 
-public class CommandContext {
+    private String text;
+    @JsonProperty("request_contact")
+    private Boolean requestContact;
+    @JsonProperty("request_location")
+    private Boolean requestLocation;
 
-    private Map<String, Object> items = new HashMap<>();
-    private Update update;
-
-    public CommandContext(Update update) {
-        this.update = update;
+    public KeyboardButton() {
     }
 
-    public CommandContext put(String key, Object value) {
-        items.put(key, value);
+    public KeyboardButton(String text, Boolean requestContact, Boolean requestLocation) {
+        this.text = text;
+        this.requestContact = requestContact;
+        this.requestLocation = requestLocation;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public KeyboardButton setText(String text) {
+        this.text = text;
         return this;
     }
 
-    public Object get(String key) {
-        return items.get(key);
+    public Boolean isRequestContact() {
+        return requestContact;
     }
 
-    public Update getUpdate() {
-        return update;
+    public KeyboardButton setRequestContact(Boolean requestContact) {
+        this.requestContact = requestContact;
+        return this;
+    }
+
+    public Boolean isRequestLocation() {
+        return requestLocation;
+    }
+
+    public KeyboardButton setRequestLocation(Boolean requestLocation) {
+        this.requestLocation = requestLocation;
+        return this;
     }
 }

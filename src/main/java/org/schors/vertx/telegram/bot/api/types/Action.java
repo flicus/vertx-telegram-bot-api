@@ -1,5 +1,4 @@
 /*
- *
  *  The MIT License (MIT)
  *
  *  Copyright (c) 2016 schors
@@ -20,35 +19,29 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
- *
  */
 
-package org.schors.vertx.telegram.bot.commands;
+package org.schors.vertx.telegram.bot.api.types;
 
-import org.schors.vertx.telegram.bot.api.types.Update;
+public enum Action {
 
-import java.util.HashMap;
-import java.util.Map;
+    TYPING("typing"),
+    RECORDVIDEO("record_video"),
+    RECORDAUDIO("record_audio"),
+    UPLOADPHOTO("upload_photo"),
+    UPLOADVIDEO("upload_video"),
+    UPLOADAUDIO("upload_audio"),
+    UPLOADDOCUMENT("upload_document"),
+    FINDLOCATION("find_location");
 
-public class CommandContext {
+    private String text;
 
-    private Map<String, Object> items = new HashMap<>();
-    private Update update;
-
-    public CommandContext(Update update) {
-        this.update = update;
+    Action(String text) {
+        this.text = text;
     }
 
-    public CommandContext put(String key, Object value) {
-        items.put(key, value);
-        return this;
-    }
-
-    public Object get(String key) {
-        return items.get(key);
-    }
-
-    public Update getUpdate() {
-        return update;
+    @Override
+    public String toString() {
+        return text;
     }
 }

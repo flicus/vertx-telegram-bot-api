@@ -24,24 +24,34 @@
 
 package org.schors.vertx.telegram.bot;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vertx.core.Handler;
+import io.vertx.core.http.HttpClient;
+import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import org.telegram.telegrambots.Constants;
-import org.telegram.telegrambots.api.methods.updates.GetUpdates;
-import org.telegram.telegrambots.api.objects.Update;
+import org.apache.log4j.Logger;
+import org.schors.vertx.telegram.bot.api.Constants;
+import org.schors.vertx.telegram.bot.api.methods.GetUpdates;
+import org.schors.vertx.telegram.bot.api.types.Update;
 
 public class LongPollingReceiver implements UpdateReceiver {
 
+    private static final Logger log = Logger.getLogger(LongPollingReceiver.class);
+
     private TelegramBot bot;
+    private HttpClient client;
 
     private long taskId;
     private Handler<Update> handler;
     private PollHandler pollHandler = new PollHandler();
     private int lastReceivedUpdate = 0;
+    private ObjectMapper mapper = new ObjectMapper();
 
     public LongPollingReceiver() {
-
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
     }
 
     public static LongPollingReceiver create() {
@@ -51,6 +61,21 @@ public class LongPollingReceiver implements UpdateReceiver {
     @Override
     public UpdateReceiver bot(TelegramBot bot) {
         this.bot = bot;
+
+        HttpClientOptions httpOptions = new HttpClientOptions()
+                .setSsl(true)
+                .setTrustAll(true)
+                .setIdleTimeout(bot.getOptions().getPollingTimeout())
+                .setMaxPoolSize(bot.getOptions().getMaxConnections())
+                .setDefaultHost(Constants.BASEHOST)
+                .setDefaultPort(443)
+                .setLogActivity(true);
+
+        if (bot.getOptions().getProxyOptions() != null)
+            httpOptions.setProxyOptions(bot.getOptions().getProxyOptions());
+
+        client = bot.getVertx().createHttpClient(httpOptions);
+
         return this;
     }
 
@@ -80,34 +105,50 @@ public class LongPollingReceiver implements UpdateReceiver {
 
         @Override
         public void handle(Object event) {
-            String toSend = new GetUpdates().setOffset(lastReceivedUpdate + 1).toJson().encode();
-            bot.getClient()
-                    .post(Constants.BASEURL + bot.getOptions().getBotToken() + "/" + GetUpdates.PATH)
-                    .handler(response -> {
-                        response.bodyHandler(body -> {
-                            JsonObject json = body.toJsonObject();
-                            if (!json.getBoolean(Constants.RESPONSEFIELDOK)) {
-                                //todo some server error
-                            }
-                            JsonArray updates = json.getJsonArray(Constants.RESPONSEFIELDRESULT);
-                            if (updates != null && updates.size() != 0) {
-                                updates.stream().forEach(u -> {
-                                    Update update = new Update((JsonObject) u);
-                                    if (update.getUpdateId() > lastReceivedUpdate) {
-                                        lastReceivedUpdate = update.getUpdateId();
-                                        handler.handle(update);
+            GetUpdates getUpdates = new GetUpdates().setOffset(lastReceivedUpdate + 1).setTimeout(50);
+            String toSend = null;
+            try {
+                toSend = mapper.writeValueAsString(getUpdates);
+            } catch (JsonProcessingException e) {
+                log.error("### Unable to serialize to JSON", e);
+            }
+            if (toSend != null)
+                client
+                        .post(Constants.BASEURL + bot.getOptions().getBotToken() + "/" + getUpdates.getMethod())
+                        .handler(response -> {
+                            response.bodyHandler(body -> {
+                                JsonObject json = body.toJsonObject();
+                                if (!json.getBoolean(Constants.RESPONSEFIELDOK)) {
+                                    log.warn("### Unsuccessful response: " + json.toString());
+                                } else {
+                                    JsonArray updates = json.getJsonArray(Constants.RESPONSEFIELDRESULT);
+                                    if (updates != null && updates.size() > 0) {
+                                        updates.stream().forEach(u -> {
+                                            try {
+                                                Update update = mapper.readValue(u.toString(), Update.class);
+                                                if (update.getUpdateId() > lastReceivedUpdate) {
+                                                    lastReceivedUpdate = update.getUpdateId();
+                                                    try {
+                                                        handler.handle(update);
+                                                    } catch (Exception e) {
+                                                        log.error("### Exception in update handler: ", e);
+                                                    }
+                                                }
+                                            } catch (Exception e) {
+                                                log.error("### Unable to parse received update: ", e);
+                                            }
+                                        });
                                     }
-                                });
-                            }
+                                }
+                                runTimer(500);
+                            });
+                        })
+                        .exceptionHandler(e -> {
                             runTimer(500);
-                        });
-                    })
-                    .exceptionHandler(e -> {
-                        runTimer(500);
-                    })
-                    .setTimeout(75 * 1000)
-                    .putHeader("Content-Type", "application/json")
-                    .end(toSend, "UTF-8");
+                        })
+                        .setTimeout(75000)
+                        .putHeader("Content-Type", "application/json")
+                        .end(toSend, "UTF-8");
         }
     }
 }
