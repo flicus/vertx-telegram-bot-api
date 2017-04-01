@@ -68,6 +68,12 @@ public class CommandManager {
         return this;
     }
 
+    public CommandManager addCommand(Check check) {
+        check.setCommandManager(this);
+        checks.add(check);
+        return this;
+    }
+
     public CommandManager addCheck(Check check) {
         check.setCommandManager(this);
         checks.add(check);
