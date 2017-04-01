@@ -25,17 +25,26 @@
 
 package org.schors.vertx.telegram.bot.commands;
 
+import org.apache.log4j.Logger;
+import org.reflections.Reflections;
 import org.schors.vertx.telegram.bot.TelegramBot;
 import org.schors.vertx.telegram.bot.api.types.Update;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CommandManager {
 
+    private static final Logger log = Logger.getLogger(CommandManager.class);
+
     private TelegramBot bot;
+    private Pattern commandPattern;
 
     private Set<Command> commands = new HashSet<>();
+    private Set<Check> checks = new HashSet<>();
+    private Set<Command> postExecute = new HashSet<>();
     private Command defaultCommand = new DefaultCommand("Unknown command");
 
     public CommandManager() {
@@ -46,17 +55,76 @@ public class CommandManager {
     }
 
     public CommandManager addCommand(Command command) {
-        if (!commands.contains(command)) {
+        BotCommand annotation = command.getClass().getAnnotation(BotCommand.class);
+        if (annotation.isDefault()) {
+            setDefaultCommand(command);
+        } else if (annotation.isPostExecute()) {
+            postExecute.add(command);
+        } else {
             command.setCommandManager(this);
             commands.add(command);
         }
         return this;
     }
 
+    public CommandManager addCheck(Check check) {
+        check.setCommandManager(this);
+        checks.add(check);
+        return this;
+    }
+
+    public CommandManager loadCommands() {
+        bot.getVertx().executeBlocking(future -> {
+            Reflections reflections = new Reflections(this.getClass().getClassLoader());
+            Set<Class<?>> res = reflections.getTypesAnnotatedWith(BotCommand.class);
+            for (Class _class : res) {
+                if (_class.isAssignableFrom(Command.class)) {
+                    try {
+                        Command command = (Command) _class.newInstance();
+                        addCommand(command);
+                    } catch (Exception e) {
+                        log.error(e, e);
+                    }
+                }
+            }
+            Set<Class<?>> checks = reflections.getTypesAnnotatedWith(BotCheck.class);
+            for (Class _class : checks) {
+                if (_class.isAssignableFrom(Check.class)) {
+                    try {
+                        Check check = (Check) _class.newInstance();
+                        addCheck(check);
+                    } catch (Exception e) {
+                        log.error(e, e);
+                    }
+                }
+
+            }
+        }, result -> {
+
+        });
+        return this;
+    }
+
+    public void handle(Update update) {
+        String text = update.getMessage().getText();
+        String userName = update.getMessage().getFrom().getUsername();
+        log.warn("onUpdate: " + text + ", " + userName);
+        execute(text, createContext(update));
+    }
+
     public CommandManager execute(String text, CommandContext context) {
-        commands.stream()
-                .filter(command -> command.isApplicable(text))
-                .findAny().orElse(defaultCommand).execute(text, context);
+        //if any of the checks returns false, do not execute command
+        if (!checks.stream().anyMatch(check -> !check.execute(text, context))) {
+            commands.stream()
+                    .filter(cmd -> {
+                        BotCommand annotation = cmd.getClass().getAnnotation(BotCommand.class);
+                        commandPattern = Pattern.compile(annotation.regexp());
+                        Matcher matcher = commandPattern.matcher(text);
+                        return matcher.matches();
+                    })
+                    .findAny().orElse(defaultCommand).execute(text, context);
+            postExecute.stream().forEach(cmd -> cmd.execute(text, context));
+        }
         return this;
     }
 

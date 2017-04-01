@@ -27,21 +27,12 @@ package org.schors.vertx.telegram.bot.commands;
 
 import org.schors.vertx.telegram.bot.TelegramBot;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public abstract class Command {
 
     private CommandManager commandManager;
-    private Pattern pattern;
 
-    public Command(String regexp) {
-        this.pattern = Pattern.compile(regexp);
-    }
+    public Command() {
 
-    public boolean isApplicable(String text) {
-        Matcher m = pattern.matcher(text);
-        return m.matches();
     }
 
     protected TelegramBot getBot() {
@@ -54,4 +45,5 @@ public abstract class Command {
     }
 
     public abstract void execute(String text, CommandContext context);
+
 }

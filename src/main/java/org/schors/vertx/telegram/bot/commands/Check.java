@@ -1,8 +1,8 @@
 /*
+ *
  *  The MIT License (MIT)
  *
- *  Copyright (c) 2016  schors
- *
+ *  Copyright (c) 2016 schors
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
@@ -20,26 +20,39 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
+ *
  */
 
-package org.schors.vertx.telegram.bot;
+package org.schors.vertx.telegram.bot.commands;
 
-import io.vertx.core.Handler;
-import org.schors.vertx.telegram.bot.api.types.Update;
-import org.schors.vertx.telegram.bot.commands.CommandManager;
+import org.schors.vertx.telegram.bot.TelegramBot;
+import org.schors.vertx.telegram.bot.api.methods.SendMessage;
+import org.schors.vertx.telegram.bot.api.util.ParseMode;
 
-public interface UpdateReceiver {
+public abstract class Check {
 
-    UpdateReceiver onUpdate(Handler<Update> handler);
+    private CommandManager commandManager;
 
-    UpdateReceiver bot(TelegramBot bot);
+    public Check() {
 
-    UpdateReceiver useCommandManager();
+    }
 
-    UpdateReceiver useCommandManager(CommandManager commandManager);
+    protected TelegramBot getBot() {
+        return this.commandManager.getBot();
+    }
 
-    UpdateReceiver start();
+    protected Check setCommandManager(CommandManager commandManager) {
+        this.commandManager = commandManager;
+        return this;
+    }
 
-    UpdateReceiver stop();
+    protected void sendReply(CommandContext context, String res) {
+        getBot().sendMessage(new SendMessage()
+                .setChatId(context.getUpdate().getMessage().getChatId())
+                .setText(res)
+                .setParseMode(ParseMode.html));
+    }
+
+    public abstract boolean execute(String text, CommandContext context);
 
 }
