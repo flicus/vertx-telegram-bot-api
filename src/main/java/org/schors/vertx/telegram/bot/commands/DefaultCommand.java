@@ -32,7 +32,7 @@ public class DefaultCommand extends Command {
     private String reply;
 
     public DefaultCommand(String reply) {
-        super("none");
+        super();
         this.reply = reply;
     }
 
