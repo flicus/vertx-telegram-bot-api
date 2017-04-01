@@ -53,6 +53,7 @@ public class TelegramBot {
     private UpdateReceiver receiver;
     private Map<String, Object> facilities = new HashMap<>();
     private ObjectMapper mapper = new ObjectMapper();
+    private CommandManager commandManager;
 
     public TelegramBot(Vertx vertx, TelegramOptions options) {
         this.vertx = vertx;
@@ -123,6 +124,14 @@ public class TelegramBot {
 
     public Object getFacility(String key) {
         return facilities.get(key);
+    }
+
+    public Map<String, Object> getFacilities() {
+        return facilities;
+    }
+
+    public CommandManager getCommandManager() {
+        return commandManager;
     }
 
     private void send(TelegramMethod message) {
@@ -198,6 +207,17 @@ public class TelegramBot {
         }, event -> {
 
         });
+    }
+
+    public TelegramBot useCommandManager() {
+        commandManager = new CommandManager(this);
+        commandManager.loadCommands();
+        return this;
+    }
+
+    public TelegramBot useCommandManager(CommandManager commandManager) {
+        this.commandManager = commandManager;
+        return this;
     }
 
 }

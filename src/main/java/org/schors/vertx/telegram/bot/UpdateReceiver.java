@@ -26,17 +26,12 @@ package org.schors.vertx.telegram.bot;
 
 import io.vertx.core.Handler;
 import org.schors.vertx.telegram.bot.api.types.Update;
-import org.schors.vertx.telegram.bot.commands.CommandManager;
 
 public interface UpdateReceiver {
 
     UpdateReceiver onUpdate(Handler<Update> handler);
 
     UpdateReceiver bot(TelegramBot bot);
-
-    UpdateReceiver useCommandManager();
-
-    UpdateReceiver useCommandManager(CommandManager commandManager);
 
     UpdateReceiver start();
 

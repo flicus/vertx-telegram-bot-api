@@ -35,8 +35,9 @@ public class CommandContext {
     private Map<String, Object> items = new HashMap<>();
     private Update update;
 
-    public CommandContext(Update update) {
+    public CommandContext(Update update, Map<String, Object> def) {
         this.update = update;
+        this.items.putAll(def);
     }
 
     public CommandContext put(String key, Object value) {

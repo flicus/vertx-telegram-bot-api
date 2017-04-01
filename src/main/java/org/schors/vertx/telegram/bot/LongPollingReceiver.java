@@ -36,7 +36,6 @@ import org.apache.log4j.Logger;
 import org.schors.vertx.telegram.bot.api.Constants;
 import org.schors.vertx.telegram.bot.api.methods.GetUpdates;
 import org.schors.vertx.telegram.bot.api.types.Update;
-import org.schors.vertx.telegram.bot.commands.CommandManager;
 
 public class LongPollingReceiver implements UpdateReceiver {
 
@@ -50,7 +49,6 @@ public class LongPollingReceiver implements UpdateReceiver {
     private PollHandler pollHandler = new PollHandler();
     private int lastReceivedUpdate = 0;
     private ObjectMapper mapper = new ObjectMapper();
-    private CommandManager commandManager;
 
     public LongPollingReceiver() {
         mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
@@ -78,19 +76,6 @@ public class LongPollingReceiver implements UpdateReceiver {
 
         client = bot.getVertx().createHttpClient(httpOptions);
 
-        return this;
-    }
-
-    @Override
-    public UpdateReceiver useCommandManager() {
-        commandManager = new CommandManager(bot);
-        commandManager.loadCommands();
-        return this;
-    }
-
-    @Override
-    public UpdateReceiver useCommandManager(CommandManager commandManager) {
-        this.commandManager = commandManager;
         return this;
     }
 
@@ -143,8 +128,8 @@ public class LongPollingReceiver implements UpdateReceiver {
                                                 Update update = mapper.readValue(u.toString(), Update.class);
                                                 if (update.getUpdateId() > lastReceivedUpdate) {
                                                     lastReceivedUpdate = update.getUpdateId();
-                                                    if (commandManager != null) {
-                                                        commandManager.handle(update);
+                                                    if (bot.getCommandManager() != null) {
+                                                        bot.getCommandManager().handle(update);
                                                     } else if (handler != null) {
                                                         try {
                                                             handler.handle(update);

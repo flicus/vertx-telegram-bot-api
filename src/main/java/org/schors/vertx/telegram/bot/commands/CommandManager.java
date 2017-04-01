@@ -135,7 +135,7 @@ public class CommandManager {
     }
 
     public CommandContext createContext(Update update) {
-        return new CommandContext(update);
+        return new CommandContext(update, bot.getFacilities());
     }
 
     public TelegramBot getBot() {
