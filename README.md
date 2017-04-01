@@ -151,6 +151,36 @@ CommandManager commandManager = new CommandManager()
                 .receiver(new LongPollingReceiver())
                 .start();
 ```
+
+### CommandContext
+CommandContext is intended to keep all information regarding current message processed during all the time this message is processed inside the bot. Commands can store some context information there to use it later in another command. All facilities you are using in the bot, will also be available from CommandContext. For example you may put there some object for database access:
+```java
+db = new Storage(vertx, config().getString("admin"));
+        
+        bot = TelegramBot.create(vertx, telegramOptions)
+                .useCommandManager()
+                .receiver(new LongPollingReceiver())
+                .addFacility("db", db)
+                .start();
+```
+Then you can retreive this facility in your command from CommandContext:
+```java
+@BotCheck
+public class UserCheck extends Check {
+    @Override
+    public boolean execute(String s, CommandContext commandContext) {
+
+        Storage db = commandContext.get("db");
+        String username = commandContext.getUpdate().getMessage().getFrom().getUsername();
+        if (db.isRegisteredUser(username)) {
+            //
+            return true;
+        }
+        return false;
+    }
+}
+```
+
  ### Webhook receiver
  to be done
 

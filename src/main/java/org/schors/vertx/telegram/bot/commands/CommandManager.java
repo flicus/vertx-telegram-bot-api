@@ -108,9 +108,10 @@ public class CommandManager {
                         log.error(e, e);
                     }
                 }
-
+                future.complete();
             }
         }, result -> {
+            //check result
 
         });
         return this;
