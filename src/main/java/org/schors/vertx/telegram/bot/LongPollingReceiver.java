@@ -149,6 +149,7 @@ public class LongPollingReceiver implements UpdateReceiver {
                             });
                         })
                         .exceptionHandler(e -> {
+                            log.error(e, e);
                             runTimer(500);
                         })
                         .setTimeout(75000)

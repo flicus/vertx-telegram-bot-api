@@ -59,6 +59,7 @@ public class CommandManager {
         if (annotation.isDefault()) {
             setDefaultCommand(command);
         } else if (annotation.isPostExecute()) {
+            command.setCommandManager(this);
             postExecute.add(command);
         } else {
             command.setCommandManager(this);
@@ -74,11 +75,15 @@ public class CommandManager {
     }
 
     public CommandManager loadCommands() {
+        return loadCommands(null);
+    }
+
+    public CommandManager loadCommands(String _package) {
         bot.getVertx().executeBlocking(future -> {
-            Reflections reflections = new Reflections(this.getClass().getClassLoader());
+            Reflections reflections = _package == null ? new Reflections(this.getClass().getClassLoader()) : new Reflections(_package);
             Set<Class<?>> res = reflections.getTypesAnnotatedWith(BotCommand.class);
             for (Class _class : res) {
-                if (_class.isAssignableFrom(Command.class)) {
+                if (Command.class.isAssignableFrom(_class)) {
                     try {
                         Command command = (Command) _class.newInstance();
                         addCommand(command);
@@ -89,7 +94,7 @@ public class CommandManager {
             }
             Set<Class<?>> checks = reflections.getTypesAnnotatedWith(BotCheck.class);
             for (Class _class : checks) {
-                if (_class.isAssignableFrom(Check.class)) {
+                if (Check.class.isAssignableFrom(_class)) {
                     try {
                         Check check = (Check) _class.newInstance();
                         addCheck(check);

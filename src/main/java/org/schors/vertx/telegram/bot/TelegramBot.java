@@ -215,6 +215,12 @@ public class TelegramBot {
         return this;
     }
 
+    public TelegramBot useCommandManager(String _package) {
+        commandManager = new CommandManager(this);
+        commandManager.loadCommands(_package);
+        return this;
+    }
+
     public TelegramBot useCommandManager(CommandManager commandManager) {
         this.commandManager = commandManager;
         return this;
