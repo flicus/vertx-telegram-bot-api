@@ -44,7 +44,7 @@ public class CommandManager {
 
     private Set<Command> commands = new HashSet<>();
     private Command defaultCommand = new DefaultCommand("Unknown command");
-    private Check check;
+    private Command preExecute;
     private Command postExecute;
 
     public CommandManager() {
@@ -61,22 +61,13 @@ public class CommandManager {
         } else if (annotation.isPostExecute()) {
             command.setCommandManager(this);
             postExecute = command;
+        } else if (annotation.isPreExecute()) {
+            command.setCommandManager(this);
+            preExecute = command;
         } else {
             command.setCommandManager(this);
             commands.add(command);
         }
-        return this;
-    }
-
-    public CommandManager addCommand(Check check) {
-        check.setCommandManager(this);
-        this.check = check;
-        return this;
-    }
-
-    public CommandManager addCheck(Check check) {
-        check.setCommandManager(this);
-        this.check = check;
         return this;
     }
 
@@ -88,28 +79,15 @@ public class CommandManager {
         bot.getVertx().executeBlocking(future -> {
             Reflections reflections = _package == null ? new Reflections(this.getClass().getClassLoader()) : new Reflections(_package);
             Set<Class<?>> res = reflections.getTypesAnnotatedWith(BotCommand.class);
-            for (Class _class : res) {
-                if (Command.class.isAssignableFrom(_class)) {
-                    try {
-                        Command command = (Command) _class.newInstance();
-                        addCommand(command);
-                    } catch (Exception e) {
-                        log.error(e, e);
-                    }
+            res.stream().filter(_class -> Command.class.isAssignableFrom(_class)).forEach(_class -> {
+                try {
+                    Command command = (Command) _class.newInstance();
+                    addCommand(command);
+                } catch (Exception e) {
+                    log.error(e, e);
                 }
-            }
-            Set<Class<?>> checks = reflections.getTypesAnnotatedWith(BotCheck.class);
-            for (Class _class : checks) {
-                if (Check.class.isAssignableFrom(_class)) {
-                    try {
-                        Check check = (Check) _class.newInstance();
-                        addCheck(check);
-                    } catch (Exception e) {
-                        log.error(e, e);
-                    }
-                }
-                future.complete();
-            }
+            });
+            future.complete();
         }, result -> {
             //check result
 
@@ -125,7 +103,7 @@ public class CommandManager {
     }
 
     public CommandManager execute(CommandContext context) {
-        check.execute(context, checkEvent -> {
+        preExecute.execute(context, checkEvent -> {
             if (Boolean.TRUE.equals(checkEvent)) {
                 commands.stream()
                         .filter(cmd -> {

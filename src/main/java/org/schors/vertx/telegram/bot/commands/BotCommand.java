@@ -14,4 +14,6 @@ public @interface BotCommand {
     boolean isDefault() default false;
 
     boolean isPostExecute() default false;
+
+    boolean isPreExecute() default false;
 }

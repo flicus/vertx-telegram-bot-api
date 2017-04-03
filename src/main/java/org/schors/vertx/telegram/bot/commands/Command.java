@@ -27,6 +27,7 @@ package org.schors.vertx.telegram.bot.commands;
 
 import io.vertx.core.Handler;
 import org.schors.vertx.telegram.bot.TelegramBot;
+import org.schors.vertx.telegram.bot.api.methods.SendMessage;
 
 public abstract class Command {
 
@@ -43,6 +44,12 @@ public abstract class Command {
     protected Command setCommandManager(CommandManager commandManager) {
         this.commandManager = commandManager;
         return this;
+    }
+
+    protected void sendReply(CommandContext context, String message) {
+        getBot().sendMessage(new SendMessage()
+                .setText(message)
+                .setChatId(context.getUpdate().getMessage().getChatId()));
     }
 
     public abstract void execute(CommandContext context, Handler<Boolean> handler);

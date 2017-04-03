@@ -96,11 +96,11 @@ public class DefaultCommand extends Command {
 ```
 Just use isDefault parameter of the @BotCommand annotation.
 
-### Pre-execution commands
-Next type of command is "check" commands. They will be executed even before matching user message to any other command. For example you need to check if this user allowed to use this bot, or you need to increment some counter etc. There may be several or none commands of that type. You can implement several of them, but only one check commands will be executed, so, no use in several check commands. Here how to implement *check* command:
+### Pre-execution command
+Next type of command is "check" command. It will be executed even before matching user message to any other command. For example you need to check if this user allowed to use this bot, or you need to increment some counter etc. You can implement several of them, but only one check commands will be executed, so, no use in several check commands. Here how to implement *check* command:
 ```java
-@BotCheck
-public class UserCheck extends Check {
+@BotCommand(isPreExecute = true)
+public class UserCheck extends Command {
     @Override
     public void execute(CommandContext context, Handler<Boolean> handler) {
         String username = context.getUpdate().getMessage().getFrom().getUsername();
@@ -108,10 +108,10 @@ public class UserCheck extends Check {
     }
 }
 ```
-Again, just implement this check command, it will be found automatically and executed before any other normal commands. This type of command should return *TRUE* or *FALSE* by calling a handler to let bot know if it is allowed to continue usual command execution. This *check* command will be executed and as far as it will return *FALSE*, bot will stop the command execution. If it will return *TRUE* bot will try to find usual command to execute.
+Again, just implement this check command using *isPreExecute* parameter of the annotation, it will be found automatically and executed before any other normal commands. This type of command should return *TRUE* or *FALSE* by calling a handler to let bot know if it is allowed to continue usual command execution. This *check* command will be executed and as far as it will return *FALSE*, bot will stop the command execution. If it will return *TRUE* bot will try to find usual command to execute.
  
  
-### Post-execution commands
+### Post-execution command
 Another type of commands is *post command*. It will be executed only if *check* command returned *TRUE* and after usual commands. If there are no *check* command exist, post command will be executed after normal command. There may be several of them or none, but again only one will be executed. This is how to implement that kind of command:
 ```java
 @BotCommand(isPostExecute = true)
@@ -165,8 +165,8 @@ db = new Storage(vertx, config().getString("admin"));
 ```
 Then you can retrieve this facility in your command from CommandContext:
 ```java
-@BotCheck
-public class UserCheck extends Check {
+@BotCommand(isPreExecute = true)
+public class UserCheck extends Command {
     @Override
     public void execute(CommandContext context, Handler<Boolean> handler) {
         Storage db = context.get("db");
