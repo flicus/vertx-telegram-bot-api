@@ -104,10 +104,7 @@ public class UserCheck extends Check {
     @Override
     public void execute(CommandContext context, Handler<Boolean> handler) {
         String username = context.getUpdate().getMessage().getFrom().getUsername();
-        if (!"flicus".equals(username)) {
-            handler.handle(Boolean.TRUE);
-        }
-        handler.handle(Boolean.FALSE);
+        handler.handle("flicus".equals(username));
     }
 }
 ```
