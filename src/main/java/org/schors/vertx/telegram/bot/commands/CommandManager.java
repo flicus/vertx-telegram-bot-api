@@ -43,9 +43,9 @@ public class CommandManager {
     private Pattern commandPattern;
 
     private Set<Command> commands = new HashSet<>();
-    private Set<Check> checks = new HashSet<>();
-    private Set<Command> postExecute = new HashSet<>();
     private Command defaultCommand = new DefaultCommand("Unknown command");
+    private Check check;
+    private Command postExecute;
 
     public CommandManager() {
     }
@@ -60,7 +60,7 @@ public class CommandManager {
             setDefaultCommand(command);
         } else if (annotation.isPostExecute()) {
             command.setCommandManager(this);
-            postExecute.add(command);
+            postExecute = command;
         } else {
             command.setCommandManager(this);
             commands.add(command);
@@ -70,13 +70,13 @@ public class CommandManager {
 
     public CommandManager addCommand(Check check) {
         check.setCommandManager(this);
-        checks.add(check);
+        this.check = check;
         return this;
     }
 
     public CommandManager addCheck(Check check) {
         check.setCommandManager(this);
-        checks.add(check);
+        this.check = check;
         return this;
     }
 
@@ -121,22 +121,28 @@ public class CommandManager {
         String text = update.getMessage().getText();
         String userName = update.getMessage().getFrom().getUsername();
         log.warn("onUpdate: " + text + ", " + userName);
-        execute(text, createContext(update));
+        execute(createContext(update));
     }
 
-    public CommandManager execute(String text, CommandContext context) {
-        //if any of the checks returns false, do not execute command
-        if (!checks.stream().anyMatch(check -> !check.execute(text, context))) {
-            commands.stream()
-                    .filter(cmd -> {
-                        BotCommand annotation = cmd.getClass().getAnnotation(BotCommand.class);
-                        commandPattern = Pattern.compile(annotation.regexp());
-                        Matcher matcher = commandPattern.matcher(text);
-                        return matcher.matches();
-                    })
-                    .findAny().orElse(defaultCommand).execute(text, context);
-            postExecute.stream().forEach(cmd -> cmd.execute(text, context));
-        }
+    public CommandManager execute(CommandContext context) {
+        check.execute(context, checkEvent -> {
+            if (Boolean.TRUE.equals(checkEvent)) {
+                commands.stream()
+                        .filter(cmd -> {
+                            String text = context.getUpdate().getMessage().getText();
+                            BotCommand annotation = cmd.getClass().getAnnotation(BotCommand.class);
+                            commandPattern = Pattern.compile(annotation.regexp());
+                            Matcher matcher = commandPattern.matcher(text);
+                            return matcher.matches();
+                        })
+                        .findAny()
+                        .orElse(defaultCommand)
+                        .execute(context, event -> {
+                            postExecute.execute(context, postEvent -> {
+                            });
+                        });
+            }
+        });
         return this;
     }
 

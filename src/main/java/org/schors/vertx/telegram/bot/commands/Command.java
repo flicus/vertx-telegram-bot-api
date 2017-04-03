@@ -25,6 +25,7 @@
 
 package org.schors.vertx.telegram.bot.commands;
 
+import io.vertx.core.Handler;
 import org.schors.vertx.telegram.bot.TelegramBot;
 
 public abstract class Command {
@@ -44,6 +45,6 @@ public abstract class Command {
         return this;
     }
 
-    public abstract void execute(String text, CommandContext context);
+    public abstract void execute(CommandContext context, Handler<Boolean> handler);
 
 }

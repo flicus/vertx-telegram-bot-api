@@ -25,6 +25,7 @@
 
 package org.schors.vertx.telegram.bot.commands;
 
+import io.vertx.core.Handler;
 import org.schors.vertx.telegram.bot.api.methods.SendMessage;
 
 public class DefaultCommand extends Command {
@@ -37,7 +38,8 @@ public class DefaultCommand extends Command {
     }
 
     @Override
-    public void execute(String text, CommandContext context) {
+    public void execute(CommandContext context, Handler<Boolean> handler) {
         getBot().sendMessage(new SendMessage().setChatId(context.getUpdate().getMessage().getChatId()).setText(reply));
+        handler.handle(Boolean.TRUE);
     }
 }

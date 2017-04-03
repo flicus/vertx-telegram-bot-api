@@ -25,6 +25,7 @@
 
 package org.schors.vertx.telegram.bot.commands;
 
+import io.vertx.core.Handler;
 import org.schors.vertx.telegram.bot.TelegramBot;
 import org.schors.vertx.telegram.bot.api.methods.SendMessage;
 import org.schors.vertx.telegram.bot.api.util.ParseMode;
@@ -34,7 +35,6 @@ public abstract class Check {
     private CommandManager commandManager;
 
     public Check() {
-
     }
 
     protected TelegramBot getBot() {
@@ -53,6 +53,6 @@ public abstract class Check {
                 .setParseMode(ParseMode.html));
     }
 
-    public abstract boolean execute(String text, CommandContext context);
+    public abstract void execute(CommandContext context, Handler<Boolean> handler);
 
 }

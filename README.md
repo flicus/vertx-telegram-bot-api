@@ -56,12 +56,13 @@ For gradle:
   @BotCommand(regexp = "^/hello")
   public class HelloCommand extends Command {
       @Override
-      public void execute(String s, CommandContext commandContext) {
+      public void execute(CommandContext context, Handler<Boolean> handler) {
           getBot().sendMessage(
                   new SendMessage()
-                          .setReplyToMessageId(commandContext.getUpdate().getMessage().getMessageId())
-                          .setChatId(commandContext.getUpdate().getMessage().getChatId())
-                          .setText("Hello back, "+commandContext.getUpdate().getMessage().getFrom().getUsername()));
+                          .setReplyToMessageId(context.getUpdate().getMessage().getMessageId())
+                          .setChatId(context.getUpdate().getMessage().getChatId())
+                          .setText("Hello back, " + context.getUpdate().getMessage().getFrom().getUsername()));
+          handler.handle(Boolean.TRUE);
       }
   }
 ```
@@ -83,46 +84,48 @@ But what if message will not match any command? For this case we need to impleme
 @BotCommand(isDefault = true)
 public class DefaultCommand extends Command {
     @Override
-    public void execute(String s, CommandContext commandContext) {
+    public void execute(CommandContext context, Handler<Boolean> handler) {
         getBot().sendMessage(
                 new SendMessage()
-                        .setReplyToMessageId(commandContext.getUpdate().getMessage().getMessageId())
-                        .setChatId(commandContext.getUpdate().getMessage().getChatId())
+                        .setReplyToMessageId(context.getUpdate().getMessage().getMessageId())
+                        .setChatId(context.getUpdate().getMessage().getChatId())
                         .setText("I do not understand"));
+        handler.handle(Boolean.TRUE);
     }
 }
 ```
 Just use isDefault parameter of the @BotCommand annotation.
 
 ### Pre-execution commands
-Next type of command is "check" commands. They will be executed even before matching user message to any other command. For example you need to check if this user allowed to use this bot, or you need to increment some counter etc. There may be several or none commands of that type. Here how to implement *check* command:
+Next type of command is "check" commands. They will be executed even before matching user message to any other command. For example you need to check if this user allowed to use this bot, or you need to increment some counter etc. There may be several or none commands of that type. You can implement several of them, but only one check commands will be executed, so, no use in several check commands. Here how to implement *check* command:
 ```java
 @BotCheck
 public class UserCheck extends Check {
     @Override
-    public boolean execute(String s, CommandContext commandContext) {
-        String username = commandContext.getUpdate().getMessage().getFrom().getUsername();
+    public void execute(CommandContext context, Handler<Boolean> handler) {
+        String username = context.getUpdate().getMessage().getFrom().getUsername();
         if (!"flicus".equals(username)) {
-            return false;
+            handler.handle(Boolean.TRUE);
         }
-        return true;
+        handler.handle(Boolean.FALSE);
     }
 }
 ```
-Again, just implement this check command, it will be found automatically and executed before any other normal commands. This type of command should return *true* or *false* to let bot know if it is allowed to continue usual command execution. All *check* commands will be executed and as far as any of them will return *false*, bot will stop the command execution. If all of them will return *true* bot will try to find usual command to execute.
+Again, just implement this check command, it will be found automatically and executed before any other normal commands. This type of command should return *TRUE* or *FALSE* by calling a handler to let bot know if it is allowed to continue usual command execution. This *check* command will be executed and as far as it will return *FALSE*, bot will stop the command execution. If it will return *TRUE* bot will try to find usual command to execute.
  
  
 ### Post-execution commands
-Another type of commands is *post command*. It will be executed only if *check* commands returned true and after usual commands. If there are no *check* commands exist, post commands will be executed after normal command. There may be several of them or none. This is how to implement that kind of command:
+Another type of commands is *post command*. It will be executed only if *check* command returned *TRUE* and after usual commands. If there are no *check* command exist, post command will be executed after normal command. There may be several of them or none, but again only one will be executed. This is how to implement that kind of command:
 ```java
 @BotCommand(isPostExecute = true)
 public class PostCommand extends Command {
     @Override
-    public void execute(String s, CommandContext commandContext) {
+    public void execute(CommandContext context, Handler<Boolean> handler) {
         getBot().sendMessage(
                 new SendMessage()
-                        .setChatId(commandContext.getUpdate().getMessage().getChatId())
+                        .setChatId(context.getUpdate().getMessage().getChatId())
                         .setText("All is done"));
+        handler.handle(Boolean.TRUE);
     }
 }
 ```
@@ -168,15 +171,13 @@ Then you can retreive this facility in your command from CommandContext:
 @BotCheck
 public class UserCheck extends Check {
     @Override
-    public boolean execute(String s, CommandContext commandContext) {
-
-        Storage db = commandContext.get("db");
-        String username = commandContext.getUpdate().getMessage().getFrom().getUsername();
+    public void execute(CommandContext context, Handler<Boolean> handler) {
+        Storage db = context.get("db");
+        String username = context.getUpdate().getMessage().getFrom().getUsername();
         if (db.isRegisteredUser(username)) {
-            //
-            return true;
+            handler.handle(Boolean.TRUE);
         }
-        return false;
+        handler.handle(Boolean.FALSE);
     }
 }
 ```
