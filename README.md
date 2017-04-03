@@ -163,7 +163,7 @@ db = new Storage(vertx, config().getString("admin"));
                 .addFacility("db", db)
                 .start();
 ```
-Then you can retreive this facility in your command from CommandContext:
+Then you can retrieve this facility in your command from CommandContext:
 ```java
 @BotCheck
 public class UserCheck extends Check {
@@ -171,10 +171,7 @@ public class UserCheck extends Check {
     public void execute(CommandContext context, Handler<Boolean> handler) {
         Storage db = context.get("db");
         String username = context.getUpdate().getMessage().getFrom().getUsername();
-        if (db.isRegisteredUser(username)) {
-            handler.handle(Boolean.TRUE);
-        }
-        handler.handle(Boolean.FALSE);
+        handler.handle(db.isRegisteredUser(username));
     }
 }
 ```
