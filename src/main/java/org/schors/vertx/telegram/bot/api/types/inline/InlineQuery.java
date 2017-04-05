@@ -21,7 +21,10 @@
  *  SOFTWARE.
  */
 
-package org.schors.vertx.telegram.bot.api.types;
+package org.schors.vertx.telegram.bot.api.types.inline;
+
+import org.schors.vertx.telegram.bot.api.types.Location;
+import org.schors.vertx.telegram.bot.api.types.User;
 
 public class InlineQuery {
 

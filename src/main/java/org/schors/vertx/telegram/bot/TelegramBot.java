@@ -33,10 +33,7 @@ import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.HttpClientRequest;
 import org.apache.log4j.Logger;
 import org.schors.vertx.telegram.bot.api.Constants;
-import org.schors.vertx.telegram.bot.api.methods.SendChatAction;
-import org.schors.vertx.telegram.bot.api.methods.SendDocument;
-import org.schors.vertx.telegram.bot.api.methods.SendMessage;
-import org.schors.vertx.telegram.bot.api.methods.TelegramMethod;
+import org.schors.vertx.telegram.bot.api.methods.*;
 import org.schors.vertx.telegram.bot.commands.CommandManager;
 import org.schors.vertx.telegram.bot.util.MultipartHelper;
 
@@ -161,6 +158,10 @@ public class TelegramBot {
 
     public void sendChatAction(SendChatAction chatAction) {
         send(chatAction);
+    }
+
+    public void sendAnswerInlineQuery(AnswerInlineQuery answerInlineQuery) {
+        send(answerInlineQuery);
     }
 
     public void sendDocument(SendDocument document) {

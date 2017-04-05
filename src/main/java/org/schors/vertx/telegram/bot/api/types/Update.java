@@ -24,6 +24,8 @@
 package org.schors.vertx.telegram.bot.api.types;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.schors.vertx.telegram.bot.api.types.inline.ChosenInlineResult;
+import org.schors.vertx.telegram.bot.api.types.inline.InlineQuery;
 
 public class Update {
 

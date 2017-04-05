@@ -21,9 +21,11 @@
  *  SOFTWARE.
  */
 
-package org.schors.vertx.telegram.bot.api.types;
+package org.schors.vertx.telegram.bot.api.types.inline;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.schors.vertx.telegram.bot.api.types.Location;
+import org.schors.vertx.telegram.bot.api.types.User;
 
 public class ChosenInlineResult {
 

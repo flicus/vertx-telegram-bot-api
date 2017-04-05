@@ -24,25 +24,50 @@
 package org.schors.vertx.telegram.bot.api.types;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.schors.vertx.telegram.bot.api.util.ParseMode;
 
-public class InlineKeyboardMarkup extends Markup {
+public class InputTextMessageContent extends InputMessageContent {
 
-    @JsonProperty("inline_keyboard")
-    private InlineKeyboardButton[][] inlineKeyboard;
+    @JsonProperty("message_text")
+    private String messageText;
+    @JsonProperty("parse_mode")
+    private ParseMode parseMode;
+    @JsonProperty("disable_web_page_preview")
+    private Boolean disableWebPagePreview;
 
-    public InlineKeyboardMarkup() {
+    public InputTextMessageContent() {
     }
 
-    public InlineKeyboardMarkup(InlineKeyboardButton[][] inlineKeyboard) {
-        this.inlineKeyboard = inlineKeyboard;
+    public InputTextMessageContent(String messageText, ParseMode parseMode, Boolean disableWebPagePreview) {
+        this.messageText = messageText;
+        this.parseMode = parseMode;
+        this.disableWebPagePreview = disableWebPagePreview;
     }
 
-    public InlineKeyboardButton[][] getInlineKeyboard() {
-        return inlineKeyboard;
+    public String getMessageText() {
+        return messageText;
     }
 
-    public InlineKeyboardMarkup setInlineKeyboard(InlineKeyboardButton[][] inlineKeyboard) {
-        this.inlineKeyboard = inlineKeyboard;
+    public InputTextMessageContent setMessageText(String messageText) {
+        this.messageText = messageText;
+        return this;
+    }
+
+    public ParseMode getParseMode() {
+        return parseMode;
+    }
+
+    public InputTextMessageContent setParseMode(ParseMode parseMode) {
+        this.parseMode = parseMode;
+        return this;
+    }
+
+    public Boolean getDisableWebPagePreview() {
+        return disableWebPagePreview;
+    }
+
+    public InputTextMessageContent setDisableWebPagePreview(Boolean disableWebPagePreview) {
+        this.disableWebPagePreview = disableWebPagePreview;
         return this;
     }
 }
