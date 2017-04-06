@@ -32,7 +32,6 @@ import org.schors.vertx.telegram.bot.api.types.Update;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CommandManager {
@@ -102,16 +101,27 @@ public class CommandManager {
         execute(createContext(update));
     }
 
+    private boolean match(String text, String regexp) {
+        commandPattern = Pattern.compile(regexp);
+        return commandPattern.matcher(text).matches();
+    }
+
     public CommandManager execute(CommandContext context) {
         preExecute.execute(context, checkEvent -> {
             if (Boolean.TRUE.equals(checkEvent)) {
                 commands.stream()
                         .filter(cmd -> {
-                            String text = context.getUpdate().getMessage().getText();
                             BotCommand annotation = cmd.getClass().getAnnotation(BotCommand.class);
-                            commandPattern = Pattern.compile(annotation.regexp());
-                            Matcher matcher = commandPattern.matcher(text);
-                            return matcher.matches();
+                            if (context.getUpdate().getMessage() != null) {
+                                return match(context.getUpdate().getMessage().getText(), annotation.message());
+                            } else if (context.getUpdate().getInlineQuery() != null) {
+                                return match(context.getUpdate().getInlineQuery().getQuery(), annotation.inline());
+                            } else if (context.getUpdate().getCallbackQuery() != null) {
+                                return match(context.getUpdate().getCallbackQuery().getMessage().getText(), annotation.callback());
+                            } else if (context.getUpdate().getChannelPost() != null) {
+                                return match(context.getUpdate().getChannelPost().getText(), annotation.channel());
+                            }
+                            return false;
                         })
                         .findAny()
                         .orElse(defaultCommand)

@@ -9,7 +9,13 @@ import java.lang.annotation.Target;
 @Target(value = ElementType.TYPE)
 @Retention(value = RetentionPolicy.RUNTIME)
 public @interface BotCommand {
-    String regexp() default "";
+    String message() default "";
+
+    String channel() default "";
+
+    String inline() default "";
+
+    String callback() default "";
 
     boolean isDefault() default false;
 
