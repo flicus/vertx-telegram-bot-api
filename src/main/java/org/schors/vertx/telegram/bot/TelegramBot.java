@@ -27,16 +27,22 @@ package org.schors.vertx.telegram.bot;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.HttpClientRequest;
+import io.vertx.core.json.JsonObject;
 import org.apache.log4j.Logger;
-import org.schors.vertx.telegram.bot.api.Constants;
 import org.schors.vertx.telegram.bot.api.methods.*;
+import org.schors.vertx.telegram.bot.api.types.Message;
 import org.schors.vertx.telegram.bot.commands.CommandManager;
 import org.schors.vertx.telegram.bot.util.MultipartHelper;
+import org.schors.vertx.telegram.bot.util.NOKResponseException;
+import org.schors.vertx.telegram.bot.util.Util;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -66,7 +72,7 @@ public class TelegramBot {
                 .setTrustAll(true)
                 .setIdleTimeout(this.getOptions().getPollingTimeout())
                 .setMaxPoolSize(this.getOptions().getMaxConnections())
-                .setDefaultHost(Constants.BASEHOST)
+                .setDefaultHost(Util.BASEHOST)
                 .setDefaultPort(443)
                 .setLogActivity(true);
 
@@ -131,21 +137,45 @@ public class TelegramBot {
         return commandManager;
     }
 
-    private void send(TelegramMethod message) {
+    private void send(TelegramMethod message, Handler<AsyncResult<Message>> handler) {
         String toSend = null;
         try {
             toSend = mapper.writeValueAsString(message);
         } catch (JsonProcessingException e) {
             log.error("### Unable to serialize to JSON", e);
+            if (handler != null) {
+                handler.handle(Util.makeAsyncResult(null, e));
+            }
         }
         if (toSend != null)
             client
-                    .post(Constants.BASEURL + getOptions().getBotToken() + "/" + message.getMethod())
+                    .post(Util.BASEURL + getOptions().getBotToken() + "/" + message.getMethod())
                     .handler(response -> {
                         response.bodyHandler(event -> {
+                            if (handler != null) {
+                                JsonObject json = event.toJsonObject();
+                                if (!json.getBoolean(Util.R_OK)) {
+                                    log.warn("### Unsuccessful response: " + json.toString());
+                                    String errorCode = json.getString(Util.R_ERRORCODE);
+                                    String errorDescription = json.getString(Util.R_ERRORDESCRIPTION);
+                                    handler.handle(Util.makeAsyncResult(null, new NOKResponseException(errorCode, errorDescription)));
+                                } else {
+                                    JsonObject jsonMessage = json.getJsonObject(Util.R_RESULT);
+                                    Message resultMessage = null;
+                                    try {
+                                        resultMessage = mapper.readValue(jsonMessage.toString(), Message.class);
+                                        handler.handle(Util.makeAsyncResult(resultMessage, null));
+                                    } catch (IOException e) {
+                                        handler.handle(Util.makeAsyncResult(null, e));
+                                    }
+                                }
+                            }
                         });
                     })
                     .exceptionHandler(e -> {
+                        if (handler != null) {
+                            handler.handle(Util.makeAsyncResult(null, e));
+                        }
                     })
                     .setTimeout(75000)
                     .putHeader("Content-Type", "application/json")
@@ -153,26 +183,57 @@ public class TelegramBot {
     }
 
     public void sendMessage(SendMessage message) {
-        send(message);
+        send(message, null);
+    }
+
+    public void sendMessage(SendMessage message, Handler<AsyncResult<Message>> handler) {
+        send(message, handler);
     }
 
     public void sendChatAction(SendChatAction chatAction) {
-        send(chatAction);
+        send(chatAction, null);
+    }
+
+    public void sendChatAction(SendChatAction chatAction, Handler<AsyncResult<Message>> handler) {
+        send(chatAction, handler);
     }
 
     public void sendAnswerInlineQuery(AnswerInlineQuery answerInlineQuery) {
-        send(answerInlineQuery);
+        send(answerInlineQuery, null);
+    }
+
+    public void sendAnswerInlineQuery(AnswerInlineQuery answerInlineQuery, Handler<AsyncResult<Message>> handler) {
+        send(answerInlineQuery, handler);
     }
 
     public void sendDocument(SendDocument document) {
+        sendDocument(document, null);
+    }
+
+    public void sendDocument(SendDocument document, Handler<AsyncResult<Message>> handler) {
         vertx.executeBlocking(future -> {
             HttpClientRequest request = client
-                    .post(Constants.BASEURL + getOptions().getBotToken() + "/" + document.getMethod())
+                    .post(Util.BASEURL + getOptions().getBotToken() + "/" + document.getMethod())
                     .handler(response -> {
                         response.bodyHandler(event -> {
+                            JsonObject json = event.toJsonObject();
+                            if (!json.getBoolean(Util.R_OK)) {
+                                log.warn("### Unsuccessful response: " + json.toString());
+                            } else {
+                                JsonObject jsonMessage = json.getJsonObject(Util.R_RESULT);
+                                Message message = null;
+                                try {
+                                    message = mapper.readValue(jsonMessage.toString(), Message.class);
+                                    future.complete(message);
+                                } catch (IOException e) {
+                                    future.fail(e);
+                                }
+                                future.complete(message);
+                            }
                         });
                     })
                     .exceptionHandler(e -> {
+                        future.fail(e);
                     })
                     .setTimeout(75000)
                     .setChunked(true);
@@ -206,7 +267,13 @@ public class TelegramBot {
                         request.end();
                     });
         }, event -> {
-
+            if (handler != null) {
+                if (event.succeeded()) {
+                    handler.handle(Util.makeAsyncResult((Message) event.result(), null));
+                } else {
+                    handler.handle(Util.makeAsyncResult(null, event.cause()));
+                }
+            }
         });
     }
 

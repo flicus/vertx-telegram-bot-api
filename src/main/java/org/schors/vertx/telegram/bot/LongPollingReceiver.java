@@ -33,9 +33,9 @@ import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import org.apache.log4j.Logger;
-import org.schors.vertx.telegram.bot.api.Constants;
 import org.schors.vertx.telegram.bot.api.methods.GetUpdates;
 import org.schors.vertx.telegram.bot.api.types.Update;
+import org.schors.vertx.telegram.bot.util.Util;
 
 public class LongPollingReceiver implements UpdateReceiver {
 
@@ -67,7 +67,7 @@ public class LongPollingReceiver implements UpdateReceiver {
                 .setTrustAll(true)
                 .setIdleTimeout(bot.getOptions().getPollingTimeout())
                 .setMaxPoolSize(bot.getOptions().getMaxConnections())
-                .setDefaultHost(Constants.BASEHOST)
+                .setDefaultHost(Util.BASEHOST)
                 .setDefaultPort(443)
                 .setLogActivity(true);
 
@@ -114,14 +114,14 @@ public class LongPollingReceiver implements UpdateReceiver {
             }
             if (toSend != null)
                 client
-                        .post(Constants.BASEURL + bot.getOptions().getBotToken() + "/" + getUpdates.getMethod())
+                        .post(Util.BASEURL + bot.getOptions().getBotToken() + "/" + getUpdates.getMethod())
                         .handler(response -> {
                             response.bodyHandler(body -> {
                                 JsonObject json = body.toJsonObject();
-                                if (!json.getBoolean(Constants.RESPONSEFIELDOK)) {
+                                if (!json.getBoolean(Util.R_OK)) {
                                     log.warn("### Unsuccessful response: " + json.toString());
                                 } else {
-                                    JsonArray updates = json.getJsonArray(Constants.RESPONSEFIELDRESULT);
+                                    JsonArray updates = json.getJsonArray(Util.R_RESULT);
                                     if (updates != null && updates.size() > 0) {
                                         updates.stream().forEach(u -> {
                                             try {

@@ -3,9 +3,9 @@ package org.schors.vertx.telegram.bot.api.types.inline;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.schors.vertx.telegram.bot.api.types.InputMessageContent;
 
-public class InlineQueryResultCachedVideo {
+public class InlineQueryResultCachedVideo extends InlineQueryResult {
 
-    private String type;
+    private Type type;
     private String id;
     @JsonProperty("video_file_id")
     private String videoFileId;
@@ -18,9 +18,10 @@ public class InlineQueryResultCachedVideo {
     private InputMessageContent inputMessageContent;
 
     public InlineQueryResultCachedVideo() {
+        this.type = Type.video;
     }
 
-    public InlineQueryResultCachedVideo(String type, String id, String videoFileId, String title, String description, String caption, InlineKeyboardMarkup replyMarkup, InputMessageContent inputMessageContent) {
+    public InlineQueryResultCachedVideo(Type type, String id, String videoFileId, String title, String description, String caption, InlineKeyboardMarkup replyMarkup, InputMessageContent inputMessageContent) {
         this.type = type;
         this.id = id;
         this.videoFileId = videoFileId;
@@ -31,11 +32,11 @@ public class InlineQueryResultCachedVideo {
         this.inputMessageContent = inputMessageContent;
     }
 
-    public String getType() {
+    public Type getType() {
         return type;
     }
 
-    public InlineQueryResultCachedVideo setType(String type) {
+    public InlineQueryResultCachedVideo setType(Type type) {
         this.type = type;
         return this;
     }

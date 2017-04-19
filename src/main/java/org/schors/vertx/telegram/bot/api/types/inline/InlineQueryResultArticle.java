@@ -28,7 +28,7 @@ import org.schors.vertx.telegram.bot.api.types.InputMessageContent;
 
 public class InlineQueryResultArticle extends InlineQueryResult {
 
-    private String type = "article";
+    private Type type;
     private String id;
     private String title;
     @JsonProperty("input_message_content")
@@ -47,10 +47,10 @@ public class InlineQueryResultArticle extends InlineQueryResult {
     private Integer thumbHeight;
 
     public InlineQueryResultArticle() {
-        this.type = "article";
+        this.type = Type.article;
     }
 
-    public InlineQueryResultArticle(String type, String id, String title, InputMessageContent inputMessageContent, InlineKeyboardMarkup replyMarkup, String url, Boolean hideUrl, String description, String thumbUrl, Integer thumbWidth, Integer thumbHeight) {
+    public InlineQueryResultArticle(Type type, String id, String title, InputMessageContent inputMessageContent, InlineKeyboardMarkup replyMarkup, String url, Boolean hideUrl, String description, String thumbUrl, Integer thumbWidth, Integer thumbHeight) {
         this.type = type;
         this.id = id;
         this.title = title;
@@ -64,11 +64,11 @@ public class InlineQueryResultArticle extends InlineQueryResult {
         this.thumbHeight = thumbHeight;
     }
 
-    public String getType() {
+    public Type getType() {
         return type;
     }
 
-    public InlineQueryResultArticle setType(String type) {
+    public InlineQueryResultArticle setType(Type type) {
         this.type = type;
         return this;
     }

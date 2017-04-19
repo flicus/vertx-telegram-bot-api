@@ -3,9 +3,9 @@ package org.schors.vertx.telegram.bot.api.types.inline;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.schors.vertx.telegram.bot.api.types.InputMessageContent;
 
-public class InlineQueryResultCachedMpeg4Gif {
+public class InlineQueryResultCachedMpeg4Gif extends InlineQueryResult {
 
-    private String type;
+    private Type type;
     private String id;
     @JsonProperty("mpeg4_file_id")
     private String mpeg4FileId;
@@ -17,9 +17,10 @@ public class InlineQueryResultCachedMpeg4Gif {
     private InputMessageContent inputMessageContent;
 
     public InlineQueryResultCachedMpeg4Gif() {
+        this.type = Type.mpeg4_gif;
     }
 
-    public InlineQueryResultCachedMpeg4Gif(String type, String id, String mpeg4FileId, String title, String caption, InlineKeyboardMarkup replyMarkup, InputMessageContent inputMessageContent) {
+    public InlineQueryResultCachedMpeg4Gif(Type type, String id, String mpeg4FileId, String title, String caption, InlineKeyboardMarkup replyMarkup, InputMessageContent inputMessageContent) {
         this.type = type;
         this.id = id;
         this.mpeg4FileId = mpeg4FileId;
@@ -29,11 +30,11 @@ public class InlineQueryResultCachedMpeg4Gif {
         this.inputMessageContent = inputMessageContent;
     }
 
-    public String getType() {
+    public Type getType() {
         return type;
     }
 
-    public InlineQueryResultCachedMpeg4Gif setType(String type) {
+    public InlineQueryResultCachedMpeg4Gif setType(Type type) {
         this.type = type;
         return this;
     }

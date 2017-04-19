@@ -3,29 +3,31 @@ package org.schors.vertx.telegram.bot.api.types.inline;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.schors.vertx.telegram.bot.api.types.InputMessageContent;
 
-public class InlineQueryResultCachedGif extends InlineQueryResult {
-
+public class InlineQueryResultVoice extends InlineQueryResult {
     private Type type;
     private String id;
-    @JsonProperty("gif_file_id")
-    private String gifFileId;
+    @JsonProperty("voice_url")
+    private String voiceUrl;
     private String title;
     private String caption;
+    @JsonProperty("voice_duration")
+    private Integer voiceDuration;
     @JsonProperty("reply_markup")
     private InlineKeyboardMarkup replyMarkup;
     @JsonProperty("input_message_content")
     private InputMessageContent inputMessageContent;
 
-    public InlineQueryResultCachedGif() {
-        this.type = Type.gif;
+    public InlineQueryResultVoice() {
+        this.type = Type.voice;
     }
 
-    public InlineQueryResultCachedGif(Type type, String id, String gifFileId, String title, String caption, InlineKeyboardMarkup replyMarkup, InputMessageContent inputMessageContent) {
+    public InlineQueryResultVoice(Type type, String id, String voiceUrl, String title, String caption, Integer voiceDuration, InlineKeyboardMarkup replyMarkup, InputMessageContent inputMessageContent) {
         this.type = type;
         this.id = id;
-        this.gifFileId = gifFileId;
+        this.voiceUrl = voiceUrl;
         this.title = title;
         this.caption = caption;
+        this.voiceDuration = voiceDuration;
         this.replyMarkup = replyMarkup;
         this.inputMessageContent = inputMessageContent;
     }
@@ -34,7 +36,7 @@ public class InlineQueryResultCachedGif extends InlineQueryResult {
         return type;
     }
 
-    public InlineQueryResultCachedGif setType(Type type) {
+    public InlineQueryResultVoice setType(Type type) {
         this.type = type;
         return this;
     }
@@ -43,17 +45,17 @@ public class InlineQueryResultCachedGif extends InlineQueryResult {
         return id;
     }
 
-    public InlineQueryResultCachedGif setId(String id) {
+    public InlineQueryResultVoice setId(String id) {
         this.id = id;
         return this;
     }
 
-    public String getGifFileId() {
-        return gifFileId;
+    public String getVoiceUrl() {
+        return voiceUrl;
     }
 
-    public InlineQueryResultCachedGif setGifFileId(String gifFileId) {
-        this.gifFileId = gifFileId;
+    public InlineQueryResultVoice setVoiceUrl(String voiceUrl) {
+        this.voiceUrl = voiceUrl;
         return this;
     }
 
@@ -61,7 +63,7 @@ public class InlineQueryResultCachedGif extends InlineQueryResult {
         return title;
     }
 
-    public InlineQueryResultCachedGif setTitle(String title) {
+    public InlineQueryResultVoice setTitle(String title) {
         this.title = title;
         return this;
     }
@@ -70,8 +72,17 @@ public class InlineQueryResultCachedGif extends InlineQueryResult {
         return caption;
     }
 
-    public InlineQueryResultCachedGif setCaption(String caption) {
+    public InlineQueryResultVoice setCaption(String caption) {
         this.caption = caption;
+        return this;
+    }
+
+    public Integer getVoiceDuration() {
+        return voiceDuration;
+    }
+
+    public InlineQueryResultVoice setVoiceDuration(Integer voiceDuration) {
+        this.voiceDuration = voiceDuration;
         return this;
     }
 
@@ -79,7 +90,7 @@ public class InlineQueryResultCachedGif extends InlineQueryResult {
         return replyMarkup;
     }
 
-    public InlineQueryResultCachedGif setReplyMarkup(InlineKeyboardMarkup replyMarkup) {
+    public InlineQueryResultVoice setReplyMarkup(InlineKeyboardMarkup replyMarkup) {
         this.replyMarkup = replyMarkup;
         return this;
     }
@@ -88,7 +99,7 @@ public class InlineQueryResultCachedGif extends InlineQueryResult {
         return inputMessageContent;
     }
 
-    public InlineQueryResultCachedGif setInputMessageContent(InputMessageContent inputMessageContent) {
+    public InlineQueryResultVoice setInputMessageContent(InputMessageContent inputMessageContent) {
         this.inputMessageContent = inputMessageContent;
         return this;
     }

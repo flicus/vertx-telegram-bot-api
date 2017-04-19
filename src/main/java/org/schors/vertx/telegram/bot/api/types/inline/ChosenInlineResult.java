@@ -27,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.schors.vertx.telegram.bot.api.types.Location;
 import org.schors.vertx.telegram.bot.api.types.User;
 
-public class ChosenInlineResult {
+public class ChosenInlineResult extends InlineQueryResult {
 
     @JsonProperty("result_id")
     private String resultId;
