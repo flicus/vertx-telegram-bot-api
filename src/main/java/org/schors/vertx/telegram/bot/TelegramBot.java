@@ -1,7 +1,8 @@
 /*
  *  The MIT License (MIT)
  *
- *  Copyright (c) 2017 schors
+ *  Copyright (c) 2017  schors
+ *
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
@@ -286,6 +287,37 @@ public class TelegramBot {
         send(unbanChatMember, handler);
     }
 
+    public void getChat(GetChat getChat) {
+        send(getChat, null);
+    }
+
+    public void getChat(GetChat getChat, Handler<AsyncResult<Message>> handler) {
+        send(getChat, handler);
+    }
+
+    public void getChatAdministrators(GetChatAdministrators getChatAdministrators) {
+        send(getChatAdministrators, null);
+    }
+
+    public void getChatAdministrators(GetChatAdministrators getChatAdministrators, Handler<AsyncResult<Message>> handler) {
+        send(getChatAdministrators, handler);
+    }
+
+    public void getChatMembersCount(GetChatMembersCount getChatMembersCount) {
+        send(getChatMembersCount, null);
+    }
+
+    public void getChatMembersCount(GetChatMembersCount getChatMembersCount, Handler<AsyncResult<Message>> handler) {
+        send(getChatMembersCount, handler);
+    }
+
+    public void getChatMember(GetChatMember getChatMember) {
+        send(getChatMember, null);
+    }
+
+    public void getChatMember(GetChatMember getChatMember, Handler<AsyncResult<Message>> handler) {
+        send(getChatMember, handler);
+    }
 
     public void sendDocument(SendDocument document) {
         sendDocument(document, null);
