@@ -25,66 +25,41 @@ package org.schors.vertx.telegram.bot.api.methods;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class ForwardMessage extends TelegramMethod {
+public class KickChatMember extends TelegramMethod {
 
     @JsonProperty("chat_id")
     private String chatId;
-    @JsonProperty("from_chat_id")
-    private String fromChatId;
-    @JsonProperty("disable_notification")
-    private Boolean disableNotification;
-    @JsonProperty("message_id")
-    private Integer messageId;
+    @JsonProperty("user_id")
+    private Integer userId;
 
-    public ForwardMessage() {
+    public KickChatMember() {
     }
 
-    public ForwardMessage(String chatId, String fromChatId, Boolean disableNotification, Integer messageId) {
+    public KickChatMember(String chatId, Integer userId) {
         this.chatId = chatId;
-        this.fromChatId = fromChatId;
-        this.disableNotification = disableNotification;
-        this.messageId = messageId;
+        this.userId = userId;
     }
 
     public String getChatId() {
         return chatId;
     }
 
-    public ForwardMessage setChatId(String chatId) {
+    public KickChatMember setChatId(String chatId) {
         this.chatId = chatId;
         return this;
     }
 
-    public String getFromChatId() {
-        return fromChatId;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public ForwardMessage setFromChatId(String fromChatId) {
-        this.fromChatId = fromChatId;
+    public KickChatMember setUserId(Integer userId) {
+        this.userId = userId;
         return this;
     }
-
-    public Boolean isDisableNotification() {
-        return disableNotification;
-    }
-
-    public ForwardMessage setDisableNotification(Boolean disableNotification) {
-        this.disableNotification = disableNotification;
-        return this;
-    }
-
-    public Integer getMessageId() {
-        return messageId;
-    }
-
-    public ForwardMessage setMessageId(Integer messageId) {
-        this.messageId = messageId;
-        return this;
-    }
-
 
     @Override
     public String getMethod() {
-        return "forwardMessage";
+        return "kickChatMember";
     }
 }

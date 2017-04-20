@@ -1,8 +1,7 @@
 /*
  *  The MIT License (MIT)
  *
- *  Copyright (c) 2016  schors
- *
+ *  Copyright (c) 2017 schors
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
@@ -205,6 +204,88 @@ public class TelegramBot {
     public void sendAnswerInlineQuery(AnswerInlineQuery answerInlineQuery, Handler<AsyncResult<Message>> handler) {
         send(answerInlineQuery, handler);
     }
+
+    public void forwardMessage(ForwardMessage message) {
+        send(message, null);
+    }
+
+    public void forwardMessage(ForwardMessage message, Handler<AsyncResult<Message>> handler) {
+        send(message, handler);
+    }
+
+    public void sendLocation(SendLocation sendLocation) {
+        send(sendLocation, null);
+    }
+
+    public void sendLocation(SendLocation sendLocation, Handler<AsyncResult<Message>> handler) {
+        send(sendLocation, handler);
+    }
+
+    public void sendVenue(SendVenue sendVenue) {
+        send(sendVenue, null);
+    }
+
+    public void sendVenue(SendVenue sendVenue, Handler<AsyncResult<Message>> handler) {
+        send(sendVenue, handler);
+    }
+
+    public void sendContact(SendContact sendContact) {
+        send(sendContact, null);
+    }
+
+    public void sendContact(SendContact sendContact, Handler<AsyncResult<Message>> handler) {
+        send(sendContact, handler);
+    }
+
+    public void getUserProfilePhotos(GetUserProfilePhotos getUserProfilePhotos) {
+        send(getUserProfilePhotos, null);
+    }
+
+    public void getUserProfilePhotos(GetUserProfilePhotos getUserProfilePhotos, Handler<AsyncResult<Message>> handler) {
+        send(getUserProfilePhotos, handler);
+    }
+
+    public void getMe(GetMe getMe) {
+        send(getMe, null);
+    }
+
+    public void getMe(GetMe getMe, Handler<AsyncResult<Message>> handler) {
+        send(getMe, handler);
+    }
+
+    public void getFile(GetFile getFile) {
+        send(getFile, null);
+    }
+
+    public void getFile(GetFile getFile, Handler<AsyncResult<Message>> handler) {
+        send(getFile, handler);
+    }
+
+    public void kickChatMember(KickChatMember kickChatMember) {
+        send(kickChatMember, null);
+    }
+
+    public void kickChatMember(KickChatMember kickChatMember, Handler<AsyncResult<Message>> handler) {
+        send(kickChatMember, handler);
+    }
+
+    public void leaveChat(LeaveChat leaveChat) {
+        send(leaveChat, null);
+    }
+
+    public void leaveChat(LeaveChat leaveChat, Handler<AsyncResult<Message>> handler) {
+        send(leaveChat, handler);
+    }
+
+    public void unbanChatMember(UnbanChatMember unbanChatMember) {
+        send(unbanChatMember, null);
+    }
+
+    //todo make result generic
+    public void unbanChatMember(UnbanChatMember unbanChatMember, Handler<AsyncResult<Message>> handler) {
+        send(unbanChatMember, handler);
+    }
+
 
     public void sendDocument(SendDocument document) {
         sendDocument(document, null);

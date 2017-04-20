@@ -25,66 +25,29 @@ package org.schors.vertx.telegram.bot.api.methods;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class ForwardMessage extends TelegramMethod {
+public class LeaveChat extends TelegramMethod {
 
     @JsonProperty("chat_id")
     private String chatId;
-    @JsonProperty("from_chat_id")
-    private String fromChatId;
-    @JsonProperty("disable_notification")
-    private Boolean disableNotification;
-    @JsonProperty("message_id")
-    private Integer messageId;
 
-    public ForwardMessage() {
+    public LeaveChat() {
     }
 
-    public ForwardMessage(String chatId, String fromChatId, Boolean disableNotification, Integer messageId) {
+    public LeaveChat(String chatId) {
         this.chatId = chatId;
-        this.fromChatId = fromChatId;
-        this.disableNotification = disableNotification;
-        this.messageId = messageId;
     }
 
     public String getChatId() {
         return chatId;
     }
 
-    public ForwardMessage setChatId(String chatId) {
+    public LeaveChat setChatId(String chatId) {
         this.chatId = chatId;
         return this;
     }
 
-    public String getFromChatId() {
-        return fromChatId;
-    }
-
-    public ForwardMessage setFromChatId(String fromChatId) {
-        this.fromChatId = fromChatId;
-        return this;
-    }
-
-    public Boolean isDisableNotification() {
-        return disableNotification;
-    }
-
-    public ForwardMessage setDisableNotification(Boolean disableNotification) {
-        this.disableNotification = disableNotification;
-        return this;
-    }
-
-    public Integer getMessageId() {
-        return messageId;
-    }
-
-    public ForwardMessage setMessageId(Integer messageId) {
-        this.messageId = messageId;
-        return this;
-    }
-
-
     @Override
     public String getMethod() {
-        return "forwardMessage";
+        return "leaveChat";
     }
 }

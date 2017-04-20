@@ -25,66 +25,51 @@ package org.schors.vertx.telegram.bot.api.methods;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class ForwardMessage extends TelegramMethod {
+public class GetUserProfilePhotos extends TelegramMethod {
 
-    @JsonProperty("chat_id")
-    private String chatId;
-    @JsonProperty("from_chat_id")
-    private String fromChatId;
-    @JsonProperty("disable_notification")
-    private Boolean disableNotification;
-    @JsonProperty("message_id")
-    private Integer messageId;
+    @JsonProperty("user_id")
+    private Integer userId;
+    private Integer offset;
+    private Integer limit;
 
-    public ForwardMessage() {
+    public GetUserProfilePhotos() {
     }
 
-    public ForwardMessage(String chatId, String fromChatId, Boolean disableNotification, Integer messageId) {
-        this.chatId = chatId;
-        this.fromChatId = fromChatId;
-        this.disableNotification = disableNotification;
-        this.messageId = messageId;
+    public GetUserProfilePhotos(Integer userId, Integer offset, Integer limit) {
+        this.userId = userId;
+        this.offset = offset;
+        this.limit = limit;
     }
 
-    public String getChatId() {
-        return chatId;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public ForwardMessage setChatId(String chatId) {
-        this.chatId = chatId;
+    public GetUserProfilePhotos setUserId(Integer userId) {
+        this.userId = userId;
         return this;
     }
 
-    public String getFromChatId() {
-        return fromChatId;
+    public Integer getOffset() {
+        return offset;
     }
 
-    public ForwardMessage setFromChatId(String fromChatId) {
-        this.fromChatId = fromChatId;
+    public GetUserProfilePhotos setOffset(Integer offset) {
+        this.offset = offset;
         return this;
     }
 
-    public Boolean isDisableNotification() {
-        return disableNotification;
+    public Integer getLimit() {
+        return limit;
     }
 
-    public ForwardMessage setDisableNotification(Boolean disableNotification) {
-        this.disableNotification = disableNotification;
+    public GetUserProfilePhotos setLimit(Integer limit) {
+        this.limit = limit;
         return this;
     }
-
-    public Integer getMessageId() {
-        return messageId;
-    }
-
-    public ForwardMessage setMessageId(Integer messageId) {
-        this.messageId = messageId;
-        return this;
-    }
-
 
     @Override
     public String getMethod() {
-        return "forwardMessage";
+        return "getUserProfilePhotos";
     }
 }

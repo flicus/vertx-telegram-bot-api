@@ -23,9 +23,31 @@
 
 package org.schors.vertx.telegram.bot.api.methods;
 
-public class GetMe extends TelegramMethod {
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public class GetFile extends TelegramMethod {
+
+    @JsonProperty("file_id")
+    private String fileId;
+
+    public GetFile() {
+    }
+
+    public GetFile(String fileId) {
+        this.fileId = fileId;
+    }
+
+    public String getFileId() {
+        return fileId;
+    }
+
+    public GetFile setFileId(String fileId) {
+        this.fileId = fileId;
+        return this;
+    }
+
     @Override
     public String getMethod() {
-        return "getMe";
+        return "getFile";
     }
 }

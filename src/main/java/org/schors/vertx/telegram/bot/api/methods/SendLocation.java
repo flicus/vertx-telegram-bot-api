@@ -24,67 +24,91 @@
 package org.schors.vertx.telegram.bot.api.methods;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.schors.vertx.telegram.bot.api.types.Markup;
 
-public class ForwardMessage extends TelegramMethod {
+public class SendLocation extends TelegramMethod {
 
     @JsonProperty("chat_id")
     private String chatId;
-    @JsonProperty("from_chat_id")
-    private String fromChatId;
+    private Double latitude;
+    private Double longitude;
     @JsonProperty("disable_notification")
     private Boolean disableNotification;
-    @JsonProperty("message_id")
-    private Integer messageId;
+    @JsonProperty("reply_to_message_id")
+    private Integer replyToMessageId;
+    @JsonProperty("reply_markup")
+    private Markup replyMarkup;
 
-    public ForwardMessage() {
+    public SendLocation() {
     }
 
-    public ForwardMessage(String chatId, String fromChatId, Boolean disableNotification, Integer messageId) {
+    public SendLocation(String chatId, Double latitude, Double longitude, Boolean disableNotification, Integer replyToMessageId, Markup replyMarkup) {
         this.chatId = chatId;
-        this.fromChatId = fromChatId;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.disableNotification = disableNotification;
-        this.messageId = messageId;
+        this.replyToMessageId = replyToMessageId;
+        this.replyMarkup = replyMarkup;
     }
 
     public String getChatId() {
         return chatId;
     }
 
-    public ForwardMessage setChatId(String chatId) {
+    public SendLocation setChatId(String chatId) {
         this.chatId = chatId;
         return this;
     }
 
-    public String getFromChatId() {
-        return fromChatId;
+    public Double getLatitude() {
+        return latitude;
     }
 
-    public ForwardMessage setFromChatId(String fromChatId) {
-        this.fromChatId = fromChatId;
+    public SendLocation setLatitude(Double latitude) {
+        this.latitude = latitude;
         return this;
     }
 
-    public Boolean isDisableNotification() {
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public SendLocation setLongitude(Double longitude) {
+        this.longitude = longitude;
+        return this;
+    }
+
+    public Boolean getDisableNotification() {
         return disableNotification;
     }
 
-    public ForwardMessage setDisableNotification(Boolean disableNotification) {
+    public SendLocation setDisableNotification(Boolean disableNotification) {
         this.disableNotification = disableNotification;
         return this;
     }
 
-    public Integer getMessageId() {
-        return messageId;
+    public Integer getReplyToMessageId() {
+        return replyToMessageId;
     }
 
-    public ForwardMessage setMessageId(Integer messageId) {
-        this.messageId = messageId;
+    public SendLocation setReplyToMessageId(Integer replyToMessageId) {
+        this.replyToMessageId = replyToMessageId;
         return this;
     }
 
+    public Markup getReplyMarkup() {
+        return replyMarkup;
+    }
+
+    public SendLocation setReplyMarkup(Markup replyMarkup) {
+        this.replyMarkup = replyMarkup;
+        return this;
+    }
 
     @Override
     public String getMethod() {
-        return "forwardMessage";
+        return "sendLocation";
     }
+
+
 }
