@@ -36,7 +36,7 @@ import io.vertx.core.http.HttpClientRequest;
 import io.vertx.core.json.JsonObject;
 import org.apache.log4j.Logger;
 import org.schors.vertx.telegram.bot.api.methods.*;
-import org.schors.vertx.telegram.bot.api.types.Message;
+import org.schors.vertx.telegram.bot.api.types.*;
 import org.schors.vertx.telegram.bot.commands.CommandManager;
 import org.schors.vertx.telegram.bot.util.MultipartHelper;
 import org.schors.vertx.telegram.bot.util.NOKResponseException;
@@ -137,7 +137,7 @@ public class TelegramBot {
         return commandManager;
     }
 
-    private void send(TelegramMethod message, Handler<AsyncResult<Message>> handler) {
+    private <T> void send(TelegramMethod message, Handler<AsyncResult<T>> handler) {
         String toSend = null;
         try {
             toSend = mapper.writeValueAsString(message);
@@ -161,9 +161,9 @@ public class TelegramBot {
                                     handler.handle(Util.makeAsyncResult(null, new NOKResponseException(errorCode, errorDescription)));
                                 } else {
                                     JsonObject jsonMessage = json.getJsonObject(Util.R_RESULT);
-                                    Message resultMessage = null;
+                                    T resultMessage = null;
                                     try {
-                                        resultMessage = mapper.readValue(jsonMessage.toString(), Message.class);
+                                        resultMessage = mapper.readValue(jsonMessage.toString(), (Class<T>) resultMessage.getClass());
                                         handler.handle(Util.makeAsyncResult(resultMessage, null));
                                     } catch (IOException e) {
                                         handler.handle(Util.makeAsyncResult(null, e));
@@ -194,7 +194,7 @@ public class TelegramBot {
         send(chatAction, null);
     }
 
-    public void sendChatAction(SendChatAction chatAction, Handler<AsyncResult<Message>> handler) {
+    public void sendChatAction(SendChatAction chatAction, Handler<AsyncResult<Boolean>> handler) {
         send(chatAction, handler);
     }
 
@@ -202,7 +202,7 @@ public class TelegramBot {
         send(answerInlineQuery, null);
     }
 
-    public void sendAnswerInlineQuery(AnswerInlineQuery answerInlineQuery, Handler<AsyncResult<Message>> handler) {
+    public void sendAnswerInlineQuery(AnswerInlineQuery answerInlineQuery, Handler<AsyncResult<Boolean>> handler) {
         send(answerInlineQuery, handler);
     }
 
@@ -242,7 +242,7 @@ public class TelegramBot {
         send(getUserProfilePhotos, null);
     }
 
-    public void getUserProfilePhotos(GetUserProfilePhotos getUserProfilePhotos, Handler<AsyncResult<Message>> handler) {
+    public void getUserProfilePhotos(GetUserProfilePhotos getUserProfilePhotos, Handler<AsyncResult<UserProfilePhotos>> handler) {
         send(getUserProfilePhotos, handler);
     }
 
@@ -250,7 +250,7 @@ public class TelegramBot {
         send(getMe, null);
     }
 
-    public void getMe(GetMe getMe, Handler<AsyncResult<Message>> handler) {
+    public void getMe(GetMe getMe, Handler<AsyncResult<User>> handler) {
         send(getMe, handler);
     }
 
@@ -258,7 +258,7 @@ public class TelegramBot {
         send(getFile, null);
     }
 
-    public void getFile(GetFile getFile, Handler<AsyncResult<Message>> handler) {
+    public void getFile(GetFile getFile, Handler<AsyncResult<File>> handler) {
         send(getFile, handler);
     }
 
@@ -266,7 +266,7 @@ public class TelegramBot {
         send(kickChatMember, null);
     }
 
-    public void kickChatMember(KickChatMember kickChatMember, Handler<AsyncResult<Message>> handler) {
+    public void kickChatMember(KickChatMember kickChatMember, Handler<AsyncResult<Boolean>> handler) {
         send(kickChatMember, handler);
     }
 
@@ -274,7 +274,7 @@ public class TelegramBot {
         send(leaveChat, null);
     }
 
-    public void leaveChat(LeaveChat leaveChat, Handler<AsyncResult<Message>> handler) {
+    public void leaveChat(LeaveChat leaveChat, Handler<AsyncResult<Boolean>> handler) {
         send(leaveChat, handler);
     }
 
@@ -282,8 +282,8 @@ public class TelegramBot {
         send(unbanChatMember, null);
     }
 
-    //todo make result generic
-    public void unbanChatMember(UnbanChatMember unbanChatMember, Handler<AsyncResult<Message>> handler) {
+    //todo send binary objects, video etc
+    public void unbanChatMember(UnbanChatMember unbanChatMember, Handler<AsyncResult<Boolean>> handler) {
         send(unbanChatMember, handler);
     }
 
@@ -291,7 +291,7 @@ public class TelegramBot {
         send(getChat, null);
     }
 
-    public void getChat(GetChat getChat, Handler<AsyncResult<Message>> handler) {
+    public void getChat(GetChat getChat, Handler<AsyncResult<Chat>> handler) {
         send(getChat, handler);
     }
 
@@ -299,7 +299,7 @@ public class TelegramBot {
         send(getChatAdministrators, null);
     }
 
-    public void getChatAdministrators(GetChatAdministrators getChatAdministrators, Handler<AsyncResult<Message>> handler) {
+    public void getChatAdministrators(GetChatAdministrators getChatAdministrators, Handler<AsyncResult<ChatMember[]>> handler) {
         send(getChatAdministrators, handler);
     }
 
@@ -307,7 +307,7 @@ public class TelegramBot {
         send(getChatMembersCount, null);
     }
 
-    public void getChatMembersCount(GetChatMembersCount getChatMembersCount, Handler<AsyncResult<Message>> handler) {
+    public void getChatMembersCount(GetChatMembersCount getChatMembersCount, Handler<AsyncResult<Integer>> handler) {
         send(getChatMembersCount, handler);
     }
 
@@ -315,7 +315,7 @@ public class TelegramBot {
         send(getChatMember, null);
     }
 
-    public void getChatMember(GetChatMember getChatMember, Handler<AsyncResult<Message>> handler) {
+    public void getChatMember(GetChatMember getChatMember, Handler<AsyncResult<ChatMember>> handler) {
         send(getChatMember, handler);
     }
 
