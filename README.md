@@ -16,8 +16,11 @@ For maven:
  ```
 For gradle:
  ```groovy
+ repositories {
+    maven { url "https://jitpack.io" }
+ }
  dependencies {
-       compile 'com.github.flicus:vertx-telegram-bot-api:0.1.12'
+    compile 'com.github.flicus:vertx-telegram-bot-api:0.1.12'
   }
  ```
 ## Usage
