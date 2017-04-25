@@ -56,7 +56,7 @@ For gradle:
 ### Command manager
   More advanced way is to use command manager. This way you will need command class for every type of command your bot is supporting. Lets see how to implement above Hello example using command manager. First, implement HelloCommand class:
   ```java
-  @BotCommand(regexp = "^/hello")
+  @BotCommand(message = "^/hello")
   public class HelloCommand extends Command {
       @Override
       public void execute(CommandContext context, Handler<Boolean> handler) {
@@ -69,8 +69,8 @@ For gradle:
       }
   }
 ```
-Here, with @BotCommand annotation we saying this is bot command, and with regexp parameter we saying what kind of message sent by user will invoke execute() method of this command.
-In this example this message starting with "/hello".
+Here, with @BotCommand annotation we saying this is bot command, and with message parameter we saying what kind of message sent by user will invoke execute() method of this command.
+Message parameter is an regular expression to match with telegram message text from the user. In this example this message starting with "/hello".
 
 Next we need to say to our bot to use command manager:
 ```java
@@ -79,10 +79,10 @@ bot = TelegramBot.create(vertx, telegramOptions)
                 .receiver(new LongPollingReceiver())
                 .start();
 ```
-Here we already dont need to write update handler for receiver, commands will be found automatically by annotations and its execute() method will be invoked if the message matches the regexp from commands annotation. 
+Here we already don't need to write update handler for receiver, commands will be found automatically by annotations and its execute() method will be invoked if the message matches the regexp from commands annotation. 
 
 ### Default command
-But what if message will not match any command? For this case we need to implement default command which will be executed if message doesnt match any other command defenition. You can implement several of them, but only one will be set as default command. Which one - its depends on which class will be loaded last. So there is no sense to implement several default commands. This is how to implement default command: 
+But what if message will not match any command? For this case we need to implement default command which will be executed if message does'nt match any other command definition. You can implement several of them, but only one will be set as default command. Which one - its depends on which class will be loaded last. So there is no sense to implement several default commands. This is how to implement default command: 
 ```java
 @BotCommand(isDefault = true)
 public class DefaultCommand extends Command {
@@ -177,6 +177,19 @@ public class UserCheck extends Command {
         handler.handle(db.isRegisteredUser(username));
     }
 }
+```
+
+### Receiving operation results
+When you sending some operation to the Telegram server, sendMessage for example, or some of get... operations (getChat for example) and need to receive back result of the operation, you need to use corresponding method of the TelegramBot class with response handler parameter.
+```java
+bot.getChat(new GetChat().setChatId("chat_id"), response -> {
+    if (response.succeeded()) {
+        Chat chat = response.result();
+        chat.getFirstName();
+    } else {
+        System.out.println(response.cause());
+    }
+});
 ```
 
  ### Webhook receiver
