@@ -1,8 +1,7 @@
 /*
  *  The MIT License (MIT)
  *
- *  Copyright (c) 2017  schors
- *
+ *  Copyright (c) 2017 schors
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
@@ -28,6 +27,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vertx.core.AsyncResult;
+import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
@@ -325,58 +325,17 @@ public class TelegramBot {
 
     public void sendDocument(SendDocument document, Handler<AsyncResult<Message>> handler) {
         vertx.executeBlocking(future -> {
-            HttpClientRequest request = client
-                    .post(Util.BASEURL + getOptions().getBotToken() + "/" + document.getMethod())
-                    .handler(response -> {
-                        response.bodyHandler(event -> {
-                            JsonObject json = event.toJsonObject();
-                            if (!json.getBoolean(Util.R_OK)) {
-                                log.warn("### Unsuccessful response: " + json.toString());
-                            } else {
-                                JsonObject jsonMessage = json.getJsonObject(Util.R_RESULT);
-                                Message message = null;
-                                try {
-                                    message = mapper.readValue(jsonMessage.toString(), Message.class);
-                                    future.complete(message);
-                                } catch (IOException e) {
-                                    future.fail(e);
-                                }
-                                future.complete(message);
-                            }
-                        });
-                    })
-                    .exceptionHandler(e -> {
-                        future.fail(e);
-                    })
-                    .setTimeout(75000)
-                    .setChunked(true);
+            HttpClientRequest request = createRequest(document, future);
+            java.io.File file = new java.io.File(document.getDocument());
             MultipartHelper multipartHelper = new MultipartHelper(vertx, request);
             multipartHelper
-                    .start()
                     .putTextBody("chat_id", document.getChatId())
-                    .putBinaryBody("document", document.getDocument(), "application/octet-stream", "document.name", event -> {  //todo
-                        if (event.succeeded()) {
-                            if (document.getReplyMarkup() != null) {
-                                String replyMarkup = null;
-                                try {
-                                    replyMarkup = mapper.writeValueAsString(document.getReplyMarkup());
-                                } catch (JsonProcessingException e) {
-                                    log.error(e, e);
-                                }
-                                if (replyMarkup != null)
-                                    multipartHelper.putTextBody("reply_markup", replyMarkup);
-                            }
-                            if (document.getReplyToMessageId() != null) {
-                                multipartHelper.putTextBody("reply_to_message_id", document.getReplyToMessageId().toString());
-                            }
-                            if (document.getCaption() != null) {
-                                multipartHelper.putTextBody("caption", document.getCaption());
-                            }
-                            if (document.isDisableNotification() != null) {
-                                multipartHelper.putTextBody("disable_notification", document.isDisableNotification().toString());
-                            }
-                            multipartHelper.stop();
-                        }
+                    .putTextBody("reply_to_message_id", document.getReplyToMessageId())
+                    .putTextBody("caption", document.getCaption())
+                    .putTextBody("disable_notification", document.isDisableNotification())
+                    .putTextBody("reply_markup", document.getReplyMarkup())
+                    .putBinaryBody("document", document.getDocument(), "application/octet-stream", file.getName(), event -> {
+                        multipartHelper.stop();
                         request.end();
                     });
         }, event -> {
@@ -388,6 +347,194 @@ public class TelegramBot {
                 }
             }
         });
+    }
+
+    private HttpClientRequest createRequest(TelegramMethod method, Future<Object> future) {
+        return client
+                .post(Util.BASEURL + getOptions().getBotToken() + "/" + method.getMethod())
+                .handler(response -> {
+                    response.bodyHandler(event -> {
+                        JsonObject json = event.toJsonObject();
+                        if (!json.getBoolean(Util.R_OK)) {
+                            log.warn("### Unsuccessful response: " + json.toString());
+                        } else {
+                            JsonObject jsonMessage = json.getJsonObject(Util.R_RESULT);
+                            Message message = null;
+                            try {
+                                message = mapper.readValue(jsonMessage.toString(), Message.class);
+                                future.complete(message);
+                            } catch (IOException e) {
+                                future.fail(e);
+                            }
+                            future.complete(message);
+                        }
+                    });
+                })
+                .exceptionHandler(e -> {
+                    future.fail(e);
+                })
+                .setTimeout(75000)
+                .setChunked(true);
+    }
+
+    public void sendPhoto(SendPhoto photo, Handler<AsyncResult<Message>> handler) {
+        vertx.executeBlocking(future -> {
+            HttpClientRequest request = createRequest(photo, future);
+            java.io.File file = new java.io.File(photo.getPhoto());
+            MultipartHelper multipartHelper = new MultipartHelper(vertx, request);
+            multipartHelper
+                    .putTextBody("chat_id", photo.getChatId())
+                    .putTextBody("reply_to_message_id", photo.getReplyToMessageId())
+                    .putTextBody("caption", photo.getCaption())
+                    .putTextBody("disable_notification", photo.isDisableNotification())
+                    .putTextBody("reply_markup", photo.getReplyMarkup())
+                    .putBinaryBody("photo", photo.getPhoto(), "application/octet-stream", file.getName(), event -> {
+                        multipartHelper.stop();
+                        request.end();
+                    });
+        }, event -> {
+            if (handler != null) {
+                if (event.succeeded()) {
+                    handler.handle(Util.makeAsyncResult((Message) event.result(), null));
+                } else {
+                    handler.handle(Util.makeAsyncResult(null, event.cause()));
+                }
+            }
+        });
+    }
+
+    public void sendPhoto(SendPhoto photo) {
+        sendPhoto(photo, null);
+    }
+
+    public void sendAudio(SendAudio audio, Handler<AsyncResult<Message>> handler) {
+        vertx.executeBlocking(future -> {
+            HttpClientRequest request = createRequest(audio, future);
+            java.io.File file = new java.io.File(audio.getAudio());
+            MultipartHelper multipartHelper = new MultipartHelper(vertx, request);
+            multipartHelper
+                    .putTextBody("chat_id", audio.getChatId())
+                    .putTextBody("reply_to_message_id", audio.getReplyToMessageId())
+                    .putTextBody("caption", audio.getCaption())
+                    .putTextBody("disable_notification", audio.isDisableNotification())
+                    .putTextBody("reply_markup", audio.getReplyMarkup())
+                    .putTextBody("duration", audio.getDuration())
+                    .putTextBody("performer", audio.getPerformer())
+                    .putTextBody("title", audio.getTitle())
+                    .putBinaryBody("audio", audio.getAudio(), "application/octet-stream", file.getName(), event -> {
+                        multipartHelper.stop();
+                        request.end();
+                    });
+        }, event -> {
+            if (handler != null) {
+                if (event.succeeded()) {
+                    handler.handle(Util.makeAsyncResult((Message) event.result(), null));
+                } else {
+                    handler.handle(Util.makeAsyncResult(null, event.cause()));
+                }
+            }
+        });
+    }
+
+    public void sendAudio(SendAudio audio) {
+        sendAudio(audio, null);
+    }
+
+    public void sendSticker(SendSticker sticker, Handler<AsyncResult<Message>> handler) {
+        vertx.executeBlocking(future -> {
+            HttpClientRequest request = createRequest(sticker, future);
+            java.io.File file = new java.io.File(sticker.getSticker());
+            MultipartHelper multipartHelper = new MultipartHelper(vertx, request);
+            multipartHelper
+                    .putTextBody("chat_id", sticker.getChatId())
+                    .putTextBody("reply_to_message_id", sticker.getReplyToMessageId())
+                    .putTextBody("disable_notification", sticker.isDisableNotification())
+                    .putTextBody("reply_markup", sticker.getReplyMarkup())
+                    .putBinaryBody("sticker", sticker.getSticker(), "application/octet-stream", file.getName(), event -> {
+                        multipartHelper.stop();
+                        request.end();
+                    });
+        }, event -> {
+            if (handler != null) {
+                if (event.succeeded()) {
+                    handler.handle(Util.makeAsyncResult((Message) event.result(), null));
+                } else {
+                    handler.handle(Util.makeAsyncResult(null, event.cause()));
+                }
+            }
+        });
+    }
+
+    public void sendSticker(SendSticker sticker) {
+        sendSticker(sticker, null);
+    }
+
+    public void sendVideo(SendVideo video, Handler<AsyncResult<Message>> handler) {
+        vertx.executeBlocking(future -> {
+            HttpClientRequest request = createRequest(video, future);
+            java.io.File file = new java.io.File(video.getVideo());
+            MultipartHelper multipartHelper = new MultipartHelper(vertx, request);
+            multipartHelper
+                    .putTextBody("chat_id", video.getChatId())
+                    .putTextBody("reply_to_message_id", video.getReplyToMessageId())
+                    .putTextBody("disable_notification", video.isDisableNotification())
+                    .putTextBody("reply_markup", video.getReplyMarkup())
+                    .putTextBody("duration", video.getDuration())
+                    .putTextBody("caption", video.getCaption())
+                    .putTextBody("width", video.getHeight())
+                    .putTextBody("height", video.getWidth())
+                    .putBinaryBody("video", video.getVideo(), "application/octet-stream", file.getName(), event -> {
+                        multipartHelper.stop();
+                        request.end();
+                    });
+        }, event -> {
+            if (handler != null) {
+                if (event.succeeded()) {
+                    handler.handle(Util.makeAsyncResult((Message) event.result(), null));
+                } else {
+                    handler.handle(Util.makeAsyncResult(null, event.cause()));
+                }
+            }
+        });
+    }
+
+    public void sendVideo(SendVideo video) {
+        sendVideo(video, null);
+    }
+
+    public void sendVoice(SendVoice voice, Handler<AsyncResult<Message>> handler) {
+        vertx.executeBlocking(future -> {
+            HttpClientRequest request = createRequest(voice, future);
+            java.io.File file = new java.io.File(voice.getVoice());
+            MultipartHelper multipartHelper = new MultipartHelper(vertx, request);
+            multipartHelper
+                    .putTextBody("chat_id", voice.getChatId())
+                    .putTextBody("reply_to_message_id", voice.getReplyToMessageId())
+                    .putTextBody("caption", voice.getCaption())
+                    .putTextBody("disable_notification", voice.isDisableNotification())
+                    .putTextBody("reply_markup", voice.getReplyMarkup())
+                    .putTextBody("duration", voice.getDuration())
+                    .putBinaryBody("voice", voice.getVoice(), "application/octet-stream", file.getName(), event -> {
+                        multipartHelper.stop();
+                        request.end();
+                    });
+        }, event -> {
+            if (handler != null) {
+                if (event.succeeded()) {
+                    handler.handle(Util.makeAsyncResult((Message) event.result(), null));
+                } else {
+                    handler.handle(Util.makeAsyncResult(null, event.cause()));
+                }
+            }
+        });
+    }
+
+    public void sendVoice(SendVoice voice) {
+        sendVoice(voice, null);
+    }
+
+    public void setWebhook(SetWebhook setWebhook) {
+        send(setWebhook, null);
     }
 
     public TelegramBot useCommandManager() {
