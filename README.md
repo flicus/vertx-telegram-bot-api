@@ -3,13 +3,15 @@ Telegam bot api for [vert.x](http://vertx.io)
 
 **still in development, to be done:**
 - WebhookReceiver class to implement [webhook](https://core.telegram.org/bots/api#getting-updates) way of receiving updates
-- develop *send* methods which intended to send binary data
+- develop *send* methods which intended to send binary data (make them accept URLs and objectId, not only InputFile)
   - sendPhoto
   - sendDocument
   - sendAudio
   - sendSticker
   - sendVideo
   - sendVoice
+- implement throttling of outgoing messages, make it configurable, make default configuration to obey Telegram limits
+- develop some kind of FSM for complex dialogs, tuned to suite bot specific
   
 ## Intro
 Add vertx-telegram-bot-api to your project. 
