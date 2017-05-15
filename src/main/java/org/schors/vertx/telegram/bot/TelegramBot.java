@@ -282,7 +282,6 @@ public class TelegramBot {
         send(unbanChatMember, null);
     }
 
-    //todo send binary objects, video etc
     public void unbanChatMember(UnbanChatMember unbanChatMember, Handler<AsyncResult<Boolean>> handler) {
         send(unbanChatMember, handler);
     }
