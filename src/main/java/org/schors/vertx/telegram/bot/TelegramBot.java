@@ -1,7 +1,8 @@
 /*
  *  The MIT License (MIT)
  *
- *  Copyright (c) 2017 schors
+ *  Copyright (c) 2017  schors
+ *
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
@@ -37,7 +38,7 @@ import io.vertx.core.json.JsonObject;
 import org.apache.log4j.Logger;
 import org.schors.vertx.telegram.bot.api.methods.*;
 import org.schors.vertx.telegram.bot.api.types.*;
-import org.schors.vertx.telegram.bot.commands.CommandManager;
+import org.schors.vertx.telegram.bot.commands.CommandHandler;
 import org.schors.vertx.telegram.bot.util.MultipartHelper;
 import org.schors.vertx.telegram.bot.util.NOKResponseException;
 import org.schors.vertx.telegram.bot.util.Util;
@@ -56,7 +57,7 @@ public class TelegramBot {
     private UpdateReceiver receiver;
     private Map<String, Object> facilities = new HashMap<>();
     private ObjectMapper mapper = new ObjectMapper();
-    private CommandManager commandManager;
+//    private CommandHandler commandHandler;
 
     public TelegramBot(Vertx vertx, TelegramOptions options) {
         this.vertx = vertx;
@@ -90,7 +91,7 @@ public class TelegramBot {
         return new TelegramBot(vertx, options);
     }
 
-    public static TelegramBot create(Vertx vertx, TelegramOptions options, CommandManager cm) {
+    public static TelegramBot create(Vertx vertx, TelegramOptions options, CommandHandler cm) {
         TelegramBot tb = new TelegramBot(vertx, options);
         cm.setBot(tb);
         return tb;
@@ -133,9 +134,9 @@ public class TelegramBot {
         return facilities;
     }
 
-    public CommandManager getCommandManager() {
-        return commandManager;
-    }
+//    public CommandHandler getCommandHandler() {
+//        return commandHandler;
+//    }
 
     private <T> void send(TelegramMethod message, Handler<AsyncResult<T>> handler) {
         String toSend = null;
@@ -534,23 +535,6 @@ public class TelegramBot {
 
     public void setWebhook(SetWebhook setWebhook) {
         send(setWebhook, null);
-    }
-
-    public TelegramBot useCommandManager() {
-        commandManager = new CommandManager(this);
-        commandManager.loadCommands();
-        return this;
-    }
-
-    public TelegramBot useCommandManager(String _package) {
-        commandManager = new CommandManager(this);
-        commandManager.loadCommands(_package);
-        return this;
-    }
-
-    public TelegramBot useCommandManager(CommandManager commandManager) {
-        this.commandManager = commandManager;
-        return this;
     }
 
 }

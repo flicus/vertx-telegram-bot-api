@@ -1,7 +1,8 @@
 /*
  *  The MIT License (MIT)
  *
- *  Copyright (c) 2017 schors
+ *  Copyright (c) 2017  schors
+ *
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
@@ -36,6 +37,7 @@ public class TelegramOptions {
     private String keystorePath;
     private String keystorePassword;
     private String url;
+    private String commandPackage;
 
     public String getBotName() {
         return botName;
@@ -43,6 +45,15 @@ public class TelegramOptions {
 
     public TelegramOptions setBotName(String botName) {
         this.botName = botName;
+        return this;
+    }
+
+    public String getCommandPackage() {
+        return commandPackage;
+    }
+
+    public TelegramOptions setCommandPackage(String commandPackage) {
+        this.commandPackage = commandPackage;
         return this;
     }
 

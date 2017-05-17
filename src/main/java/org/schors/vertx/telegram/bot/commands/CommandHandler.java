@@ -1,7 +1,8 @@
 /*
  *  The MIT License (MIT)
  *
- *  Copyright (c) 2017 schors
+ *  Copyright (c) 2017  schors
+ *
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
@@ -23,6 +24,7 @@
 
 package org.schors.vertx.telegram.bot.commands;
 
+import io.vertx.core.Handler;
 import org.apache.log4j.Logger;
 import org.reflections.Reflections;
 import org.schors.vertx.telegram.bot.TelegramBot;
@@ -32,9 +34,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-public class CommandManager {
+public class CommandHandler implements Handler<Update> {
 
-    private static final Logger log = Logger.getLogger(CommandManager.class);
+    private static final Logger log = Logger.getLogger(CommandHandler.class);
 
     private TelegramBot bot;
     private Pattern commandPattern;
@@ -44,35 +46,35 @@ public class CommandManager {
     private Command preExecute;
     private Command postExecute;
 
-    public CommandManager() {
+    public CommandHandler() {
     }
 
-    public CommandManager(TelegramBot bot) {
+    public CommandHandler(TelegramBot bot) {
         this.bot = bot;
     }
 
-    public CommandManager addCommand(Command command) {
+    public CommandHandler addCommand(Command command) {
         BotCommand annotation = command.getClass().getAnnotation(BotCommand.class);
         if (annotation.isDefault()) {
             setDefaultCommand(command);
         } else if (annotation.isPostExecute()) {
-            command.setCommandManager(this);
+            command.setCommandHandler(this);
             postExecute = command;
         } else if (annotation.isPreExecute()) {
-            command.setCommandManager(this);
+            command.setCommandHandler(this);
             preExecute = command;
         } else {
-            command.setCommandManager(this);
+            command.setCommandHandler(this);
             commands.add(command);
         }
         return this;
     }
 
-    public CommandManager loadCommands() {
+    public CommandHandler loadCommands() {
         return loadCommands(null);
     }
 
-    public CommandManager loadCommands(String _package) {
+    public CommandHandler loadCommands(String _package) {
         bot.getVertx().executeBlocking(future -> {
             Reflections reflections = _package == null ? new Reflections(this.getClass().getClassLoader()) : new Reflections(_package);
             Set<Class<?>> res = reflections.getTypesAnnotatedWith(BotCommand.class);
@@ -104,7 +106,7 @@ public class CommandManager {
         return commandPattern.matcher(text).matches();
     }
 
-    public CommandManager execute(CommandContext context) {
+    public CommandHandler execute(CommandContext context) {
         if (preExecute != null) {
             preExecute.execute(context, checkEvent -> {
                 if (Boolean.TRUE.equals(checkEvent)) {
@@ -142,9 +144,9 @@ public class CommandManager {
                 });
     }
 
-    public CommandManager setDefaultCommand(Command command) {
+    public CommandHandler setDefaultCommand(Command command) {
         this.defaultCommand = command;
-        this.defaultCommand.setCommandManager(this);
+        this.defaultCommand.setCommandHandler(this);
         return this;
     }
 
@@ -156,7 +158,7 @@ public class CommandManager {
         return this.bot;
     }
 
-    public CommandManager setBot(TelegramBot bot) {
+    public CommandHandler setBot(TelegramBot bot) {
         this.bot = bot;
         return this;
     }

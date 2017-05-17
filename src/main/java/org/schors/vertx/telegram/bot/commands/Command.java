@@ -1,8 +1,8 @@
 /*
- *
  *  The MIT License (MIT)
  *
- *  Copyright (c) 2016 schors
+ *  Copyright (c) 2017  schors
+ *
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
@@ -20,7 +20,6 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
- *
  */
 
 package org.schors.vertx.telegram.bot.commands;
@@ -31,18 +30,18 @@ import org.schors.vertx.telegram.bot.api.methods.SendMessage;
 
 public abstract class Command {
 
-    private CommandManager commandManager;
+    private CommandHandler commandHandler;
 
     public Command() {
 
     }
 
     protected TelegramBot getBot() {
-        return this.commandManager.getBot();
+        return this.commandHandler.getBot();
     }
 
-    protected Command setCommandManager(CommandManager commandManager) {
-        this.commandManager = commandManager;
+    protected Command setCommandHandler(CommandHandler commandHandler) {
+        this.commandHandler = commandHandler;
         return this;
     }
 
