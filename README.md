@@ -16,7 +16,7 @@ For maven:
  <dependency>
      <groupId>com.github.flicus</groupId>
      <artifactId>vertx-telegram-bot-api</artifactId>
-     <version>0.1.12</version>
+     <version>1.0.0</version>
  </dependency>
  ```
 For gradle:
@@ -25,7 +25,7 @@ For gradle:
     maven { url "https://jitpack.io" }
  }
  dependencies {
-    compile 'com.github.flicus:vertx-telegram-bot-api:0.1.12'
+    compile 'com.github.flicus:vertx-telegram-bot-api:1.0.0'
   }
  ```
 ## Usage
