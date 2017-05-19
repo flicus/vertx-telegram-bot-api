@@ -4,7 +4,7 @@ Telegam bot api for [vert.x](http://vertx.io)
 **still in development, to be done:**
 - WebhookReceiver class to implement [webhook](https://core.telegram.org/bots/api#getting-updates) way of receiving updates
 
-** new features to implement**
+**new features to implement**
 - implement throttling of outgoing messages, make it configurable, make default configuration to obey Telegram limits
 - develop some kind of FSM for complex dialogs, tuned to suite bot specific
   
