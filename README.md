@@ -78,7 +78,7 @@ Message parameter is an regular expression to match with telegram message text f
 Next we need to say to our bot to use command handler:
 ```java
 bot = TelegramBot.create(vertx, telegramOptions)
-                .receiver(new LongPollingReceiver().onUpdate(new CommandHandler(bot).loadCommands()))
+                .receiver(new LongPollingReceiver().onUpdate(new CommandHandler().loadCommands()))
                 .start();
 ```
 Here we already don't need to write update handler for receiver, commands will be found automatically by annotations and its execute() method will be invoked if the message matches the regexp from commands annotation. 
@@ -137,7 +137,7 @@ So, just use *isPostExecute* parameter of annotation.
 To dynamically find commands, this library traversing the classpath. If you have a lot of other libraries and classes in your classpath it may be time consuming operation. To dramatically reduce this time you may say to bot in which package all your annotated commands resides. You can do this like this:
 ```java
 bot = TelegramBot.create(vertx, telegramOptions)
-                .receiver(new LongPollingReceiver().onUpdate(new CommandHandler(bot).loadCommands("org.test.bot")))
+                .receiver(new LongPollingReceiver().onUpdate(new CommandHandler().loadCommands("org.test.bot")))
                 .start();
 ```
 where *org.test.bot* - is the package where your commands resides.
@@ -145,7 +145,7 @@ where *org.test.bot* - is the package where your commands resides.
 ### Manual command addition
 You can omit this dynamic commands loading and configure command handler yourself from the code. This is how to do this:
 ```java
-CommandHandler commandHandler = new CommandHandler(bot)
+CommandHandler commandHandler = new CommandHandler()
                 .addCommand(new DefaultCommand())
                 .addCommand(new HelloCommand())
                 .addCommand(new PostCommand());
@@ -160,7 +160,7 @@ CommandContext is intended to keep all information regarding current message pro
 db = new Storage(vertx, config().getString("admin"));
         
 bot = TelegramBot.create(vertx, telegramOptions)
-                .receiver(new LongPollingReceiver().onUpdate(new CommandHandler(bot).loadCommands()))
+                .receiver(new LongPollingReceiver().onUpdate(new CommandHandler().loadCommands()))
                 .addFacility("db", db)
                 .start();
 ```

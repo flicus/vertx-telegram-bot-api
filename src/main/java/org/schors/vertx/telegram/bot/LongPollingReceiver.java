@@ -1,8 +1,7 @@
 /*
  *  The MIT License (MIT)
  *
- *  Copyright (c) 2017  schors
- *
+ *  Copyright (c) 2017 schors
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
@@ -35,6 +34,7 @@ import io.vertx.core.json.JsonObject;
 import org.apache.log4j.Logger;
 import org.schors.vertx.telegram.bot.api.methods.GetUpdates;
 import org.schors.vertx.telegram.bot.api.types.Update;
+import org.schors.vertx.telegram.bot.commands.CommandHandler;
 import org.schors.vertx.telegram.bot.util.Util;
 
 public class LongPollingReceiver implements UpdateReceiver {
@@ -94,6 +94,9 @@ public class LongPollingReceiver implements UpdateReceiver {
     @Override
     public UpdateReceiver onUpdate(Handler<Update> handler) {
         this.handler = handler;
+        if (handler instanceof CommandHandler) {
+            ((CommandHandler) handler).setBot(this.bot);
+        }
         return this;
     }
 
