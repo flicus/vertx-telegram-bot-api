@@ -35,6 +35,8 @@ public class InlineQueryResultMpeg4Gif extends InlineQueryResult {
     private Integer mpeg4Width;
     @JsonProperty("mpeg4_height")
     private Integer mpeg4Height;
+    @JsonProperty("mpeg4_duration")
+    private Integer mpeg4Duration;
     @JsonProperty("thumb_url")
     private String thumbUrl;
     private String title;
@@ -148,6 +150,15 @@ public class InlineQueryResultMpeg4Gif extends InlineQueryResult {
 
     public InlineQueryResultMpeg4Gif setInputMessageContent(InputMessageContent inputMessageContent) {
         this.inputMessageContent = inputMessageContent;
+        return this;
+    }
+
+    public Integer getMpeg4Duration() {
+        return mpeg4Duration;
+    }
+
+    public InlineQueryResultMpeg4Gif setMpeg4Duration(Integer mpeg4Duration) {
+        this.mpeg4Duration = mpeg4Duration;
         return this;
     }
 }

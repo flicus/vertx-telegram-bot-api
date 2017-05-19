@@ -21,29 +21,36 @@
  *  SOFTWARE.
  */
 
-package org.schors.vertx.telegram.bot.api.types;
+package org.schors.vertx.telegram.bot.api.types.payment;
 
-public enum Action {
+public class LabeledPrice {
 
-    TYPING("typing"),
-    RECORDVIDEO("record_video"),
-    RECORDAUDIO("record_audio"),
-    UPLOADPHOTO("upload_photo"),
-    UPLOADVIDEO("upload_video"),
-    UPLOADAUDIO("upload_audio"),
-    UPLOADDOCUMENT("upload_document"),
-    FINDLOCATION("find_location"),
-    RECORDVIDEONOTE("record_video_note"),
-    UPLOADVIDEONOTE("record_video_note");
+    private String label;
+    private Integer amount;
 
-    private String text;
-
-    Action(String text) {
-        this.text = text;
+    public LabeledPrice() {
     }
 
-    @Override
-    public String toString() {
-        return text;
+    public LabeledPrice(String label, Integer amount) {
+        this.label = label;
+        this.amount = amount;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public LabeledPrice setLabel(String label) {
+        this.label = label;
+        return this;
+    }
+
+    public Integer getAmount() {
+        return amount;
+    }
+
+    public LabeledPrice setAmount(Integer amount) {
+        this.amount = amount;
+        return this;
     }
 }

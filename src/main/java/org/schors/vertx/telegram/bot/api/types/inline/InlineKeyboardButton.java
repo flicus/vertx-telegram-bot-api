@@ -1,7 +1,7 @@
 /*
  *  The MIT License (MIT)
  *
- *  Copyright (c) 2016 schors
+ *  Copyright (c) 2017 schors
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
@@ -38,6 +38,7 @@ public class InlineKeyboardButton {
     private String switchInlineQueryCurrentChat;
     @JsonProperty("callback_game")
     private CallbackGame callbackGame;
+    private Boolean pay;
 
     public InlineKeyboardButton() {
     }
@@ -102,6 +103,15 @@ public class InlineKeyboardButton {
 
     public InlineKeyboardButton setCallbackGame(CallbackGame callbackGame) {
         this.callbackGame = callbackGame;
+        return this;
+    }
+
+    public Boolean isPay() {
+        return pay;
+    }
+
+    public InlineKeyboardButton setPay(Boolean pay) {
+        this.pay = pay;
         return this;
     }
 }

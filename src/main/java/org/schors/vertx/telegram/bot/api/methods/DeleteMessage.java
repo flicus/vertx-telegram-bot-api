@@ -21,29 +21,45 @@
  *  SOFTWARE.
  */
 
-package org.schors.vertx.telegram.bot.api.types;
+package org.schors.vertx.telegram.bot.api.methods;
 
-public enum Action {
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    TYPING("typing"),
-    RECORDVIDEO("record_video"),
-    RECORDAUDIO("record_audio"),
-    UPLOADPHOTO("upload_photo"),
-    UPLOADVIDEO("upload_video"),
-    UPLOADAUDIO("upload_audio"),
-    UPLOADDOCUMENT("upload_document"),
-    FINDLOCATION("find_location"),
-    RECORDVIDEONOTE("record_video_note"),
-    UPLOADVIDEONOTE("record_video_note");
+public class DeleteMessage extends TelegramMethod {
 
-    private String text;
+    @JsonProperty("chat_id")
+    private String chatId;
+    @JsonProperty("message_id")
+    private Integer messageId;
 
-    Action(String text) {
-        this.text = text;
+    public DeleteMessage() {
+    }
+
+    public DeleteMessage(String chatId, Integer messageId) {
+        this.chatId = chatId;
+        this.messageId = messageId;
+    }
+
+    public String getChatId() {
+        return chatId;
+    }
+
+    public DeleteMessage setChatId(String chatId) {
+        this.chatId = chatId;
+        return this;
+    }
+
+    public Integer getMessageId() {
+        return messageId;
+    }
+
+    public DeleteMessage setMessageId(Integer messageId) {
+        this.messageId = messageId;
+        return this;
     }
 
     @Override
-    public String toString() {
-        return text;
+    public String getMethod() {
+        return "deleteMessage";
     }
 }

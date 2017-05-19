@@ -21,29 +21,47 @@
  *  SOFTWARE.
  */
 
-package org.schors.vertx.telegram.bot.api.types;
+package org.schors.vertx.telegram.bot.api.types.payment;
 
-public enum Action {
+public class ShippingOption {
 
-    TYPING("typing"),
-    RECORDVIDEO("record_video"),
-    RECORDAUDIO("record_audio"),
-    UPLOADPHOTO("upload_photo"),
-    UPLOADVIDEO("upload_video"),
-    UPLOADAUDIO("upload_audio"),
-    UPLOADDOCUMENT("upload_document"),
-    FINDLOCATION("find_location"),
-    RECORDVIDEONOTE("record_video_note"),
-    UPLOADVIDEONOTE("record_video_note");
+    private String id;
+    private String title;
+    private LabeledPrice[] prices;
 
-    private String text;
-
-    Action(String text) {
-        this.text = text;
+    public ShippingOption() {
     }
 
-    @Override
-    public String toString() {
-        return text;
+    public ShippingOption(String id, String title, LabeledPrice[] prices) {
+        this.id = id;
+        this.title = title;
+        this.prices = prices;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public ShippingOption setId(String id) {
+        this.id = id;
+        return this;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public ShippingOption setTitle(String title) {
+        this.title = title;
+        return this;
+    }
+
+    public LabeledPrice[] getPrices() {
+        return prices;
+    }
+
+    public ShippingOption setPrices(LabeledPrice[] prices) {
+        this.prices = prices;
+        return this;
     }
 }

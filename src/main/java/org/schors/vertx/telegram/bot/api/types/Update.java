@@ -1,7 +1,7 @@
 /*
  *  The MIT License (MIT)
  *
- *  Copyright (c) 2016 schors
+ *  Copyright (c) 2017 schors
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
@@ -26,6 +26,8 @@ package org.schors.vertx.telegram.bot.api.types;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.schors.vertx.telegram.bot.api.types.inline.ChosenInlineResult;
 import org.schors.vertx.telegram.bot.api.types.inline.InlineQuery;
+import org.schors.vertx.telegram.bot.api.types.payment.PreCheckoutQuery;
+import org.schors.vertx.telegram.bot.api.types.payment.ShippingQuery;
 
 public class Update {
 
@@ -44,6 +46,10 @@ public class Update {
     private ChosenInlineResult chosenInlineResult;
     @JsonProperty("callback_query")
     private CallbackQuery callbackQuery;
+    @JsonProperty("shipping_query")
+    private ShippingQuery shippingQuery;
+    @JsonProperty("pre_checkout_query")
+    private PreCheckoutQuery preCheckoutQuery;
 
     public Update() {
     }
@@ -133,5 +139,23 @@ public class Update {
 
     public boolean hasMessage() {
         return message != null;
+    }
+
+    public ShippingQuery getShippingQuery() {
+        return shippingQuery;
+    }
+
+    public Update setShippingQuery(ShippingQuery shippingQuery) {
+        this.shippingQuery = shippingQuery;
+        return this;
+    }
+
+    public PreCheckoutQuery getPreCheckoutQuery() {
+        return preCheckoutQuery;
+    }
+
+    public Update setPreCheckoutQuery(PreCheckoutQuery preCheckoutQuery) {
+        this.preCheckoutQuery = preCheckoutQuery;
+        return this;
     }
 }

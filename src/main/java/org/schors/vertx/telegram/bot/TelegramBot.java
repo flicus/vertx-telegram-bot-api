@@ -1,8 +1,7 @@
 /*
  *  The MIT License (MIT)
  *
- *  Copyright (c) 2017  schors
- *
+ *  Copyright (c) 2017 schors
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
@@ -319,6 +318,69 @@ public class TelegramBot {
         send(getChatMember, handler);
     }
 
+    public void editMessageText(EditMessageText editMessageText, Handler<AsyncResult<Message>> handler) {   //todo may return true
+        send(editMessageText, handler);
+    }
+
+    public void editMessageText(EditMessageText editMessageText) {
+        send(editMessageText, null);
+    }
+
+    public void editMessageCaption(EditMessageCaption editMessageCaption) {
+        send(editMessageCaption, null);
+    }
+
+    public void editMessageCaption(EditMessageCaption editMessageCaption, Handler<AsyncResult<Message>> handler) {
+        send(editMessageCaption, handler);
+    }
+
+    public void editMessageReplyMarkup(EditMessageReplyMarkup editMessageReplyMarkup) {
+        send(editMessageReplyMarkup, null);
+    }
+
+    public void editMessageReplyMarkup(EditMessageReplyMarkup editMessageReplyMarkup, Handler<AsyncResult<Message>> handler) {
+        send(editMessageReplyMarkup, handler);
+    }
+
+    public void deleteMessage(DeleteMessage deleteMessage) {
+        send(deleteMessage, null);
+    }
+
+    public void deleteMessage(DeleteMessage deleteMessage, Handler<AsyncResult<Boolean>> handler) {
+        send(deleteMessage, handler);
+    }
+
+    public void sendVideoNote(SendVideoNote sendVideoNote) {
+        sendVideoNote(sendVideoNote, null);
+    }
+
+    public void sendVideoNote(SendVideoNote sendVideoNote, Handler<AsyncResult<Message>> handler) {
+        vertx.executeBlocking(future -> {
+            HttpClientRequest request = createRequest(sendVideoNote, future);
+            java.io.File file = new java.io.File(sendVideoNote.getVideoNote());
+            MultipartHelper multipartHelper = new MultipartHelper(vertx, request);
+            multipartHelper
+                    .putTextBody("chat_id", sendVideoNote.getChatId())
+                    .putTextBody("reply_to_message_id", sendVideoNote.getReplyToMessageId())
+                    .putTextBody("duration", sendVideoNote.getDuration())
+                    .putTextBody("length", sendVideoNote.getLength())
+                    .putTextBody("disable_notification", sendVideoNote.isDisableNotification())
+                    .putTextBody("reply_markup", sendVideoNote.getReplyMarkup())
+                    .putBinaryBody("video_note", sendVideoNote.getVideoNote(), "application/octet-stream", file.getName(), event -> {
+                        multipartHelper.stop();
+                        request.end();
+                    });
+        }, event -> {
+            if (handler != null) {
+                if (event.succeeded()) {
+                    handler.handle(Util.makeAsyncResult((Message) event.result(), null));
+                } else {
+                    handler.handle(Util.makeAsyncResult(null, event.cause()));
+                }
+            }
+        });
+    }
+
     public void sendDocument(SendDocument document) {
         sendDocument(document, null);
     }
@@ -531,6 +593,30 @@ public class TelegramBot {
 
     public void sendVoice(SendVoice voice) {
         sendVoice(voice, null);
+    }
+
+    public void sendInvoice(SendInvoice sendInvoice, Handler<AsyncResult<Message>> handler) {
+        send(sendInvoice, handler);
+    }
+
+    public void sendInvoice(SendInvoice sendInvoice) {
+        sendInvoice(sendInvoice, null);
+    }
+
+    public void answerShippingQuery(AnswerShippingQuery answerShippingQuery, Handler<AsyncResult<Boolean>> handler) {
+        send(answerShippingQuery, handler);
+    }
+
+    public void answerShippingQuery(AnswerShippingQuery answerShippingQuery) {
+        send(answerShippingQuery, null);
+    }
+
+    public void answerPreCheckoutQuery(AnswerPreCheckoutQuery answerPreCheckoutQuery, Handler<AsyncResult<Boolean>> handler) {
+        send(answerPreCheckoutQuery, handler);
+    }
+
+    public void answerPreCheckoutQuery(AnswerPreCheckoutQuery answerPreCheckoutQuery) {
+        send(answerPreCheckoutQuery, null);
     }
 
     public void setWebhook(SetWebhook setWebhook) {

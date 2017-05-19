@@ -1,7 +1,7 @@
 /*
  *  The MIT License (MIT)
  *
- *  Copyright (c) 2016 schors
+ *  Copyright (c) 2017 schors
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
@@ -24,6 +24,8 @@
 package org.schors.vertx.telegram.bot.api.types;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.schors.vertx.telegram.bot.api.types.payment.Invoice;
+import org.schors.vertx.telegram.bot.api.types.payment.SuccessfulPayment;
 
 public class Message {
 
@@ -52,13 +54,15 @@ public class Message {
     private PhotoSize[] photo;
     private Sticker sticker;
     private Video video;
+    @JsonProperty("video_note")
+    private VideoNote videoNote;
     private Voice voice;
     private String caption;
     private Contact contact;
     private Location location;
     private Venue venue;
-    @JsonProperty("new_chat_member")
-    private User newChatMember;
+    @JsonProperty("new_chat_members")
+    private User[] newChatMembers;
     @JsonProperty("left_chat_member")
     private User leftChatMember;
     @JsonProperty("new_chat_title")
@@ -79,11 +83,14 @@ public class Message {
     private Integer migrateFromChatId;
     @JsonProperty("pinned_message")
     private Message pinnedMessage;
+    private Invoice invoice;
+    @JsonProperty("successful_payment")
+    private SuccessfulPayment successfulPayment;
 
     public Message() {
     }
 
-    public Message(Integer messageId, User from, Integer date, Chat chat, User forwardFrom, Chat forwardFromChat, Integer forwardFromMessageId, Integer forwardDate, Message replyToMessage, Integer editDate, String text, MessageEntity[] entities, Audio audio, Document document, Game game, PhotoSize[] photo, Sticker sticker, Video video, Voice voice, String caption, Contact contact, Location location, Venue venue, User newChatMember, User leftChatMember, String newChatTitle, PhotoSize[] newChatPhoto, Boolean deleteChatPhoto, Boolean groupChatCreated, Boolean supergroupChatCreated, Boolean channelChatCreated, Integer migrateToChatId, Integer migrateFromChatId, Message pinnedMessage) {
+    public Message(Integer messageId, User from, Integer date, Chat chat, User forwardFrom, Chat forwardFromChat, Integer forwardFromMessageId, Integer forwardDate, Message replyToMessage, Integer editDate, String text, MessageEntity[] entities, Audio audio, Document document, Game game, PhotoSize[] photo, Sticker sticker, Video video, Voice voice, String caption, Contact contact, Location location, Venue venue, User[] newChatMembers, User leftChatMember, String newChatTitle, PhotoSize[] newChatPhoto, Boolean deleteChatPhoto, Boolean groupChatCreated, Boolean supergroupChatCreated, Boolean channelChatCreated, Integer migrateToChatId, Integer migrateFromChatId, Message pinnedMessage) {
         this.messageId = messageId;
         this.from = from;
         this.date = date;
@@ -107,7 +114,7 @@ public class Message {
         this.contact = contact;
         this.location = location;
         this.venue = venue;
-        this.newChatMember = newChatMember;
+        this.newChatMembers = newChatMembers;
         this.leftChatMember = leftChatMember;
         this.newChatTitle = newChatTitle;
         this.newChatPhoto = newChatPhoto;
@@ -327,12 +334,12 @@ public class Message {
         return this;
     }
 
-    public User getNewChatMember() {
-        return newChatMember;
+    public User[] getNewChatMembers() {
+        return newChatMembers;
     }
 
-    public Message setNewChatMember(User newChatMember) {
-        this.newChatMember = newChatMember;
+    public Message setNewChatMembers(User[] newChatMembers) {
+        this.newChatMembers = newChatMembers;
         return this;
     }
 
@@ -432,5 +439,32 @@ public class Message {
 
     public boolean hasText() {
         return text != null;
+    }
+
+    public VideoNote getVideoNote() {
+        return videoNote;
+    }
+
+    public Message setVideoNote(VideoNote videoNote) {
+        this.videoNote = videoNote;
+        return this;
+    }
+
+    public Invoice getInvoice() {
+        return invoice;
+    }
+
+    public Message setInvoice(Invoice invoice) {
+        this.invoice = invoice;
+        return this;
+    }
+
+    public SuccessfulPayment getSuccessfulPayment() {
+        return successfulPayment;
+    }
+
+    public Message setSuccessfulPayment(SuccessfulPayment successfulPayment) {
+        this.successfulPayment = successfulPayment;
+        return this;
     }
 }

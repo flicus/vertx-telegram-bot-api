@@ -35,6 +35,8 @@ public class InlineQueryResultGif extends InlineQueryResult {
     private Integer gifWidth;
     @JsonProperty("gif_height")
     private Integer gifHeight;
+    @JsonProperty("gif_duration")
+    private Integer gifDuration;
     @JsonProperty("thumb_url")
     private String thumbUrl;
     private String title;
@@ -148,6 +150,15 @@ public class InlineQueryResultGif extends InlineQueryResult {
 
     public InlineQueryResultGif setInputMessageContent(InputMessageContent inputMessageContent) {
         this.inputMessageContent = inputMessageContent;
+        return this;
+    }
+
+    public Integer getGifDuration() {
+        return gifDuration;
+    }
+
+    public InlineQueryResultGif setGifDuration(Integer gifDuration) {
+        this.gifDuration = gifDuration;
         return this;
     }
 }

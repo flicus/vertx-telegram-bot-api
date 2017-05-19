@@ -1,7 +1,7 @@
 /*
  *  The MIT License (MIT)
  *
- *  Copyright (c) 2016 schors
+ *  Copyright (c) 2017 schors
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
@@ -32,6 +32,8 @@ public class User {
     @JsonProperty("last_name")
     private String lastName;
     private String username;
+    @JsonProperty("language_code")
+    private String languageCode;
 
     public User() {
     }
@@ -41,6 +43,14 @@ public class User {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
+    }
+
+    public User(Integer id, String firstName, String lastName, String username, String languageCode) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = username;
+        this.languageCode = languageCode;
     }
 
     public Integer getId() {
@@ -76,6 +86,15 @@ public class User {
 
     public User setUsername(String username) {
         this.username = username;
+        return this;
+    }
+
+    public String getLanguageCode() {
+        return languageCode;
+    }
+
+    public User setLanguageCode(String languageCode) {
+        this.languageCode = languageCode;
         return this;
     }
 }
