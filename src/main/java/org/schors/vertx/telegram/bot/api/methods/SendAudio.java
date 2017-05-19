@@ -23,8 +23,13 @@
 
 package org.schors.vertx.telegram.bot.api.methods;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.streams.ReadStream;
 import org.schors.vertx.telegram.bot.api.types.Markup;
+
+import java.io.File;
 
 public class SendAudio extends TelegramMethod {
 
@@ -41,6 +46,13 @@ public class SendAudio extends TelegramMethod {
     private Integer replyToMessageId;
     @JsonProperty("reply_markup")
     private Markup replyMarkup;
+
+    @JsonIgnore
+    private File file;
+    @JsonIgnore
+    private ReadStream<Buffer> stream;
+    @JsonIgnore
+    private String localFilePath;
 
     public SendAudio() {
     }
@@ -135,6 +147,33 @@ public class SendAudio extends TelegramMethod {
 
     public SendAudio setReplyMarkup(Markup replyMarkup) {
         this.replyMarkup = replyMarkup;
+        return this;
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public SendAudio setFile(File file) {
+        this.file = file;
+        return this;
+    }
+
+    public ReadStream<Buffer> getStream() {
+        return stream;
+    }
+
+    public SendAudio setStream(ReadStream<Buffer> stream) {
+        this.stream = stream;
+        return this;
+    }
+
+    public String getLocalFilePath() {
+        return localFilePath;
+    }
+
+    public SendAudio setLocalFilePath(String localFilePath) {
+        this.localFilePath = localFilePath;
         return this;
     }
 

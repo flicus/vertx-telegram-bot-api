@@ -388,18 +388,34 @@ public class TelegramBot {
     public void sendDocument(SendDocument document, Handler<AsyncResult<Message>> handler) {
         vertx.executeBlocking(future -> {
             HttpClientRequest request = createRequest(document, future);
-            java.io.File file = new java.io.File(document.getDocument());
             MultipartHelper multipartHelper = new MultipartHelper(vertx, request);
             multipartHelper
                     .putTextBody("chat_id", document.getChatId())
                     .putTextBody("reply_to_message_id", document.getReplyToMessageId())
                     .putTextBody("caption", document.getCaption())
                     .putTextBody("disable_notification", document.isDisableNotification())
-                    .putTextBody("reply_markup", document.getReplyMarkup())
-                    .putBinaryBody("document", document.getDocument(), "application/octet-stream", file.getName(), event -> {
-                        multipartHelper.stop();
-                        request.end();
-                    });
+                    .putTextBody("reply_markup", document.getReplyMarkup());
+            if (document.getFile() != null) {
+                multipartHelper
+                        .putBinaryBody("document", document.getFile(), "application/octet-stream", event -> {
+                            multipartHelper.stop();
+                            request.end();
+                        });
+            } else if (document.getLocalFilePath() != null) {
+                multipartHelper
+                        .putBinaryBody("document", new java.io.File(document.getLocalFilePath()), "application/octet-stream", event -> {
+                            multipartHelper.stop();
+                            request.end();
+                        });
+            } else if (document.getStream() != null) {
+                multipartHelper
+                        .putBinaryBody("document", document.getStream(), "application/octet-stream", document.getDocument(), event -> {
+                            multipartHelper.stop();
+                            request.end();
+                        });
+            } else if (document.getDocument() != null) {
+                multipartHelper.putTextBody("document", document.getDocument());
+            }
         }, event -> {
             if (handler != null) {
                 if (event.succeeded()) {
@@ -442,18 +458,34 @@ public class TelegramBot {
     public void sendPhoto(SendPhoto photo, Handler<AsyncResult<Message>> handler) {
         vertx.executeBlocking(future -> {
             HttpClientRequest request = createRequest(photo, future);
-            java.io.File file = new java.io.File(photo.getPhoto());
             MultipartHelper multipartHelper = new MultipartHelper(vertx, request);
             multipartHelper
                     .putTextBody("chat_id", photo.getChatId())
                     .putTextBody("reply_to_message_id", photo.getReplyToMessageId())
                     .putTextBody("caption", photo.getCaption())
                     .putTextBody("disable_notification", photo.isDisableNotification())
-                    .putTextBody("reply_markup", photo.getReplyMarkup())
-                    .putBinaryBody("photo", photo.getPhoto(), "application/octet-stream", file.getName(), event -> {
-                        multipartHelper.stop();
-                        request.end();
-                    });
+                    .putTextBody("reply_markup", photo.getReplyMarkup());
+            if (photo.getFile() != null) {
+                multipartHelper
+                        .putBinaryBody("photo", photo.getFile(), "application/octet-stream", event -> {
+                            multipartHelper.stop();
+                            request.end();
+                        });
+            } else if (photo.getLocalFilePath() != null) {
+                multipartHelper
+                        .putBinaryBody("photo", new java.io.File(photo.getLocalFilePath()), "application/octet-stream", event -> {
+                            multipartHelper.stop();
+                            request.end();
+                        });
+            } else if (photo.getStream() != null) {
+                multipartHelper
+                        .putBinaryBody("photo", photo.getStream(), "application/octet-stream", photo.getPhoto(), event -> {
+                            multipartHelper.stop();
+                            request.end();
+                        });
+            } else if (photo.getPhoto() != null) {
+                multipartHelper.putTextBody("photo", photo.getPhoto());
+            }
         }, event -> {
             if (handler != null) {
                 if (event.succeeded()) {
@@ -472,7 +504,6 @@ public class TelegramBot {
     public void sendAudio(SendAudio audio, Handler<AsyncResult<Message>> handler) {
         vertx.executeBlocking(future -> {
             HttpClientRequest request = createRequest(audio, future);
-            java.io.File file = new java.io.File(audio.getAudio());
             MultipartHelper multipartHelper = new MultipartHelper(vertx, request);
             multipartHelper
                     .putTextBody("chat_id", audio.getChatId())
@@ -482,11 +513,28 @@ public class TelegramBot {
                     .putTextBody("reply_markup", audio.getReplyMarkup())
                     .putTextBody("duration", audio.getDuration())
                     .putTextBody("performer", audio.getPerformer())
-                    .putTextBody("title", audio.getTitle())
-                    .putBinaryBody("audio", audio.getAudio(), "application/octet-stream", file.getName(), event -> {
-                        multipartHelper.stop();
-                        request.end();
-                    });
+                    .putTextBody("title", audio.getTitle());
+            if (audio.getFile() != null) {
+                multipartHelper
+                        .putBinaryBody("audio", audio.getFile(), "application/octet-stream", event -> {
+                            multipartHelper.stop();
+                            request.end();
+                        });
+            } else if (audio.getLocalFilePath() != null) {
+                multipartHelper
+                        .putBinaryBody("audio", new java.io.File(audio.getLocalFilePath()), "application/octet-stream", event -> {
+                            multipartHelper.stop();
+                            request.end();
+                        });
+            } else if (audio.getStream() != null) {
+                multipartHelper
+                        .putBinaryBody("audio", audio.getStream(), "application/octet-stream", audio.getAudio(), event -> {
+                            multipartHelper.stop();
+                            request.end();
+                        });
+            } else if (audio.getAudio() != null) {
+                multipartHelper.putTextBody("audio", audio.getAudio());
+            }
         }, event -> {
             if (handler != null) {
                 if (event.succeeded()) {
@@ -505,17 +553,33 @@ public class TelegramBot {
     public void sendSticker(SendSticker sticker, Handler<AsyncResult<Message>> handler) {
         vertx.executeBlocking(future -> {
             HttpClientRequest request = createRequest(sticker, future);
-            java.io.File file = new java.io.File(sticker.getSticker());
             MultipartHelper multipartHelper = new MultipartHelper(vertx, request);
             multipartHelper
                     .putTextBody("chat_id", sticker.getChatId())
                     .putTextBody("reply_to_message_id", sticker.getReplyToMessageId())
                     .putTextBody("disable_notification", sticker.isDisableNotification())
-                    .putTextBody("reply_markup", sticker.getReplyMarkup())
-                    .putBinaryBody("sticker", sticker.getSticker(), "application/octet-stream", file.getName(), event -> {
-                        multipartHelper.stop();
-                        request.end();
-                    });
+                    .putTextBody("reply_markup", sticker.getReplyMarkup());
+            if (sticker.getFile() != null) {
+                multipartHelper
+                        .putBinaryBody("sticker", sticker.getFile(), "application/octet-stream", event -> {
+                            multipartHelper.stop();
+                            request.end();
+                        });
+            } else if (sticker.getLocalFilePath() != null) {
+                multipartHelper
+                        .putBinaryBody("sticker", new java.io.File(sticker.getLocalFilePath()), "application/octet-stream", event -> {
+                            multipartHelper.stop();
+                            request.end();
+                        });
+            } else if (sticker.getStream() != null) {
+                multipartHelper
+                        .putBinaryBody("sticker", sticker.getStream(), "application/octet-stream", sticker.getSticker(), event -> {
+                            multipartHelper.stop();
+                            request.end();
+                        });
+            } else if (sticker.getSticker() != null) {
+                multipartHelper.putTextBody("sticker", sticker.getSticker());
+            }
         }, event -> {
             if (handler != null) {
                 if (event.succeeded()) {
@@ -534,7 +598,6 @@ public class TelegramBot {
     public void sendVideo(SendVideo video, Handler<AsyncResult<Message>> handler) {
         vertx.executeBlocking(future -> {
             HttpClientRequest request = createRequest(video, future);
-            java.io.File file = new java.io.File(video.getVideo());
             MultipartHelper multipartHelper = new MultipartHelper(vertx, request);
             multipartHelper
                     .putTextBody("chat_id", video.getChatId())
@@ -544,11 +607,28 @@ public class TelegramBot {
                     .putTextBody("duration", video.getDuration())
                     .putTextBody("caption", video.getCaption())
                     .putTextBody("width", video.getHeight())
-                    .putTextBody("height", video.getWidth())
-                    .putBinaryBody("video", video.getVideo(), "application/octet-stream", file.getName(), event -> {
-                        multipartHelper.stop();
-                        request.end();
-                    });
+                    .putTextBody("height", video.getWidth());
+            if (video.getFile() != null) {
+                multipartHelper
+                        .putBinaryBody("video", video.getFile(), "application/octet-stream", event -> {
+                            multipartHelper.stop();
+                            request.end();
+                        });
+            } else if (video.getLocalFilePath() != null) {
+                multipartHelper
+                        .putBinaryBody("video", new java.io.File(video.getLocalFilePath()), "application/octet-stream", event -> {
+                            multipartHelper.stop();
+                            request.end();
+                        });
+            } else if (video.getStream() != null) {
+                multipartHelper
+                        .putBinaryBody("video", video.getStream(), "application/octet-stream", video.getVideo(), event -> {
+                            multipartHelper.stop();
+                            request.end();
+                        });
+            } else if (video.getVideo() != null) {
+                multipartHelper.putTextBody("video", video.getVideo());
+            }
         }, event -> {
             if (handler != null) {
                 if (event.succeeded()) {
@@ -567,7 +647,6 @@ public class TelegramBot {
     public void sendVoice(SendVoice voice, Handler<AsyncResult<Message>> handler) {
         vertx.executeBlocking(future -> {
             HttpClientRequest request = createRequest(voice, future);
-            java.io.File file = new java.io.File(voice.getVoice());
             MultipartHelper multipartHelper = new MultipartHelper(vertx, request);
             multipartHelper
                     .putTextBody("chat_id", voice.getChatId())
@@ -575,11 +654,28 @@ public class TelegramBot {
                     .putTextBody("caption", voice.getCaption())
                     .putTextBody("disable_notification", voice.isDisableNotification())
                     .putTextBody("reply_markup", voice.getReplyMarkup())
-                    .putTextBody("duration", voice.getDuration())
-                    .putBinaryBody("voice", voice.getVoice(), "application/octet-stream", file.getName(), event -> {
-                        multipartHelper.stop();
-                        request.end();
-                    });
+                    .putTextBody("duration", voice.getDuration());
+            if (voice.getFile() != null) {
+                multipartHelper
+                        .putBinaryBody("voice", voice.getFile(), "application/octet-stream", event -> {
+                            multipartHelper.stop();
+                            request.end();
+                        });
+            } else if (voice.getLocalFilePath() != null) {
+                multipartHelper
+                        .putBinaryBody("voice", new java.io.File(voice.getLocalFilePath()), "application/octet-stream", event -> {
+                            multipartHelper.stop();
+                            request.end();
+                        });
+            } else if (voice.getStream() != null) {
+                multipartHelper
+                        .putBinaryBody("voice", voice.getStream(), "application/octet-stream", voice.getVoice(), event -> {
+                            multipartHelper.stop();
+                            request.end();
+                        });
+            } else if (voice.getVoice() != null) {
+                multipartHelper.putTextBody("voice", voice.getVoice());
+            }
         }, event -> {
             if (handler != null) {
                 if (event.succeeded()) {

@@ -28,11 +28,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.file.OpenOptions;
 import io.vertx.core.http.HttpClientRequest;
 import io.vertx.core.streams.Pump;
+import io.vertx.core.streams.ReadStream;
 import org.apache.log4j.Logger;
 import org.schors.vertx.telegram.bot.api.types.Markup;
+
+import java.io.File;
 
 public class MultipartHelper {
 
@@ -99,6 +103,32 @@ public class MultipartHelper {
                 putTextBody(name, replyMarkup);
         }
         return this;
+    }
+
+    public MultipartHelper putBinaryBody(String name, ReadStream<Buffer> stream, String contentType, String fileName, Handler<AsyncResult> handler) {
+        request
+                .write("--")
+                .write(boundary)
+                .write(System.lineSeparator())
+                .write(String.format("Content-Disposition: form-data; name=\"%s\"; filename=\"%s\"", name, fileName))
+                .write(System.lineSeparator())
+                .write(String.format("Content-Type: %s", contentType))
+                .write(System.lineSeparator())
+                .write("Content-Transfer-Encoding: binary")
+                .write(System.lineSeparator())
+                .write(System.lineSeparator());
+        Pump.pump(stream
+                .endHandler(event -> {
+                    request.write(System.lineSeparator());
+                    handler.handle(createResult(true, null));
+                })
+                .exceptionHandler(e -> handler.handle(createResult(false, e))), request)
+                .start();
+        return this;
+    }
+
+    public MultipartHelper putBinaryBody(String name, File file, String contentType, Handler<AsyncResult> handler) {
+        return putBinaryBody(name, file.getAbsolutePath(), contentType, file.getName(), handler);
     }
 
     public MultipartHelper putBinaryBody(String name, String path, String contentType, String fileName, Handler<AsyncResult> handler) {

@@ -3,13 +3,8 @@ Telegam bot api for [vert.x](http://vertx.io)
 
 **still in development, to be done:**
 - WebhookReceiver class to implement [webhook](https://core.telegram.org/bots/api#getting-updates) way of receiving updates
-- develop *send* methods which intended to send binary data (make them accept URLs and objectId, not only InputFile)
-  - sendPhoto
-  - sendDocument
-  - sendAudio
-  - sendSticker
-  - sendVideo
-  - sendVoice
+
+** new features to implement**
 - implement throttling of outgoing messages, make it configurable, make default configuration to obey Telegram limits
 - develop some kind of FSM for complex dialogs, tuned to suite bot specific
   
@@ -45,18 +40,16 @@ For gradle:
   
       @Override
       public void start() throws Exception {
-  
           TelegramOptions telegramOptions = new TelegramOptions()
                   .setBotName("test_bot")
-                  .setBotToken("1234567890:blablabla");
-  
+                  .setBotToken("12345:blablabla");
           bot = TelegramBot.create(vertx, telegramOptions)
-                  .receiver(new LongPollingReceiver()
-                          .onUpdate(update -> {
-                              bot.sendMessage(new SendMessage()
-                                      .setText("Hello, " + update.getMessage().getFrom().getUsername())
-                                      .setChatId(update.getMessage().getChatId()));
-                          }))
+                  .receiver(new LongPollingReceiver().onUpdate(update -> {
+                      bot.sendMessage(new SendMessage()
+                              .setText("Hello, " + update.getMessage().getFrom().getUsername())
+                              .setChatId(update.getMessage().getChatId())
+                      );
+                  }))
                   .start();
       }
   }
@@ -64,7 +57,7 @@ For gradle:
   In this example we using long polling method of getting updates, and saying hello back to user.
   
 ### Command manager
-  More advanced way is to use command manager. This way you will need command class for every type of command your bot is supporting. Lets see how to implement above Hello example using command manager. First, implement HelloCommand class:
+  More advanced way is to use command handler. This way you will need command class for every type of command your bot is supporting. Lets see how to implement above Hello example using command handler. First, implement HelloCommand class:
   ```java
   @BotCommand(message = "^/hello")
   public class HelloCommand extends Command {
@@ -82,11 +75,10 @@ For gradle:
 Here, with @BotCommand annotation we saying this is bot command, and with message parameter we saying what kind of message sent by user will invoke execute() method of this command.
 Message parameter is an regular expression to match with telegram message text from the user. In this example this message starting with "/hello".
 
-Next we need to say to our bot to use command manager:
+Next we need to say to our bot to use command handler:
 ```java
 bot = TelegramBot.create(vertx, telegramOptions)
-                .useCommandManager()
-                .receiver(new LongPollingReceiver())
+                .receiver(new LongPollingReceiver().onUpdate(new CommandHandler(bot).loadCommands()))
                 .start();
 ```
 Here we already don't need to write update handler for receiver, commands will be found automatically by annotations and its execute() method will be invoked if the message matches the regexp from commands annotation. 
@@ -142,26 +134,23 @@ public class PostCommand extends Command {
 So, just use *isPostExecute* parameter of annotation.
   
 ### Commands loading
-To dynamically find commands, this library traversing the classpath. If you have a lot of other libraries and classes in your classpath it may be time consuming operation. To dramatically reduce this time you may say to bot in wich package all your annotated commands resides. You can do this like this:
+To dynamically find commands, this library traversing the classpath. If you have a lot of other libraries and classes in your classpath it may be time consuming operation. To dramatically reduce this time you may say to bot in which package all your annotated commands resides. You can do this like this:
 ```java
 bot = TelegramBot.create(vertx, telegramOptions)
-                .useCommandManager("org.test.bot")
-                .receiver(new LongPollingReceiver())
+                .receiver(new LongPollingReceiver().onUpdate(new CommandHandler(bot).loadCommands("org.test.bot")))
                 .start();
 ```
 where *org.test.bot* - is the package where your commands resides.
 
 ### Manual command addition
-You can omit this dynamic commands loading and configure command manager yourself from the code. This is how to do this:
+You can omit this dynamic commands loading and configure command handler yourself from the code. This is how to do this:
 ```java
-CommandManager commandManager = new CommandManager()
+CommandHandler commandHandler = new CommandHandler(bot)
                 .addCommand(new DefaultCommand())
                 .addCommand(new HelloCommand())
                 .addCommand(new PostCommand());
-        
-        bot = TelegramBot.create(vertx, telegramOptions)
-                .useCommandManager(commandManager)
-                .receiver(new LongPollingReceiver())
+bot = TelegramBot.create(vertx, telegramOptions)
+                .receiver(new LongPollingReceiver().onUpdate(commandHandler))
                 .start();
 ```
 
@@ -170,9 +159,8 @@ CommandContext is intended to keep all information regarding current message pro
 ```java
 db = new Storage(vertx, config().getString("admin"));
         
-        bot = TelegramBot.create(vertx, telegramOptions)
-                .useCommandManager()
-                .receiver(new LongPollingReceiver())
+bot = TelegramBot.create(vertx, telegramOptions)
+                .receiver(new LongPollingReceiver().onUpdate(new CommandHandler(bot).loadCommands()))
                 .addFacility("db", db)
                 .start();
 ```

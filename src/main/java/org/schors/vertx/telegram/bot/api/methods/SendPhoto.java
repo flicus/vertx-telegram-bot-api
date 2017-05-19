@@ -1,7 +1,7 @@
 /*
  *  The MIT License (MIT)
  *
- *  Copyright (c) 2016 schors
+ *  Copyright (c) 2017 schors
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
@@ -23,14 +23,19 @@
 
 package org.schors.vertx.telegram.bot.api.methods;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.streams.ReadStream;
 import org.schors.vertx.telegram.bot.api.types.Markup;
+
+import java.io.File;
 
 public class SendPhoto extends TelegramMethod {
 
     @JsonProperty("chat_id")
     private String chatId;
-    private String photo;   //todo
+    private String photo;
     private String caption;
     @JsonProperty("disable_notification")
     private Boolean disableNotification;
@@ -38,6 +43,13 @@ public class SendPhoto extends TelegramMethod {
     private Integer replyToMessageId;
     @JsonProperty("reply_markup")
     private Markup replyMarkup;
+
+    @JsonIgnore
+    private File file;
+    @JsonIgnore
+    private ReadStream<Buffer> stream;
+    @JsonIgnore
+    private String localFilePath;
 
     public SendPhoto() {
     }
@@ -102,6 +114,33 @@ public class SendPhoto extends TelegramMethod {
 
     public SendPhoto setReplyMarkup(Markup replyMarkup) {
         this.replyMarkup = replyMarkup;
+        return this;
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public SendPhoto setFile(File file) {
+        this.file = file;
+        return this;
+    }
+
+    public ReadStream<Buffer> getStream() {
+        return stream;
+    }
+
+    public SendPhoto setStream(ReadStream<Buffer> stream) {
+        this.stream = stream;
+        return this;
+    }
+
+    public String getLocalFilePath() {
+        return localFilePath;
+    }
+
+    public SendPhoto setLocalFilePath(String localFilePath) {
+        this.localFilePath = localFilePath;
         return this;
     }
 
