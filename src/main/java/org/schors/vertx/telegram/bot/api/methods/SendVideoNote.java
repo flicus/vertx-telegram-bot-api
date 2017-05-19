@@ -23,8 +23,13 @@
 
 package org.schors.vertx.telegram.bot.api.methods;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.streams.ReadStream;
 import org.schors.vertx.telegram.bot.api.types.Markup;
+
+import java.io.File;
 
 public class SendVideoNote extends TelegramMethod {
 
@@ -40,6 +45,13 @@ public class SendVideoNote extends TelegramMethod {
     private Integer replyToMessageId;
     @JsonProperty("reply_markup")
     private Markup replyMarkup;
+
+    @JsonIgnore
+    private File file;
+    @JsonIgnore
+    private ReadStream<Buffer> stream;
+    @JsonIgnore
+    private String localFilePath;
 
     public SendVideoNote() {
     }
@@ -114,6 +126,33 @@ public class SendVideoNote extends TelegramMethod {
 
     public SendVideoNote setReplyMarkup(Markup replyMarkup) {
         this.replyMarkup = replyMarkup;
+        return this;
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public SendVideoNote setFile(File file) {
+        this.file = file;
+        return this;
+    }
+
+    public ReadStream<Buffer> getStream() {
+        return stream;
+    }
+
+    public SendVideoNote setStream(ReadStream<Buffer> stream) {
+        this.stream = stream;
+        return this;
+    }
+
+    public String getLocalFilePath() {
+        return localFilePath;
+    }
+
+    public SendVideoNote setLocalFilePath(String localFilePath) {
+        this.localFilePath = localFilePath;
         return this;
     }
 

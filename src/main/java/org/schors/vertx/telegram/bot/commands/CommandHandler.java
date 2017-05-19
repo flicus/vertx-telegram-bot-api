@@ -1,8 +1,7 @@
 /*
  *  The MIT License (MIT)
  *
- *  Copyright (c) 2017  schors
- *
+ *  Copyright (c) 2017 schors
  *   Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
@@ -76,7 +75,8 @@ public class CommandHandler implements Handler<Update> {
 
     public CommandHandler loadCommands(String _package) {
         bot.getVertx().executeBlocking(future -> {
-            Reflections reflections = _package == null ? new Reflections(this.getClass().getClassLoader()) : new Reflections(_package);
+            String pckg = _package == null ? bot.getOptions().getCommandPackage() : _package;
+            Reflections reflections = pckg == null ? new Reflections(this.getClass().getClassLoader()) : new Reflections(pckg);
             Set<Class<?>> res = reflections.getTypesAnnotatedWith(BotCommand.class);
             res.stream().filter(_class -> Command.class.isAssignableFrom(_class)).forEach(_class -> {
                 try {

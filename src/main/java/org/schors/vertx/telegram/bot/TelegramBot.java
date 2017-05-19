@@ -37,7 +37,6 @@ import io.vertx.core.json.JsonObject;
 import org.apache.log4j.Logger;
 import org.schors.vertx.telegram.bot.api.methods.*;
 import org.schors.vertx.telegram.bot.api.types.*;
-import org.schors.vertx.telegram.bot.commands.CommandHandler;
 import org.schors.vertx.telegram.bot.util.MultipartHelper;
 import org.schors.vertx.telegram.bot.util.NOKResponseException;
 import org.schors.vertx.telegram.bot.util.Util;
@@ -56,7 +55,6 @@ public class TelegramBot {
     private UpdateReceiver receiver;
     private Map<String, Object> facilities = new HashMap<>();
     private ObjectMapper mapper = new ObjectMapper();
-//    private CommandHandler commandHandler;
 
     public TelegramBot(Vertx vertx, TelegramOptions options) {
         this.vertx = vertx;
@@ -65,10 +63,7 @@ public class TelegramBot {
         mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 
         HttpClientOptions httpOptions = new HttpClientOptions()
-//                .setKeepAlive(true)
                 .setSsl(true)
-//                .setOpenSslEngineOptions(new OpenSSLEngineOptions())
-//                .setUseAlpn(true)
                 .setTrustAll(true)
                 .setIdleTimeout(this.getOptions().getPollingTimeout())
                 .setMaxPoolSize(this.getOptions().getMaxConnections())
@@ -88,12 +83,6 @@ public class TelegramBot {
 
     public static TelegramBot create(Vertx vertx, TelegramOptions options) {
         return new TelegramBot(vertx, options);
-    }
-
-    public static TelegramBot create(Vertx vertx, TelegramOptions options, CommandHandler cm) {
-        TelegramBot tb = new TelegramBot(vertx, options);
-        cm.setBot(tb);
-        return tb;
     }
 
     public TelegramBot receiver(UpdateReceiver updateReceiver) {
@@ -132,10 +121,6 @@ public class TelegramBot {
     public Map<String, Object> getFacilities() {
         return facilities;
     }
-
-//    public CommandHandler getCommandHandler() {
-//        return commandHandler;
-//    }
 
     private <T> void send(TelegramMethod message, Handler<AsyncResult<T>> handler) {
         String toSend = null;
@@ -357,7 +342,6 @@ public class TelegramBot {
     public void sendVideoNote(SendVideoNote sendVideoNote, Handler<AsyncResult<Message>> handler) {
         vertx.executeBlocking(future -> {
             HttpClientRequest request = createRequest(sendVideoNote, future);
-            java.io.File file = new java.io.File(sendVideoNote.getVideoNote());
             MultipartHelper multipartHelper = new MultipartHelper(vertx, request);
             multipartHelper
                     .putTextBody("chat_id", sendVideoNote.getChatId())
@@ -365,11 +349,28 @@ public class TelegramBot {
                     .putTextBody("duration", sendVideoNote.getDuration())
                     .putTextBody("length", sendVideoNote.getLength())
                     .putTextBody("disable_notification", sendVideoNote.isDisableNotification())
-                    .putTextBody("reply_markup", sendVideoNote.getReplyMarkup())
-                    .putBinaryBody("video_note", sendVideoNote.getVideoNote(), "application/octet-stream", file.getName(), event -> {
-                        multipartHelper.stop();
-                        request.end();
-                    });
+                    .putTextBody("reply_markup", sendVideoNote.getReplyMarkup());
+            if (sendVideoNote.getFile() != null) {
+                multipartHelper
+                        .putBinaryBody("video_note", sendVideoNote.getFile(), "application/octet-stream", event -> {
+                            multipartHelper.stop();
+                            request.end();
+                        });
+            } else if (sendVideoNote.getLocalFilePath() != null) {
+                multipartHelper
+                        .putBinaryBody("video_note", new java.io.File(sendVideoNote.getLocalFilePath()), "application/octet-stream", event -> {
+                            multipartHelper.stop();
+                            request.end();
+                        });
+            } else if (sendVideoNote.getStream() != null) {
+                multipartHelper
+                        .putBinaryBody("video_note", sendVideoNote.getStream(), "application/octet-stream", sendVideoNote.getVideoNote(), event -> {
+                            multipartHelper.stop();
+                            request.end();
+                        });
+            } else if (sendVideoNote.getVideoNote() != null) {
+                multipartHelper.putTextBody("video_note", sendVideoNote.getVideoNote());
+            }
         }, event -> {
             if (handler != null) {
                 if (event.succeeded()) {
@@ -719,4 +720,11 @@ public class TelegramBot {
         send(setWebhook, null);
     }
 
+    public void deleteWebhook() {
+        send(new DeleteWebhook(), null);
+    }
+
+    public void getWebhookInfo(Handler<AsyncResult<WebhookInfo>> handler) {
+        send(new GetWebhookInfo(), handler);
+    }
 }
