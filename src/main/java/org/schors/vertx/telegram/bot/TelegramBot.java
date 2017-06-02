@@ -45,7 +45,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TelegramBot {
+public final class TelegramBot {
 
     private static final Logger log = Logger.getLogger(TelegramBot.class);
 

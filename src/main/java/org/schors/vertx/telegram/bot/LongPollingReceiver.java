@@ -37,7 +37,7 @@ import org.schors.vertx.telegram.bot.api.types.Update;
 import org.schors.vertx.telegram.bot.commands.CommandHandler;
 import org.schors.vertx.telegram.bot.util.Util;
 
-public class LongPollingReceiver implements UpdateReceiver {
+public final class LongPollingReceiver implements UpdateReceiver {
 
     private static final Logger log = Logger.getLogger(LongPollingReceiver.class);
 

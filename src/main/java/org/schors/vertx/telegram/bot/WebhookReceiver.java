@@ -37,7 +37,7 @@ import org.schors.vertx.telegram.bot.api.types.Update;
 import org.schors.vertx.telegram.bot.commands.CommandHandler;
 import org.schors.vertx.telegram.bot.util.Util;
 
-public class WebhookReceiver implements UpdateReceiver {
+public final class WebhookReceiver implements UpdateReceiver {
 
     private static final Logger log = Logger.getLogger(WebhookReceiver.class);
 
