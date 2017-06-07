@@ -175,6 +175,19 @@ public final class TelegramBot {
         send(message, handler);
     }
 
+    public void reply(Update update, String message) {
+        sendMessage(new SendMessage()
+                .setText(message)
+                .setChatId(update.getMessage().getChatId()));
+    }
+
+    public void replyQuoting(Update update, String message) {
+        sendMessage(new SendMessage()
+                .setText(message)
+                .setChatId(update.getMessage().getChatId())
+                .setReplyToMessageId(update.getMessage().getMessageId()));
+    }
+
     public void sendChatAction(SendChatAction chatAction) {
         send(chatAction, null);
     }

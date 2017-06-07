@@ -63,11 +63,7 @@ For gradle:
   public class HelloCommand extends Command {
       @Override
       public void execute(CommandContext context, Handler<Boolean> handler) {
-          getBot().sendMessage(
-                  new SendMessage()
-                          .setReplyToMessageId(context.getUpdate().getMessage().getMessageId())
-                          .setChatId(context.getUpdate().getMessage().getChatId())
-                          .setText("Hello back, " + context.getUpdate().getMessage().getFrom().getUsername()));
+          getBot().replyQuoting(context.getUpdate(), "Hello back, " + context.getUpdate().getMessage().getFrom().getUsername()));
           handler.handle(Boolean.TRUE);
       }
   }
@@ -90,11 +86,7 @@ But what if message will not match any command? For this case we need to impleme
 public class DefaultCommand extends Command {
     @Override
     public void execute(CommandContext context, Handler<Boolean> handler) {
-        getBot().sendMessage(
-                new SendMessage()
-                        .setReplyToMessageId(context.getUpdate().getMessage().getMessageId())
-                        .setChatId(context.getUpdate().getMessage().getChatId())
-                        .setText("I do not understand"));
+        getBot().reply(context.getUpdate(), "I do not understand");
         handler.handle(Boolean.TRUE);
     }
 }
