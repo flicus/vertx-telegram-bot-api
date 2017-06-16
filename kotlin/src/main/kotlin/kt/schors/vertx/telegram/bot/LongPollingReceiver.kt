@@ -107,7 +107,7 @@ class LongPollingReceiver(handler: Handler<Update>? = null, var bot: TelegramBot
                                                 }
                                                 .filter { it != null && it.updateId > lastReceivedUpdate }
                                                 .forEach {
-                                                    log.debug("U: ${it.toString()}")
+                                                    log.debug("U: $it")
                                                     lastReceivedUpdate = it!!.updateId
                                                     handler?.handle(it)
                                                 }

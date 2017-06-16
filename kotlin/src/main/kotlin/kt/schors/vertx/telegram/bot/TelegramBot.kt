@@ -72,7 +72,6 @@ class TelegramBot(val vertx: Vertx, val options: TelegramOptions, receiver: Upda
             log.error(e, e)
             null
         }
-
         toSend?.let {
             httpClient
                     .post("/bot${options.botToken}/${message.method}")
