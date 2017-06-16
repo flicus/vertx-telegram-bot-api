@@ -1,15 +1,17 @@
 group 'org.schors'
-version '1.0-SNAPSHOT'
+version '0.9.5'
 
-apply plugin: 'java'
-
-repositories {
-    mavenCentral()
+if (!JavaVersion.current().java8Compatible) {
+    throw new IllegalStateException('''A Haiku:
+                                      |  This needs Java 8,
+                                      |  You are using something else,
+                                      |  Refresh. Try again.'''.stripMargin())
 }
 
-dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.11'
-    compile "log4j:log4j:1.2.17"
-    compile "io.vertx:vertx-core:3.4.1"
-    compile "org.reflections:reflections:0.9.11"
+subprojects {
+    repositories {
+        mavenCentral()
+        maven { url "https://jitpack.io" }
+    }
 }
+

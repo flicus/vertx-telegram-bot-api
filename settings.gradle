@@ -1,2 +1,3 @@
 rootProject.name = 'vertx-telegram-bot-api'
-
+include 'java'
+include 'kotlin'
