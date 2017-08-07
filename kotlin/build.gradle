@@ -14,7 +14,7 @@ apply plugin: 'kotlin'
 
 dependencies {
     compile "log4j:log4j:1.2.17"
-    compile "io.vertx:vertx-core:3.4.1"
+    compile "io.vertx:vertx-core:3.4.2"
     compile "org.reflections:reflections:0.9.11"
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
     compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.8.7"
