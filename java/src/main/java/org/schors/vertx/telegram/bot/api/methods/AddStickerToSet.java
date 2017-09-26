@@ -8,7 +8,7 @@ import org.schors.vertx.telegram.bot.api.types.MaskPosition;
 
 import java.io.File;
 
-public class AddStickerToSet extends TelegramMethod<Boolean> {
+public class AddStickerToSet extends TelegramMethod {
 
     @JsonProperty("user_id")
     private Integer userId;
