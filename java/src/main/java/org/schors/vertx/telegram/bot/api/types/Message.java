@@ -86,6 +86,10 @@ public class Message {
     private Invoice invoice;
     @JsonProperty("successful_payment")
     private SuccessfulPayment successfulPayment;
+    @JsonProperty("forward_signature")
+    private String forwardSignature;
+    @JsonProperty("author_signature")
+    private String authorSignature;
 
     public Message() {
     }
@@ -125,6 +129,40 @@ public class Message {
         this.migrateToChatId = migrateToChatId;
         this.migrateFromChatId = migrateFromChatId;
         this.pinnedMessage = pinnedMessage;
+    }
+
+    public Boolean getDeleteChatPhoto() {
+        return deleteChatPhoto;
+    }
+
+    public Boolean getGroupChatCreated() {
+        return groupChatCreated;
+    }
+
+    public Boolean getSupergroupChatCreated() {
+        return supergroupChatCreated;
+    }
+
+    public Boolean getChannelChatCreated() {
+        return channelChatCreated;
+    }
+
+    public String getForwardSignature() {
+        return forwardSignature;
+    }
+
+    public Message setForwardSignature(String forwardSignature) {
+        this.forwardSignature = forwardSignature;
+        return this;
+    }
+
+    public String getAuthorSignature() {
+        return authorSignature;
+    }
+
+    public Message setAuthorSignature(String authorSignature) {
+        this.authorSignature = authorSignature;
+        return this;
     }
 
     public Integer getMessageId() {

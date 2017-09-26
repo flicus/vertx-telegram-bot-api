@@ -35,17 +35,41 @@ public class Sticker {
     private String emoji;
     @JsonProperty("file_size")
     private Integer fileSize;
+    @JsonProperty("set_name")
+    private String setName;
+    @JsonProperty("mask_position")
+    private MaskPosition maskPosition;
 
     public Sticker() {
     }
 
-    public Sticker(String fileId, Integer width, Integer height, PhotoSize thumb, String emoji, Integer fileSize) {
+    public Sticker(String fileId, Integer width, Integer height, PhotoSize thumb, String emoji, Integer fileSize, String setName, MaskPosition maskPosition) {
         this.fileId = fileId;
         this.width = width;
         this.height = height;
         this.thumb = thumb;
         this.emoji = emoji;
         this.fileSize = fileSize;
+        this.setName = setName;
+        this.maskPosition = maskPosition;
+    }
+
+    public String getSetName() {
+        return setName;
+    }
+
+    public Sticker setSetName(String setName) {
+        this.setName = setName;
+        return this;
+    }
+
+    public MaskPosition getMaskPosition() {
+        return maskPosition;
+    }
+
+    public Sticker setMaskPosition(MaskPosition maskPosition) {
+        this.maskPosition = maskPosition;
+        return this;
     }
 
     public String getFileId() {

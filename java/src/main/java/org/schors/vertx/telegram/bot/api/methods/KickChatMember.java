@@ -31,6 +31,8 @@ public class KickChatMember extends TelegramMethod {
     private String chatId;
     @JsonProperty("user_id")
     private Integer userId;
+    @JsonProperty("until_date")
+    private Integer untilDate;
 
     public KickChatMember() {
     }
@@ -38,6 +40,12 @@ public class KickChatMember extends TelegramMethod {
     public KickChatMember(String chatId, Integer userId) {
         this.chatId = chatId;
         this.userId = userId;
+    }
+
+    public KickChatMember(String chatId, Integer userId, Integer untilDate) {
+        this.chatId = chatId;
+        this.userId = userId;
+        this.untilDate = untilDate;
     }
 
     public String getChatId() {
@@ -55,6 +63,15 @@ public class KickChatMember extends TelegramMethod {
 
     public KickChatMember setUserId(Integer userId) {
         this.userId = userId;
+        return this;
+    }
+
+    public Integer getUntilDate() {
+        return untilDate;
+    }
+
+    public KickChatMember setUntilDate(Integer untilDate) {
+        this.untilDate = untilDate;
         return this;
     }
 

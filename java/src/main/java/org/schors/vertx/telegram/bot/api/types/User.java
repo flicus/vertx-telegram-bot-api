@@ -34,6 +34,8 @@ public class User {
     private String username;
     @JsonProperty("language_code")
     private String languageCode;
+    @JsonProperty("is_bot")
+    private Boolean isBot;
 
     public User() {
     }
@@ -51,6 +53,24 @@ public class User {
         this.lastName = lastName;
         this.username = username;
         this.languageCode = languageCode;
+    }
+
+    public User(Integer id, String firstName, String lastName, String username, String languageCode, Boolean isBot) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = username;
+        this.languageCode = languageCode;
+        this.isBot = isBot;
+    }
+
+    public Boolean getBot() {
+        return isBot;
+    }
+
+    public User setBot(Boolean bot) {
+        isBot = bot;
+        return this;
     }
 
     public Integer getId() {

@@ -36,11 +36,17 @@ public class Chat {
     private String lastName;
     @JsonProperty("all_members_are_administrators")
     private Boolean allAdmins;
+    private ChatPhoto photo;
+    private String description;
+    @JsonProperty("invite_link")
+    private String inviteLink;
+    @JsonProperty("pinned_message")
+    private Message pinnedMessage;
 
     public Chat() {
     }
 
-    public Chat(Integer id, String type, String title, String username, String firstName, String lastName, Boolean allAdmins) {
+    public Chat(Integer id, String type, String title, String username, String firstName, String lastName, Boolean allAdmins, ChatPhoto photo, String description, String inviteLink, Message pinnedMessage) {
         this.id = id;
         this.type = type;
         this.title = title;
@@ -48,6 +54,50 @@ public class Chat {
         this.firstName = firstName;
         this.lastName = lastName;
         this.allAdmins = allAdmins;
+        this.photo = photo;
+        this.description = description;
+        this.inviteLink = inviteLink;
+        this.pinnedMessage = pinnedMessage;
+    }
+
+    public Boolean getAllAdmins() {
+        return allAdmins;
+    }
+
+    public ChatPhoto getPhoto() {
+        return photo;
+    }
+
+    public Chat setPhoto(ChatPhoto photo) {
+        this.photo = photo;
+        return this;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Chat setDescription(String description) {
+        this.description = description;
+        return this;
+    }
+
+    public String getInviteLink() {
+        return inviteLink;
+    }
+
+    public Chat setInviteLink(String inviteLink) {
+        this.inviteLink = inviteLink;
+        return this;
+    }
+
+    public Message getPinnedMessage() {
+        return pinnedMessage;
+    }
+
+    public Chat setPinnedMessage(Message pinnedMessage) {
+        this.pinnedMessage = pinnedMessage;
+        return this;
     }
 
     public Integer getId() {

@@ -341,7 +341,7 @@ public final class TelegramBot {
 
     public void sendVideoNote(SendVideoNote sendVideoNote, Handler<AsyncResult<Message>> handler) {
         vertx.executeBlocking(future -> {
-            HttpClientRequest request = createRequest(sendVideoNote, future);
+            HttpClientRequest request = createRequest(sendVideoNote, future, handler);
             MultipartHelper multipartHelper = new MultipartHelper(vertx, request);
             multipartHelper
                     .putTextBody("chat_id", sendVideoNote.getChatId())
@@ -388,7 +388,7 @@ public final class TelegramBot {
 
     public void sendDocument(SendDocument document, Handler<AsyncResult<Message>> handler) {
         vertx.executeBlocking(future -> {
-            HttpClientRequest request = createRequest(document, future);
+            HttpClientRequest request = createRequest(document, future, handler);
             MultipartHelper multipartHelper = new MultipartHelper(vertx, request);
             multipartHelper
                     .putTextBody("chat_id", document.getChatId())
@@ -428,7 +428,7 @@ public final class TelegramBot {
         });
     }
 
-    private HttpClientRequest createRequest(TelegramMethod method, Future<Object> future) {
+    private <T> HttpClientRequest createRequest(TelegramMethod method, Future<Object> future, Handler<AsyncResult<T>> handler) {
         return client
                 .post(Util.BASEURL + getOptions().getBotToken() + "/" + method.getMethod())
                 .handler(response -> {
@@ -437,15 +437,15 @@ public final class TelegramBot {
                         if (!json.getBoolean(Util.R_OK)) {
                             log.warn("### Unsuccessful response: " + json.toString());
                         } else {
+                            //todo Message, Boolean, File
                             JsonObject jsonMessage = json.getJsonObject(Util.R_RESULT);
-                            Message message = null;
+                            T result = null;
                             try {
-                                message = mapper.readValue(jsonMessage.toString(), Message.class);
-                                future.complete(message);
+                                result = mapper.readValue(jsonMessage.toString(), (Class<T>) result.getClass());
+                                future.complete(result);
                             } catch (IOException e) {
                                 future.fail(e);
                             }
-                            future.complete(message);
                         }
                     });
                 })
@@ -458,7 +458,7 @@ public final class TelegramBot {
 
     public void sendPhoto(SendPhoto photo, Handler<AsyncResult<Message>> handler) {
         vertx.executeBlocking(future -> {
-            HttpClientRequest request = createRequest(photo, future);
+            HttpClientRequest request = createRequest(photo, future, handler);
             MultipartHelper multipartHelper = new MultipartHelper(vertx, request);
             multipartHelper
                     .putTextBody("chat_id", photo.getChatId())
@@ -504,7 +504,7 @@ public final class TelegramBot {
 
     public void sendAudio(SendAudio audio, Handler<AsyncResult<Message>> handler) {
         vertx.executeBlocking(future -> {
-            HttpClientRequest request = createRequest(audio, future);
+            HttpClientRequest request = createRequest(audio, future, handler);
             MultipartHelper multipartHelper = new MultipartHelper(vertx, request);
             multipartHelper
                     .putTextBody("chat_id", audio.getChatId())
@@ -553,7 +553,7 @@ public final class TelegramBot {
 
     public void sendSticker(SendSticker sticker, Handler<AsyncResult<Message>> handler) {
         vertx.executeBlocking(future -> {
-            HttpClientRequest request = createRequest(sticker, future);
+            HttpClientRequest request = createRequest(sticker, future, handler);
             MultipartHelper multipartHelper = new MultipartHelper(vertx, request);
             multipartHelper
                     .putTextBody("chat_id", sticker.getChatId())
@@ -598,7 +598,7 @@ public final class TelegramBot {
 
     public void sendVideo(SendVideo video, Handler<AsyncResult<Message>> handler) {
         vertx.executeBlocking(future -> {
-            HttpClientRequest request = createRequest(video, future);
+            HttpClientRequest request = createRequest(video, future, handler);
             MultipartHelper multipartHelper = new MultipartHelper(vertx, request);
             multipartHelper
                     .putTextBody("chat_id", video.getChatId())
@@ -647,7 +647,7 @@ public final class TelegramBot {
 
     public void sendVoice(SendVoice voice, Handler<AsyncResult<Message>> handler) {
         vertx.executeBlocking(future -> {
-            HttpClientRequest request = createRequest(voice, future);
+            HttpClientRequest request = createRequest(voice, future, handler);
             MultipartHelper multipartHelper = new MultipartHelper(vertx, request);
             multipartHelper
                     .putTextBody("chat_id", voice.getChatId())
@@ -692,6 +692,210 @@ public final class TelegramBot {
         sendVoice(voice, null);
     }
 
+    public void setChatPhoto(SetChatPhoto setChatPhoto, Handler<AsyncResult<Boolean>> handler) {
+        vertx.executeBlocking(future -> {
+            HttpClientRequest request = createRequest(setChatPhoto, future, handler);
+            MultipartHelper multipartHelper = new MultipartHelper(vertx, request);
+            multipartHelper.putTextBody("chat_id", setChatPhoto.getChatId());
+            if (setChatPhoto.getFile() != null) {
+                multipartHelper
+                        .putBinaryBody("photo", setChatPhoto.getFile(), "application/octet-stream", event -> {
+                            multipartHelper.stop();
+                            request.end();
+                        });
+            } else if (setChatPhoto.getLocalFilePath() != null) {
+                multipartHelper
+                        .putBinaryBody("photo", new java.io.File(setChatPhoto.getLocalFilePath()), "application/octet-stream", event -> {
+                            multipartHelper.stop();
+                            request.end();
+                        });
+            } else if (setChatPhoto.getStream() != null) {
+                multipartHelper
+                        .putBinaryBody("photo", setChatPhoto.getStream(), "application/octet-stream", "chatPhoto", event -> {
+                            multipartHelper.stop();
+                            request.end();
+                        });
+            }
+        }, event -> {
+            if (handler != null) {
+                if (event.succeeded()) {
+                    handler.handle(Util.makeAsyncResult((Boolean) event.result(), null));
+                } else {
+                    handler.handle(Util.makeAsyncResult(null, event.cause()));
+                }
+            }
+        });
+    }
+
+    public void setChatPhoto(SetChatPhoto setChatPhoto) {
+        setChatPhoto(setChatPhoto, null);
+    }
+
+    public void uploadStickerFile(UploadStickerFile uploadStickerFile, Handler<AsyncResult<File>> handler) {
+        vertx.executeBlocking(future -> {
+            HttpClientRequest request = createRequest(uploadStickerFile, future, handler);
+            MultipartHelper multipartHelper = new MultipartHelper(vertx, request);
+            multipartHelper.putTextBody("user_id", uploadStickerFile.getUserId());
+            if (uploadStickerFile.getFile() != null) {
+                multipartHelper
+                        .putBinaryBody("png_sticker", uploadStickerFile.getFile(), "application/octet-stream", event -> {
+                            multipartHelper.stop();
+                            request.end();
+                        });
+            } else if (uploadStickerFile.getLocalFilePath() != null) {
+                multipartHelper
+                        .putBinaryBody("png_sticker", new java.io.File(uploadStickerFile.getLocalFilePath()), "application/octet-stream", event -> {
+                            multipartHelper.stop();
+                            request.end();
+                        });
+            } else if (uploadStickerFile.getStream() != null) {
+                multipartHelper
+                        .putBinaryBody("png_sticker", uploadStickerFile.getStream(), "application/octet-stream", "png_sticker", event -> {
+                            multipartHelper.stop();
+                            request.end();
+                        });
+            }
+        }, event -> {
+            if (handler != null) {
+                if (event.succeeded()) {
+                    handler.handle(Util.makeAsyncResult((File) event.result(), null));
+                } else {
+                    handler.handle(Util.makeAsyncResult(null, event.cause()));
+                }
+            }
+        });
+    }
+
+    public void uploadStickerFile(UploadStickerFile uploadStickerFile) {
+        uploadStickerFile(uploadStickerFile, null);
+    }
+
+    public void createNewStickerSet(CreateNewStickerSet createNewStickerSet, Handler<AsyncResult<Boolean>> handler) {
+        vertx.executeBlocking(future -> {
+            HttpClientRequest request = createRequest(createNewStickerSet, future, handler);
+            MultipartHelper multipartHelper = new MultipartHelper(vertx, request);
+            String markPosition = null;
+            try {
+                markPosition = mapper.writer().writeValueAsString(createNewStickerSet.getMaskPosition());
+            } catch (JsonProcessingException e) {
+                log.warn(e, e);
+            }
+            multipartHelper
+                    .putTextBody("user_id", createNewStickerSet.getUserId())
+                    .putTextBody("name", createNewStickerSet.getName())
+                    .putTextBody("title", createNewStickerSet.getTitle())
+                    .putTextBody("emojis", createNewStickerSet.getEmojis())
+                    .putTextBody("contains_masks", createNewStickerSet.getContainsMasks());
+            if (markPosition != null) {
+                multipartHelper.putTextBody("mask_position", markPosition);
+            }
+
+            if (createNewStickerSet.getSticker() != null) {
+                multipartHelper.putTextBody("png_sticker", createNewStickerSet.getSticker());
+            } else if (createNewStickerSet.getFile() != null) {
+                multipartHelper
+                        .putBinaryBody("png_sticker", createNewStickerSet.getFile(), "application/octet-stream", event -> {
+                            multipartHelper.stop();
+                            request.end();
+                        });
+            } else if (createNewStickerSet.getLocalFilePath() != null) {
+                multipartHelper
+                        .putBinaryBody("png_sticker", new java.io.File(createNewStickerSet.getLocalFilePath()), "application/octet-stream", event -> {
+                            multipartHelper.stop();
+                            request.end();
+                        });
+            } else if (createNewStickerSet.getStream() != null) {
+                multipartHelper
+                        .putBinaryBody("png_sticker", createNewStickerSet.getStream(), "application/octet-stream", "png_sticker", event -> {
+                            multipartHelper.stop();
+                            request.end();
+                        });
+            }
+        }, event -> {
+            if (handler != null) {
+                if (event.succeeded()) {
+                    handler.handle(Util.makeAsyncResult((Boolean) event.result(), null));
+                } else {
+                    handler.handle(Util.makeAsyncResult(null, event.cause()));
+                }
+            }
+        });
+    }
+
+    public void createNewStickerSet(CreateNewStickerSet createNewStickerSet) {
+        createNewStickerSet(createNewStickerSet, null);
+    }
+
+    public void addStickerToSet(AddStickerToSet addStickerToSet, Handler<AsyncResult<Boolean>> handler) {
+        vertx.executeBlocking(future -> {
+            HttpClientRequest request = createRequest(addStickerToSet, future, handler);
+            MultipartHelper multipartHelper = new MultipartHelper(vertx, request);
+            String markPosition = null;
+            try {
+                markPosition = mapper.writer().writeValueAsString(addStickerToSet.getMaskPosition());
+            } catch (JsonProcessingException e) {
+                log.warn(e, e);
+            }
+            multipartHelper
+                    .putTextBody("user_id", addStickerToSet.getUserId())
+                    .putTextBody("name", addStickerToSet.getName())
+                    .putTextBody("emojis", addStickerToSet.getEmojis());
+            if (markPosition != null) {
+                multipartHelper.putTextBody("mask_position", markPosition);
+            }
+
+            if (addStickerToSet.getSticker() != null) {
+                multipartHelper.putTextBody("png_sticker", addStickerToSet.getSticker());
+            } else if (addStickerToSet.getFile() != null) {
+                multipartHelper
+                        .putBinaryBody("png_sticker", addStickerToSet.getFile(), "application/octet-stream", event -> {
+                            multipartHelper.stop();
+                            request.end();
+                        });
+            } else if (addStickerToSet.getLocalFilePath() != null) {
+                multipartHelper
+                        .putBinaryBody("png_sticker", new java.io.File(addStickerToSet.getLocalFilePath()), "application/octet-stream", event -> {
+                            multipartHelper.stop();
+                            request.end();
+                        });
+            } else if (addStickerToSet.getStream() != null) {
+                multipartHelper
+                        .putBinaryBody("png_sticker", addStickerToSet.getStream(), "application/octet-stream", "png_sticker", event -> {
+                            multipartHelper.stop();
+                            request.end();
+                        });
+            }
+        }, event -> {
+            if (handler != null) {
+                if (event.succeeded()) {
+                    handler.handle(Util.makeAsyncResult((Boolean) event.result(), null));
+                } else {
+                    handler.handle(Util.makeAsyncResult(null, event.cause()));
+                }
+            }
+        });
+    }
+
+    public void addStickerToSet(AddStickerToSet addStickerToSet) {
+        addStickerToSet(addStickerToSet, null);
+    }
+
+    public void setStickerPositionInSet(SetStickerPositionInSet stickerPositionInSet, Handler<AsyncResult<Boolean>> handler) {
+        send(stickerPositionInSet, handler);
+    }
+
+    public void setStickerPositionInSet(SetStickerPositionInSet stickerPositionInSet) {
+        send(stickerPositionInSet, null);
+    }
+
+    public void deleteStickerFromSet(DeleteStickerFromSet deleteStickerFromSet, Handler<AsyncResult<Boolean>> handler) {
+        send(deleteStickerFromSet, handler);
+    }
+
+    public void deleteStickerFromSet(DeleteStickerFromSet deleteStickerFromSet) {
+        send(deleteStickerFromSet, null);
+    }
+
     public void sendInvoice(SendInvoice sendInvoice, Handler<AsyncResult<Message>> handler) {
         send(sendInvoice, handler);
     }
@@ -714,6 +918,74 @@ public final class TelegramBot {
 
     public void answerPreCheckoutQuery(AnswerPreCheckoutQuery answerPreCheckoutQuery) {
         send(answerPreCheckoutQuery, null);
+    }
+
+    public void promoteChatMember(PromoteChatMember promoteChatMember, Handler<AsyncResult<Boolean>> handler) {
+        send(promoteChatMember, handler);
+    }
+
+    public void promoteChatMember(PromoteChatMember promoteChatMember) {
+        send(promoteChatMember, null);
+    }
+
+    public void restrictChatMember(RestrictChatMember restrictChatMember, Handler<AsyncResult<Boolean>> handler) {
+        send(restrictChatMember, handler);
+    }
+
+    public void restrictChatMember(RestrictChatMember restrictChatMember) {
+        send(restrictChatMember, null);
+    }
+
+    public void exportChatInviteLink(ExportChatInviteLink exportChatInviteLink, Handler<AsyncResult<String>> handler) {
+        send(exportChatInviteLink, handler);
+    }
+
+    public void exportChatInviteLink(ExportChatInviteLink exportChatInviteLink) {
+        send(exportChatInviteLink, null);
+    }
+
+    public void deleteChatPhoto(DeleteChatPhoto deleteChatPhoto, Handler<AsyncResult<Boolean>> handler) {
+        send(deleteChatPhoto, handler);
+    }
+
+    public void deleteChatPhoto(DeleteChatPhoto deleteChatPhoto) {
+        send(deleteChatPhoto, null);
+    }
+
+    public void setChatTitle(SetChatTitle setChatTitle, Handler<AsyncResult<Boolean>> handler) {
+        send(setChatTitle, handler);
+    }
+
+    public void setChatTitle(SetChatTitle setChatTitle) {
+        send(setChatTitle, null);
+    }
+
+    public void setChatDescription(SetChatDescription setChatDescription, Handler<AsyncResult<Boolean>> handler) {
+        send(setChatDescription, handler);
+    }
+
+    public void setChatDescription(SetChatDescription setChatDescription) {
+        send(setChatDescription, null);
+    }
+
+    public void pinChatMessage(PinChatMessage pinChatMessage, Handler<AsyncResult<Boolean>> handler) {
+        send(pinChatMessage, handler);
+    }
+
+    public void pinChatMessage(PinChatMessage pinChatMessage) {
+        send(pinChatMessage, null);
+    }
+
+    public void unpinChatMessage(UnpinChatMessage unpinChatMessage, Handler<AsyncResult<Boolean>> handler) {
+        send(unpinChatMessage, handler);
+    }
+
+    public void unpinChatMessage(UnpinChatMessage unpinChatMessage) {
+        send(unpinChatMessage, null);
+    }
+
+    public void getStickerSet(GetStickerSet getStickerSet, Handler<AsyncResult<StickerSet>> handler) {
+        send(getStickerSet, handler);
     }
 
     public void setWebhook(SetWebhook setWebhook) {
