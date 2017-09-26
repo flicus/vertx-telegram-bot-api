@@ -15,13 +15,21 @@ Telegram bot api for [vert.x](http://vertx.io)
 Add vertx-telegram-bot-api to your project. 
 
 For maven:
- ```xml
- <dependency>
-     <groupId>com.github.flicus</groupId>
-     <artifactId>vertx-telegram-bot-api</artifactId>
-     <version>1.0.0</version>
- </dependency>
- ```
+```xml
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+<dependencies>
+    <dependency>
+        <groupId>com.github.flicus</groupId>
+        <artifactId>vertx-telegram-bot-api</artifactId>
+        <version>1.0.0</version>
+    </dependency>
+</dependencies>
+```
 For gradle:
  ```groovy
  repositories {
