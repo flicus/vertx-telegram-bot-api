@@ -1,4 +1,4 @@
-# vertx-telegram-bot-api [![Build Status](https://travis-ci.org/flicus/vertx-telegram-bot-api.png)](https://travis-ci.org/flicus/vertx-telegram-bot-api)
+# vertx-telegram-bot-api [![Build Status](https://travis-ci.org/flicus/vertx-telegram-bot-api.png)](https://travis-ci.org/flicus/vertx-telegram-bot-api) [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fflicus%2Fvertx-telegram-bot-api.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fflicus%2Fvertx-telegram-bot-api?ref=badge_shield)
 [Telegram bot api](https://core.telegram.org/bots/api) for [vert.x](http://vertx.io)
 
 Bot API supported: up to 3.3
