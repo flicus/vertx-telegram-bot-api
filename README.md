@@ -1,5 +1,9 @@
 # vertx-telegram-bot-api [![Build Status](https://travis-ci.org/flicus/vertx-telegram-bot-api.png)](https://travis-ci.org/flicus/vertx-telegram-bot-api)
-Telegram bot api for [vert.x](http://vertx.io) 
+[Telegram bot api](https://core.telegram.org/bots/api) for [vert.x](http://vertx.io)
+
+Bot API supported: up to 3.3
+
+Vert.x supported : up to 3.4.2
 
 **still in development, to be done:**
 - WebhookReceiver class to implement [webhook](https://core.telegram.org/bots/api#getting-updates) way of receiving updates
