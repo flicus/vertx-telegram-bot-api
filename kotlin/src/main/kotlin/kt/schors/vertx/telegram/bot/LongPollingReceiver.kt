@@ -118,6 +118,10 @@ class LongPollingReceiver(handler: Handler<Update>? = null, var bot: TelegramBot
                                 }
                                 runTimer(500)
                             }
+                            ?.exceptionHandler { e ->
+                                log.error(e, e)
+                                runTimer(500)
+                            }
                         }
                         ?.exceptionHandler { e ->
                             log.error(e, e)
