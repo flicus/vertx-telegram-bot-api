@@ -146,6 +146,9 @@ public final class LongPollingReceiver implements UpdateReceiver {
                                     }
                                 }
                                 runTimer(500);
+                            }).exceptionHandler(e -> {
+                                log.error(e, e);
+                                runTimer(500);
                             });
                         })
                         .exceptionHandler(e -> {
