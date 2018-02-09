@@ -30,7 +30,7 @@ For maven:
     <dependency>
         <groupId>com.github.flicus</groupId>
         <artifactId>vertx-telegram-bot-api</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2</version>
     </dependency>
 </dependencies>
 ```
@@ -40,7 +40,7 @@ For gradle:
     maven { url "https://jitpack.io" }
  }
  dependencies {
-    compile 'com.github.flicus:vertx-telegram-bot-api:1.0.1'
+    compile 'com.github.flicus:vertx-telegram-bot-api:1.0.2'
   }
  ```
 ## Usage
