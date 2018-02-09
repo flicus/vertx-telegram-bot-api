@@ -8,6 +8,9 @@ if (!JavaVersion.current().java8Compatible) {
                                       |  Refresh. Try again.'''.stripMargin())
 }
 
+ext.vertx_version = '3.5.0'
+ext.kotlin_version = '1.2.21'
+
 subprojects {
     repositories {
         mavenCentral()
