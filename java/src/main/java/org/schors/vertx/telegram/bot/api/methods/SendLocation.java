@@ -38,17 +38,20 @@ public class SendLocation extends TelegramMethod {
     private Integer replyToMessageId;
     @JsonProperty("reply_markup")
     private Markup replyMarkup;
+    @JsonProperty("live_period")
+    private Integer livePeriod;
 
     public SendLocation() {
     }
 
-    public SendLocation(String chatId, Double latitude, Double longitude, Boolean disableNotification, Integer replyToMessageId, Markup replyMarkup) {
+    public SendLocation(String chatId, Double latitude, Double longitude, Boolean disableNotification, Integer replyToMessageId, Markup replyMarkup, Integer livePeriod) {
         this.chatId = chatId;
         this.latitude = latitude;
         this.longitude = longitude;
         this.disableNotification = disableNotification;
         this.replyToMessageId = replyToMessageId;
         this.replyMarkup = replyMarkup;
+        this.livePeriod = livePeriod;
     }
 
     public String getChatId() {
@@ -102,6 +105,15 @@ public class SendLocation extends TelegramMethod {
 
     public SendLocation setReplyMarkup(Markup replyMarkup) {
         this.replyMarkup = replyMarkup;
+        return this;
+    }
+
+    public Integer getLivePeriod() {
+        return livePeriod;
+    }
+
+    public SendLocation setLivePeriod(Integer livePeriod) {
+        this.livePeriod = livePeriod;
         return this;
     }
 

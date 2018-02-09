@@ -1,9 +1,9 @@
-# vertx-telegram-bot-api [![Build Status](https://travis-ci.org/flicus/vertx-telegram-bot-api.png)](https://travis-ci.org/flicus/vertx-telegram-bot-api) [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fflicus%2Fvertx-telegram-bot-api.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fflicus%2Fvertx-telegram-bot-api?ref=badge_shield)
+# vertx-telegram-bot-api [![Build Status](https://travis-ci.org/flicus/vertx-telegram-bot-api.png)](https://travis-ci.org/flicus/vertx-telegram-bot-api)
 [Telegram bot api](https://core.telegram.org/bots/api) for [vert.x](http://vertx.io)
 
-Bot API supported: up to 3.3
+Bot API supported: up to 3.5
 
-Vert.x supported : up to 3.4.2
+Vert.x supported : up to 3.5.0
 
 **still in development, to be done:**
 - WebhookReceiver class to implement [webhook](https://core.telegram.org/bots/api#getting-updates) way of receiving updates

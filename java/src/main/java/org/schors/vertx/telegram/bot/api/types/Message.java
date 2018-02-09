@@ -48,6 +48,8 @@ public class Message {
     private Integer editDate;
     private String text;
     private MessageEntity[] entities;
+    @JsonProperty("caption_entities")
+    private MessageEntity[] captionEntities;
     private Audio audio;
     private Document document;
     private Game game;
@@ -94,7 +96,7 @@ public class Message {
     public Message() {
     }
 
-    public Message(Integer messageId, User from, Integer date, Chat chat, User forwardFrom, Chat forwardFromChat, Integer forwardFromMessageId, Integer forwardDate, Message replyToMessage, Integer editDate, String text, MessageEntity[] entities, Audio audio, Document document, Game game, PhotoSize[] photo, Sticker sticker, Video video, Voice voice, String caption, Contact contact, Location location, Venue venue, User[] newChatMembers, User leftChatMember, String newChatTitle, PhotoSize[] newChatPhoto, Boolean deleteChatPhoto, Boolean groupChatCreated, Boolean supergroupChatCreated, Boolean channelChatCreated, Integer migrateToChatId, Integer migrateFromChatId, Message pinnedMessage) {
+    public Message(Integer messageId, User from, Integer date, Chat chat, User forwardFrom, Chat forwardFromChat, Integer forwardFromMessageId, Integer forwardDate, Message replyToMessage, Integer editDate, String text, MessageEntity[] entities, MessageEntity[] captionEntities, Audio audio, Document document, Game game, PhotoSize[] photo, Sticker sticker, Video video, VideoNote videoNote, Voice voice, String caption, Contact contact, Location location, Venue venue, User[] newChatMembers, User leftChatMember, String newChatTitle, PhotoSize[] newChatPhoto, Boolean deleteChatPhoto, Boolean groupChatCreated, Boolean supergroupChatCreated, Boolean channelChatCreated, Integer migrateToChatId, Integer migrateFromChatId, Message pinnedMessage, Invoice invoice, SuccessfulPayment successfulPayment, String forwardSignature, String authorSignature) {
         this.messageId = messageId;
         this.from = from;
         this.date = date;
@@ -107,12 +109,14 @@ public class Message {
         this.editDate = editDate;
         this.text = text;
         this.entities = entities;
+        this.captionEntities = captionEntities;
         this.audio = audio;
         this.document = document;
         this.game = game;
         this.photo = photo;
         this.sticker = sticker;
         this.video = video;
+        this.videoNote = videoNote;
         this.voice = voice;
         this.caption = caption;
         this.contact = contact;
@@ -129,6 +133,10 @@ public class Message {
         this.migrateToChatId = migrateToChatId;
         this.migrateFromChatId = migrateFromChatId;
         this.pinnedMessage = pinnedMessage;
+        this.invoice = invoice;
+        this.successfulPayment = successfulPayment;
+        this.forwardSignature = forwardSignature;
+        this.authorSignature = authorSignature;
     }
 
     public Boolean getDeleteChatPhoto() {
@@ -503,6 +511,15 @@ public class Message {
 
     public Message setSuccessfulPayment(SuccessfulPayment successfulPayment) {
         this.successfulPayment = successfulPayment;
+        return this;
+    }
+
+    public MessageEntity[] getCaptionEntities() {
+        return captionEntities;
+    }
+
+    public Message setCaptionEntities(MessageEntity[] captionEntities) {
+        this.captionEntities = captionEntities;
         return this;
     }
 }

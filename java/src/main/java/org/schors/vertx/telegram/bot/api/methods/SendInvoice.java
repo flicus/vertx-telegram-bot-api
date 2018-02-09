@@ -64,6 +64,13 @@ public class SendInvoice extends TelegramMethod {
     private Integer replyToMessageId;
     @JsonProperty("reply_markup")
     private InlineKeyboardMarkup replyMarkup;
+    @JsonProperty("provider_data")
+    private String providerData;
+    @JsonProperty("send_phone_number_to_provider")
+    private Boolean sendPhoneNumberToProvider;
+    @JsonProperty("send_email_to_provider")
+    private Boolean sendEmailToProvider;
+
 
     public SendInvoice() {
     }
@@ -245,6 +252,33 @@ public class SendInvoice extends TelegramMethod {
 
     public SendInvoice setReplyMarkup(InlineKeyboardMarkup replyMarkup) {
         this.replyMarkup = replyMarkup;
+        return this;
+    }
+
+    public String getProviderData() {
+        return providerData;
+    }
+
+    public SendInvoice setProviderData(String providerData) {
+        this.providerData = providerData;
+        return this;
+    }
+
+    public Boolean getSendPhoneNumberToProvider() {
+        return sendPhoneNumberToProvider;
+    }
+
+    public SendInvoice setSendPhoneNumberToProvider(Boolean sendPhoneNumberToProvider) {
+        this.sendPhoneNumberToProvider = sendPhoneNumberToProvider;
+        return this;
+    }
+
+    public Boolean getSendEmailToProvider() {
+        return sendEmailToProvider;
+    }
+
+    public SendInvoice setSendEmailToProvider(Boolean sendEmailToProvider) {
+        this.sendEmailToProvider = sendEmailToProvider;
         return this;
     }
 

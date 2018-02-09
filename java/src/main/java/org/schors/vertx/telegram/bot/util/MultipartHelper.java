@@ -26,6 +26,7 @@ package org.schors.vertx.telegram.bot.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vertx.core.AsyncResult;
+import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
@@ -34,6 +35,7 @@ import io.vertx.core.http.HttpClientRequest;
 import io.vertx.core.streams.Pump;
 import io.vertx.core.streams.ReadStream;
 import org.apache.log4j.Logger;
+import org.schors.vertx.telegram.bot.api.types.InputMedia;
 import org.schors.vertx.telegram.bot.api.types.Markup;
 
 import java.io.File;
@@ -103,6 +105,71 @@ public class MultipartHelper {
                 putTextBody(name, replyMarkup);
         }
         return this;
+    }
+
+    public MultipartHelper putTextBody(String name, InputMedia[] inputMedia) {
+        if (inputMedia != null && inputMedia.length > 0) {
+            String data = null;
+            try {
+                data = mapper.writeValueAsString(inputMedia);
+            } catch (JsonProcessingException e) {
+                log.error(e, e);
+            }
+            if (data != null) {
+                putTextBody(name, data);
+            }
+        }
+        return this;
+    }
+
+    public Future putBinaryBody(String name, ReadStream<Buffer> stream, String contentType, String fileName) {
+        Future future = Future.future();
+        request
+                .write("--")
+                .write(boundary)
+                .write(System.lineSeparator())
+                .write(String.format("Content-Disposition: form-data; name=\"%s\"; filename=\"%s\"", name, fileName))
+                .write(System.lineSeparator())
+                .write(String.format("Content-Type: %s", contentType))
+                .write(System.lineSeparator())
+                .write("Content-Transfer-Encoding: binary")
+                .write(System.lineSeparator())
+                .write(System.lineSeparator());
+        Pump.pump(stream
+                .endHandler(event -> {
+                    request.write(System.lineSeparator());
+                    future.complete();
+                })
+                .exceptionHandler(e -> future.fail(e)), request)
+                .start();
+        return future;
+    }
+
+    public Future putBinaryBody(String name, File file, String contentType, String fileName) {
+        Future future = Future.future();
+        request
+                .write("--")
+                .write(boundary)
+                .write(System.lineSeparator())
+                .write(String.format("Content-Disposition: form-data; name=\"%s\"; filename=\"%s\"", name, fileName))
+                .write(System.lineSeparator())
+                .write(String.format("Content-Type: %s", contentType))
+                .write(System.lineSeparator())
+                .write("Content-Transfer-Encoding: binary")
+                .write(System.lineSeparator())
+                .write(System.lineSeparator());
+        vertx.fileSystem().open(file.getPath(), new OpenOptions().setRead(true), ar -> {
+            if (ar.succeeded()) {
+                Pump.pump(ar.result()
+                        .endHandler(event -> {
+                            request.write(System.lineSeparator());
+                            future.complete();
+                        })
+                        .exceptionHandler(e -> future.fail(e)), request)
+                        .start();
+            }
+        });
+        return future;
     }
 
     public MultipartHelper putBinaryBody(String name, ReadStream<Buffer> stream, String contentType, String fileName, Handler<AsyncResult> handler) {

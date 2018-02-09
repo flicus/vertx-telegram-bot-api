@@ -42,11 +42,15 @@ public class Chat {
     private String inviteLink;
     @JsonProperty("pinned_message")
     private Message pinnedMessage;
+    @JsonProperty("sticker_set_name")
+    private String stickerSetName;
+    @JsonProperty("can_set_sticker_set")
+    private Boolean canSetStickerSet;
 
     public Chat() {
     }
 
-    public Chat(Integer id, String type, String title, String username, String firstName, String lastName, Boolean allAdmins, ChatPhoto photo, String description, String inviteLink, Message pinnedMessage) {
+    public Chat(Integer id, String type, String title, String username, String firstName, String lastName, Boolean allAdmins, ChatPhoto photo, String description, String inviteLink, Message pinnedMessage, String stickerSetName, Boolean canSetStickerSet) {
         this.id = id;
         this.type = type;
         this.title = title;
@@ -58,6 +62,8 @@ public class Chat {
         this.description = description;
         this.inviteLink = inviteLink;
         this.pinnedMessage = pinnedMessage;
+        this.stickerSetName = stickerSetName;
+        this.canSetStickerSet = canSetStickerSet;
     }
 
     public Boolean getAllAdmins() {
@@ -160,6 +166,24 @@ public class Chat {
 
     public Chat setAllAdmins(Boolean allAdmins) {
         this.allAdmins = allAdmins;
+        return this;
+    }
+
+    public String getStickerSetName() {
+        return stickerSetName;
+    }
+
+    public Chat setStickerSetName(String stickerSetName) {
+        this.stickerSetName = stickerSetName;
+        return this;
+    }
+
+    public Boolean getCanSetStickerSet() {
+        return canSetStickerSet;
+    }
+
+    public Chat setCanSetStickerSet(Boolean canSetStickerSet) {
+        this.canSetStickerSet = canSetStickerSet;
         return this;
     }
 }

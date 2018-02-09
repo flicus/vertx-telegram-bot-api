@@ -26,10 +26,7 @@ package org.schors.vertx.telegram.bot;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Future;
-import io.vertx.core.Handler;
-import io.vertx.core.Vertx;
+import io.vertx.core.*;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.HttpClientRequest;
@@ -42,8 +39,10 @@ import org.schors.vertx.telegram.bot.util.NOKResponseException;
 import org.schors.vertx.telegram.bot.util.Util;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public final class TelegramBot {
 
@@ -205,6 +204,22 @@ public final class TelegramBot {
 
     public void sendLocation(SendLocation sendLocation, Handler<AsyncResult<Message>> handler) {
         send(sendLocation, handler);
+    }
+
+    public void editMessageLiveLocation(EditMessageLiveLocation editMessageLiveLocation) {
+        send(editMessageLiveLocation, null);
+    }
+
+    public void editMessageLiveLocation(EditMessageLiveLocation editMessageLiveLocation, Handler<AsyncResult<Message>> handler) {
+        send(editMessageLiveLocation, handler);
+    }
+
+    public void stopMessageLiveLocation(StopMessageLiveLocation stopMessageLiveLocation) {
+        send(stopMessageLiveLocation, null);
+    }
+
+    public void stopMessageLiveLocation(StopMessageLiveLocation stopMessageLiveLocation, Handler<AsyncResult<Message>> handler) {
+        send(stopMessageLiveLocation, handler);
     }
 
     public void sendVenue(SendVenue sendVenue) {
@@ -986,6 +1001,66 @@ public final class TelegramBot {
 
     public void getStickerSet(GetStickerSet getStickerSet, Handler<AsyncResult<StickerSet>> handler) {
         send(getStickerSet, handler);
+    }
+
+    public void setChatStickerSet(SetChatStickerSet setChatStickerSet) {
+        send(setChatStickerSet, null);
+    }
+
+    public void sendMediaGroup(SendMediaGroup mediaGroup) {
+        sendMediaGroup(mediaGroup, null);
+    }
+
+    public void sendMediaGroup(SendMediaGroup mediaGroup, Handler<AsyncResult<Message[]>> handler) {
+        vertx.executeBlocking(future -> {
+            HttpClientRequest request = createRequest(mediaGroup, future, handler);
+            MultipartHelper multipartHelper = new MultipartHelper(vertx, request);
+            multipartHelper.putTextBody("chat_id", mediaGroup.getChatId());
+
+
+            if (mediaGroup.getDisableNotification() != null) {
+                multipartHelper.putTextBody("disable_notification", mediaGroup.getDisableNotification());
+            }
+            if (mediaGroup.getReplyToMessageId() != null) {
+                multipartHelper.putTextBody("reply_to_message_id", mediaGroup.getReplyToMessageId());
+            }
+
+            if (mediaGroup.getMedia() != null && mediaGroup.getMedia().length > 0) {
+                multipartHelper.putTextBody("media", mediaGroup.getMedia());
+                CompositeFuture.all(Arrays
+                        .asList(mediaGroup.getMedia())
+                        .stream()
+                        .filter(inputMedia -> inputMedia.hasBinary())
+                        .map(inputMedia -> inputMedia.getStream() != null
+                                ? multipartHelper.putBinaryBody(inputMedia.getMedia(), inputMedia.getStream(), "application/octet-stream", inputMedia.getMediaName())
+                                : multipartHelper.putBinaryBody(inputMedia.getMedia(), inputMedia.getFile(), "application/octet-stream", inputMedia.getMediaName()))
+                        .collect(Collectors.toList()))
+                        .setHandler(result -> {
+                            multipartHelper.stop();
+                            request.end();
+                        });
+            }
+        }, event -> {
+            if (handler != null) {
+                if (event.succeeded()) {
+                    handler.handle(Util.makeAsyncResult((Message[]) event.result(), null));
+                } else {
+                    handler.handle(Util.makeAsyncResult(null, event.cause()));
+                }
+            }
+        });
+    }
+
+    public void setChatStickerSet(SetChatStickerSet setChatStickerSet, Handler<AsyncResult<Boolean>> handler) {
+        send(setChatStickerSet, handler);
+    }
+
+    public void deleteChatStickerSet(DeleteChatStickerSet deleteChatStickerSet) {
+        send(deleteChatStickerSet, null);
+    }
+
+    public void deleteChatStickerSet(DeleteChatStickerSet deleteChatStickerSet, Handler<AsyncResult<Boolean>> handler) {
+        send(deleteChatStickerSet, handler);
     }
 
     public void setWebhook(SetWebhook setWebhook) {

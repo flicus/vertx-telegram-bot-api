@@ -23,4 +23,4 @@
 
 package kt.schors.vertx.telegram.bot.api.methods
 
-open abstract class TelegramMethod(val method: String)
+abstract class TelegramMethod(val method: String)
