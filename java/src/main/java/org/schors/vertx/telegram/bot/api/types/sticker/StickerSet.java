@@ -1,4 +1,4 @@
-package org.schors.vertx.telegram.bot.api.types;
+package org.schors.vertx.telegram.bot.api.types.sticker;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

@@ -1,10 +1,14 @@
 package org.schors.vertx.telegram.bot.api.types;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class InputMediaVideo extends InputMedia {
     private String type;
     private Integer width;
     private Integer height;
     private Integer duration;
+    @JsonProperty("supports_streaming")
+    private Boolean supportsStreaming;
 
     public InputMediaVideo() {
         super();
@@ -52,6 +56,15 @@ public class InputMediaVideo extends InputMedia {
 
     public InputMediaVideo setDuration(Integer duration) {
         this.duration = duration;
+        return this;
+    }
+
+    public Boolean getSupportsStreaming() {
+        return supportsStreaming;
+    }
+
+    public InputMediaVideo setSupportsStreaming(Boolean supportsStreaming) {
+        this.supportsStreaming = supportsStreaming;
         return this;
     }
 }

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.streams.ReadStream;
-import org.schors.vertx.telegram.bot.api.types.MaskPosition;
+import org.schors.vertx.telegram.bot.api.types.sticker.MaskPosition;
 
 import java.io.File;
 

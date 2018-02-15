@@ -27,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.streams.ReadStream;
-import org.schors.vertx.telegram.bot.api.types.Markup;
+import org.schors.vertx.telegram.bot.api.types.keyboard.Markup;
 
 import java.io.File;
 

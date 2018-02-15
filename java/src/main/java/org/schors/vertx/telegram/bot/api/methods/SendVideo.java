@@ -27,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.streams.ReadStream;
-import org.schors.vertx.telegram.bot.api.types.Markup;
+import org.schors.vertx.telegram.bot.api.types.keyboard.Markup;
 
 import java.io.File;
 
@@ -46,6 +46,8 @@ public class SendVideo extends TelegramMethod {
     private Integer replyToMessageId;
     @JsonProperty("reply_markup")
     private Markup replyMarkup;
+    @JsonProperty("supports_streaming ")
+    private Boolean supportsStreaming;
 
     @JsonIgnore
     private File file;
@@ -57,7 +59,7 @@ public class SendVideo extends TelegramMethod {
     public SendVideo() {
     }
 
-    public SendVideo(String chatId, String video, String caption, Integer duration, Integer width, Integer height, Boolean disableNotification, Integer replyToMessageId, Markup replyMarkup) {
+    public SendVideo(String chatId, String video, String caption, Integer duration, Integer width, Integer height, Boolean disableNotification, Integer replyToMessageId, Markup replyMarkup, Boolean supportsStreaming, File file, ReadStream<Buffer> stream, String localFilePath) {
         this.chatId = chatId;
         this.video = video;
         this.caption = caption;
@@ -67,6 +69,10 @@ public class SendVideo extends TelegramMethod {
         this.disableNotification = disableNotification;
         this.replyToMessageId = replyToMessageId;
         this.replyMarkup = replyMarkup;
+        this.supportsStreaming = supportsStreaming;
+        this.file = file;
+        this.stream = stream;
+        this.localFilePath = localFilePath;
     }
 
     public String getChatId() {
@@ -177,8 +183,23 @@ public class SendVideo extends TelegramMethod {
         return this;
     }
 
+    public Boolean getDisableNotification() {
+        return disableNotification;
+    }
+
+    public Boolean getSupportsStreaming() {
+        return supportsStreaming;
+    }
+
+    public SendVideo setSupportsStreaming(Boolean supportsStreaming) {
+        this.supportsStreaming = supportsStreaming;
+        return this;
+    }
+
     @Override
     public String getMethod() {
         return "sendVideo";
     }
+
+
 }

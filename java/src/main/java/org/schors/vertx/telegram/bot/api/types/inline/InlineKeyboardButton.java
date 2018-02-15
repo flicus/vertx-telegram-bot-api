@@ -24,7 +24,7 @@
 package org.schors.vertx.telegram.bot.api.types.inline;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.schors.vertx.telegram.bot.api.types.CallbackGame;
+import org.schors.vertx.telegram.bot.api.types.game.CallbackGame;
 
 public class InlineKeyboardButton {
 

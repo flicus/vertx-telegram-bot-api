@@ -21,7 +21,7 @@
  *  SOFTWARE.
  */
 
-package org.schors.vertx.telegram.bot.api.types;
+package org.schors.vertx.telegram.bot.api.types.keyboard;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

@@ -24,7 +24,7 @@
 package org.schors.vertx.telegram.bot.api.methods;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.schors.vertx.telegram.bot.api.types.Markup;
+import org.schors.vertx.telegram.bot.api.types.keyboard.Markup;
 
 public class SendLocation extends TelegramMethod {
 

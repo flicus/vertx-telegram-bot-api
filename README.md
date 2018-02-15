@@ -1,7 +1,7 @@
 # vertx-telegram-bot-api [![Build Status](https://travis-ci.org/flicus/vertx-telegram-bot-api.png)](https://travis-ci.org/flicus/vertx-telegram-bot-api)
 [Telegram bot api](https://core.telegram.org/bots/api) for [vert.x](http://vertx.io)
 
-Bot API supported: up to 3.5
+Bot API supported: up to 3.6
 
 Vert.x supported : up to 3.5.0
 
@@ -30,7 +30,7 @@ For maven:
     <dependency>
         <groupId>com.github.flicus</groupId>
         <artifactId>vertx-telegram-bot-api</artifactId>
-        <version>1.0.2</version>
+        <version>1.0.3</version>
     </dependency>
 </dependencies>
 ```
@@ -40,7 +40,7 @@ For gradle:
     maven { url "https://jitpack.io" }
  }
  dependencies {
-    compile 'com.github.flicus:vertx-telegram-bot-api:1.0.2'
+    compile 'com.github.flicus:vertx-telegram-bot-api:1.0.3'
   }
  ```
 ## Usage

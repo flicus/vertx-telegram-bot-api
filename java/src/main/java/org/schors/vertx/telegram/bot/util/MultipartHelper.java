@@ -36,7 +36,7 @@ import io.vertx.core.streams.Pump;
 import io.vertx.core.streams.ReadStream;
 import org.apache.log4j.Logger;
 import org.schors.vertx.telegram.bot.api.types.InputMedia;
-import org.schors.vertx.telegram.bot.api.types.Markup;
+import org.schors.vertx.telegram.bot.api.types.keyboard.Markup;
 
 import java.io.File;
 

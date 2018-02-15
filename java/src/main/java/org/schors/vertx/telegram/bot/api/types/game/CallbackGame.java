@@ -21,7 +21,7 @@
  *  SOFTWARE.
  */
 
-package org.schors.vertx.telegram.bot.api.types;
+package org.schors.vertx.telegram.bot.api.types.game;
 
-public class Markup {
+public class CallbackGame {
 }

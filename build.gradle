@@ -1,5 +1,5 @@
 group 'org.schors'
-version '1.0.2'
+version '1.0.3'
 
 if (!JavaVersion.current().java8Compatible) {
     throw new IllegalStateException('''A Haiku:

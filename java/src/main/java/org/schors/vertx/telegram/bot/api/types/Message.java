@@ -24,8 +24,10 @@
 package org.schors.vertx.telegram.bot.api.types;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.schors.vertx.telegram.bot.api.types.game.Game;
 import org.schors.vertx.telegram.bot.api.types.payment.Invoice;
 import org.schors.vertx.telegram.bot.api.types.payment.SuccessfulPayment;
+import org.schors.vertx.telegram.bot.api.types.sticker.Sticker;
 
 public class Message {
 
@@ -92,11 +94,13 @@ public class Message {
     private String forwardSignature;
     @JsonProperty("author_signature")
     private String authorSignature;
+    @JsonProperty("connected_website")
+    private String connectedWebsite;
 
     public Message() {
     }
 
-    public Message(Integer messageId, User from, Integer date, Chat chat, User forwardFrom, Chat forwardFromChat, Integer forwardFromMessageId, Integer forwardDate, Message replyToMessage, Integer editDate, String text, MessageEntity[] entities, MessageEntity[] captionEntities, Audio audio, Document document, Game game, PhotoSize[] photo, Sticker sticker, Video video, VideoNote videoNote, Voice voice, String caption, Contact contact, Location location, Venue venue, User[] newChatMembers, User leftChatMember, String newChatTitle, PhotoSize[] newChatPhoto, Boolean deleteChatPhoto, Boolean groupChatCreated, Boolean supergroupChatCreated, Boolean channelChatCreated, Integer migrateToChatId, Integer migrateFromChatId, Message pinnedMessage, Invoice invoice, SuccessfulPayment successfulPayment, String forwardSignature, String authorSignature) {
+    public Message(Integer messageId, User from, Integer date, Chat chat, User forwardFrom, Chat forwardFromChat, Integer forwardFromMessageId, Integer forwardDate, Message replyToMessage, Integer editDate, String text, MessageEntity[] entities, MessageEntity[] captionEntities, Audio audio, Document document, Game game, PhotoSize[] photo, Sticker sticker, Video video, VideoNote videoNote, Voice voice, String caption, Contact contact, Location location, Venue venue, User[] newChatMembers, User leftChatMember, String newChatTitle, PhotoSize[] newChatPhoto, Boolean deleteChatPhoto, Boolean groupChatCreated, Boolean supergroupChatCreated, Boolean channelChatCreated, Integer migrateToChatId, Integer migrateFromChatId, Message pinnedMessage, Invoice invoice, SuccessfulPayment successfulPayment, String forwardSignature, String authorSignature, String connectedWebsite) {
         this.messageId = messageId;
         this.from = from;
         this.date = date;
@@ -137,6 +141,7 @@ public class Message {
         this.successfulPayment = successfulPayment;
         this.forwardSignature = forwardSignature;
         this.authorSignature = authorSignature;
+        this.connectedWebsite = connectedWebsite;
     }
 
     public Boolean getDeleteChatPhoto() {
@@ -520,6 +525,15 @@ public class Message {
 
     public Message setCaptionEntities(MessageEntity[] captionEntities) {
         this.captionEntities = captionEntities;
+        return this;
+    }
+
+    public String getConnectedWebsite() {
+        return connectedWebsite;
+    }
+
+    public Message setConnectedWebsite(String connectedWebsite) {
+        this.connectedWebsite = connectedWebsite;
         return this;
     }
 }

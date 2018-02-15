@@ -21,39 +21,7 @@
  *  SOFTWARE.
  */
 
-package org.schors.vertx.telegram.bot.api.types;
+package org.schors.vertx.telegram.bot.api.types.keyboard;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-public class ReplyKeyboardRemove extends Markup {
-
-    @JsonProperty("remove_keyboard")
-    private Boolean removeKeyboard;
-    private Boolean selective;
-
-    public ReplyKeyboardRemove() {
-    }
-
-    public ReplyKeyboardRemove(Boolean removeKeyboard, Boolean selective) {
-        this.removeKeyboard = removeKeyboard;
-        this.selective = selective;
-    }
-
-    public Boolean isRemoveKeyboard() {
-        return removeKeyboard;
-    }
-
-    public ReplyKeyboardRemove setRemoveKeyboard(Boolean removeKeyboard) {
-        this.removeKeyboard = removeKeyboard;
-        return this;
-    }
-
-    public Boolean isSelective() {
-        return selective;
-    }
-
-    public ReplyKeyboardRemove setSelective(Boolean selective) {
-        this.selective = selective;
-        return this;
-    }
+public class Markup {
 }

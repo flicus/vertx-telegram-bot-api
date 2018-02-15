@@ -34,6 +34,7 @@ import io.vertx.core.json.JsonObject;
 import org.apache.log4j.Logger;
 import org.schors.vertx.telegram.bot.api.methods.*;
 import org.schors.vertx.telegram.bot.api.types.*;
+import org.schors.vertx.telegram.bot.api.types.sticker.StickerSet;
 import org.schors.vertx.telegram.bot.util.MultipartHelper;
 import org.schors.vertx.telegram.bot.util.NOKResponseException;
 import org.schors.vertx.telegram.bot.util.Util;
@@ -623,7 +624,9 @@ public final class TelegramBot {
                     .putTextBody("duration", video.getDuration())
                     .putTextBody("caption", video.getCaption())
                     .putTextBody("width", video.getHeight())
-                    .putTextBody("height", video.getWidth());
+                    .putTextBody("height", video.getWidth())
+                    .putTextBody("supports_streaming", video.getSupportsStreaming());
+
             if (video.getFile() != null) {
                 multipartHelper
                         .putBinaryBody("video", video.getFile(), "application/octet-stream", event -> {
