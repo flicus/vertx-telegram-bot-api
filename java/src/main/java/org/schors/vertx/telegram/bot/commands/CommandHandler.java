@@ -24,6 +24,7 @@
 package org.schors.vertx.telegram.bot.commands;
 
 import io.vertx.core.Handler;
+import io.vertx.core.Vertx;
 import org.apache.log4j.Logger;
 import org.reflections.Reflections;
 import org.schors.vertx.telegram.bot.TelegramBot;
@@ -54,15 +55,20 @@ public class CommandHandler implements Handler<Update> {
 
     public CommandHandler addCommand(Command command) {
         BotCommand annotation = command.getClass().getAnnotation(BotCommand.class);
+        log.warn("### Adding command: " + annotation);
         if (annotation.isDefault()) {
+            log.warn("### default");
             setDefaultCommand(command);
         } else if (annotation.isPostExecute()) {
+            log.warn("### post execute");
             command.setCommandHandler(this);
             postExecute = command;
         } else if (annotation.isPreExecute()) {
+            log.warn("### pre execute");
             command.setCommandHandler(this);
             preExecute = command;
         } else {
+            log.warn("### normal");
             command.setCommandHandler(this);
             commands.add(command);
         }
@@ -74,7 +80,7 @@ public class CommandHandler implements Handler<Update> {
     }
 
     public CommandHandler loadCommands(String _package) {
-        bot.getVertx().executeBlocking(future -> {
+        Vertx.currentContext().owner().executeBlocking(future -> {
             String pckg = _package == null ? bot.getOptions().getCommandPackage() : _package;
             Reflections reflections = pckg == null ? new Reflections(this.getClass().getClassLoader()) : new Reflections(pckg);
             Set<Class<?>> res = reflections.getTypesAnnotatedWith(BotCommand.class);
@@ -108,6 +114,7 @@ public class CommandHandler implements Handler<Update> {
 
     public CommandHandler execute(CommandContext context) {
         if (preExecute != null) {
+            log.warn("### Pre execute: " + preExecute);
             preExecute.execute(context, checkEvent -> {
                 if (Boolean.TRUE.equals(checkEvent)) {
                     executeNormalCommand(context);
