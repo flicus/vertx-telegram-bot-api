@@ -45,7 +45,7 @@ public class MultipartHelper {
     private static final Logger log = Logger.getLogger(MultipartHelper.class);
 
     private HttpClientRequest request;
-    private String boundary = Long.toHexString(System.currentTimeMillis());
+    private String boundary = "vtba_" + Long.toHexString(System.currentTimeMillis());
     private Vertx vertx;
     private ObjectMapper mapper = new ObjectMapper();
 
@@ -53,6 +53,8 @@ public class MultipartHelper {
         this.request = request;
         this.vertx = vertx;
         request.putHeader("Content-Type", String.format("multipart/form-data; boundary=%s", boundary));
+        request.write(System.lineSeparator());
+        request.write(System.lineSeparator());
     }
 
     public MultipartHelper stop() {

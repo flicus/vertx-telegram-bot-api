@@ -411,7 +411,7 @@ public final class TelegramBot {
                     .putTextBody("reply_to_message_id", document.getReplyToMessageId())
                     .putTextBody("caption", document.getCaption())
                     .putTextBody("disable_notification", document.isDisableNotification())
-                    .putTextBody("reply_markup", toJson(document.getReplyMarkup()));
+                    .putTextBody("reply_markup", document.getReplyMarkup());
             if (document.getFile() != null) {
                 multipartHelper
                         .putBinaryBody("document", document.getFile(), "application/octet-stream", event -> {
@@ -1078,12 +1078,4 @@ public final class TelegramBot {
         send(new GetWebhookInfo(), handler);
     }
 
-    private String toJson(Object msg) {
-        try {
-            return this.mapper.writeValueAsString(msg);
-        } catch (JsonProcessingException e) {
-            log.error(e, e);
-        }
-        return null;
-    }
 }
